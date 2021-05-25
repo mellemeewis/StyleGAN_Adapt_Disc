@@ -208,10 +208,10 @@ class LogisticGAN(GANLoss):
 
         loss = torch.mean(r_loss) + torch.mean(f_loss)
 
-        if r1_gamma != 0.0:
-            r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
-            print('HELLO r1', r1_penalty)
-            loss += r1_penalty
+        # if r1_gamma != 0.0:
+        #     r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
+        #     print('HELLO r1', r1_penalty)
+        #     loss += r1_penalty
 
         if print_:
             print('DIS LOSS REAL: ', r_sig.mean().item(), r_mean.mean().item(),  r_loss.mean().item())
