@@ -351,7 +351,7 @@ class Discriminator(nn.Module):
         """
 
         assert depth < self.depth, "Requested output depth cannot be produced"
-
+        print(f'START DIC, DEPTH {depth}, INPUT SIZE: ', images_in.size())
         if self.structure == 'fixed':
             x = self.from_rgb[0](images_in)
             for i, block in enumerate(self.blocks):
@@ -362,13 +362,18 @@ class Discriminator(nn.Module):
                 residual = self.from_rgb[self.depth - depth](self.temporaryDownsampler(images_in))
                 straight = self.blocks[self.depth - depth - 1](self.from_rgb[self.depth - depth - 1](images_in))
                 x = (alpha * straight) + ((1 - alpha) * residual)
-
+                print(f"DEPTH {depth}, X SIZE: ", x.size())
+                l=0
                 for block in self.blocks[(self.depth - depth):]:
                     x = block(x)
+                    print(f"DEPTH {depth}, BLOCK {l}, X SIZE: ", x.size())
             else:
                 x = self.from_rgb[-1](images_in)
 
             scores_out = self.final_block(x)
+
+            print(f"DEPTH {depth}, FINAL {l}, OUT SIZE: ", scores_out.size())
+
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
