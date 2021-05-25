@@ -12,5 +12,5 @@ dataset:
   resolution: 128
 sched:
   epochs: [8,16,32,32,64,64]
-  batch_sizes: [1, 128, 128, 64, 32, 16, 8, 4, 2]
+  batch_sizes: [128, 128, 128, 64, 32, 16, 8, 4, 2]
 
