@@ -1,0 +1,16 @@
+# Config file for CelebA dataset (200k)
+
+output_dir: '/content/output/mnist'
+structure: 'linear'
+device_id: ('0')
+use_ema: False
+checkpoint_factor: 0
+feedback_factor: 2
+dataset:
+  img_dir: '/content/drive/MyDrive/datasets/mnist'
+  folder: True
+  resolution: 28
+sched:
+  epochs: [8,16,32,32,64,64]
+  batch_sizes: [128, 128, 128, 64, 32, 16, 8, 4, 2]
+
