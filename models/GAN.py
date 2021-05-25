@@ -208,7 +208,7 @@ class Generator(nn.Module):
 
     def __init__(self, resolution, latent_size=512, dlatent_size=512,
                  truncation_psi=0.7, truncation_cutoff=8, dlatent_avg_beta=0.995,
-                 style_mixing_prob=0.9, **kwargs):
+                 style_mixing_prob=None, **kwargs):
         """
         # Style-based generator used in the StyleGAN paper.
         # Composed of two sub-networks (G_mapping and G_synthesis).
@@ -226,6 +226,7 @@ class Generator(nn.Module):
         super(Generator, self).__init__()
 
         self.style_mixing_prob = style_mixing_prob
+        print("Style Mixing Probability: ", self.style_mixing_prob)
 
         # Setup components.
         self.num_layers = (int(np.log2(resolution)) - 1) * 2
