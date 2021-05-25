@@ -683,7 +683,8 @@ class StyleGAN:
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
                         with torch.no_grad():
-                            latents = self.dis(self.__progressive_down_sampling(images[:num_samples], current_depth, alpha), current_depth, alpha).detach()
+                            images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
+                            latents = self.dis(images_ds, current_depth, alpha).detach()
                             b, l = latents.size()
                             latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
 
@@ -692,7 +693,7 @@ class StyleGAN:
 
                             print(images.size(), recon.size(), samples.size())
                             self.create_grid(
-                                samples=torch.cat([images[:num_samples,:,:,:], recon, samples]),
+                                samples=torch.cat([images_ds, recon, samples]),
                                 scale_factor=int(np.power(2, self.depth - current_depth - 1)) if self.structure == 'linear' else 1,
                                 img_file=gen_img_file,
                             )
