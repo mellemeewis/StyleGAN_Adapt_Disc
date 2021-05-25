@@ -225,4 +225,4 @@ class LogisticGAN(GANLoss):
         loss = 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         print("HELLO")
-        return loss
+        return torch.mean(loss)
