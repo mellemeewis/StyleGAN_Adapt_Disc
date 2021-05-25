@@ -331,7 +331,6 @@ class Discriminator(nn.Module):
         self.blocks = nn.ModuleList(blocks)
 
         # Building the final block.
-        print('NF 2', nf(2))
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
                                             in_channels=nf(2), intermediate_channels=nf(2),
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
@@ -368,7 +367,7 @@ class Discriminator(nn.Module):
                 x = self.from_rgb[-1](images_in)
 
             scores_out = self.final_block(x)
-
+            print('So', scores_out.size())
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
