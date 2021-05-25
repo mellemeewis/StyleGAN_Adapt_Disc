@@ -1,0 +1,364 @@
+no problem
+2021-05-24 19:30:18 INFO: Using 1 GPUs.
+2021-05-24 19:30:18 INFO: Training on GeForce GTX TITAN X.
+
+2021-05-24 19:30:24 INFO: Training from scratch...
+2021-05-24 19:30:24 INFO: Starting the training process ... 
+
+2021-05-24 19:30:24 INFO: Currently working on depth: 1
+2021-05-24 19:30:24 INFO: Current resolution: 4 x 4
+2021-05-24 19:30:24 INFO: Epoch: [1]
+2021-05-24 19:30:28 INFO: Elapsed: [0:00:04] Step: 1  Batch: 1  D_Loss: 768.751160  G_Loss: 0.868434
+2021-05-24 19:32:51 INFO: Elapsed: [0:02:26] Step: 253  Batch: 253  D_Loss: 43.864437  G_Loss: 2.380774
+2021-05-24 19:35:13 INFO: Time taken for epoch: 0:04:48
+
+2021-05-24 19:35:13 INFO: Epoch: [2]
+2021-05-24 19:35:13 INFO: Elapsed: [0:04:49] Step: 505  Batch: 1  D_Loss: 8.095859  G_Loss: 1.088238
+2021-05-24 19:35:36 INFO: Elapsed: [0:05:11] Step: 757  Batch: 253  D_Loss: 2.086191  G_Loss: 0.750277
+2021-05-24 19:36:00 INFO: Time taken for epoch: 0:00:47
+
+2021-05-24 19:36:00 INFO: Epoch: [3]
+2021-05-24 19:36:01 INFO: Elapsed: [0:05:36] Step: 1009  Batch: 1  D_Loss: 2.036936  G_Loss: 0.703618
+2021-05-24 19:36:24 INFO: Elapsed: [0:05:59] Step: 1261  Batch: 253  D_Loss: 1.461267  G_Loss: 0.693340
+2021-05-24 19:36:46 INFO: Time taken for epoch: 0:00:45
+
+2021-05-24 19:36:46 INFO: Epoch: [4]
+2021-05-24 19:36:46 INFO: Elapsed: [0:06:21] Step: 1513  Batch: 1  D_Loss: 1.627779  G_Loss: 0.703713
+2021-05-24 19:37:08 INFO: Elapsed: [0:06:43] Step: 1765  Batch: 253  D_Loss: 1.698056  G_Loss: 0.696968
+2021-05-24 19:37:30 INFO: Time taken for epoch: 0:00:44
+
+2021-05-24 19:37:30 INFO: Epoch: [5]
+2021-05-24 19:37:30 INFO: Elapsed: [0:07:05] Step: 2017  Batch: 1  D_Loss: 1.541878  G_Loss: 0.697754
+2021-05-24 19:37:52 INFO: Elapsed: [0:07:27] Step: 2269  Batch: 253  D_Loss: 1.521237  G_Loss: 0.692994
+2021-05-24 19:38:14 INFO: Time taken for epoch: 0:00:44
+
+2021-05-24 19:38:14 INFO: Epoch: [6]
+2021-05-24 19:38:15 INFO: Elapsed: [0:07:50] Step: 2521  Batch: 1  D_Loss: 1.879022  G_Loss: 0.693201
+2021-05-24 19:38:37 INFO: Elapsed: [0:08:12] Step: 2773  Batch: 253  D_Loss: 1.484941  G_Loss: 0.697188
+2021-05-24 19:38:58 INFO: Time taken for epoch: 0:00:44
+
+2021-05-24 19:38:58 INFO: Epoch: [7]
+2021-05-24 19:38:59 INFO: Elapsed: [0:08:34] Step: 3025  Batch: 1  D_Loss: 1.678287  G_Loss: 0.700178
+2021-05-24 19:39:20 INFO: Elapsed: [0:08:56] Step: 3277  Batch: 253  D_Loss: 1.416418  G_Loss: 0.695124
+2021-05-24 19:39:42 INFO: Time taken for epoch: 0:00:43
+
+2021-05-24 19:39:42 INFO: Epoch: [8]
+2021-05-24 19:39:43 INFO: Elapsed: [0:09:18] Step: 3529  Batch: 1  D_Loss: 1.391899  G_Loss: 0.693976
+2021-05-24 19:40:05 INFO: Elapsed: [0:09:41] Step: 3781  Batch: 253  D_Loss: 1.519461  G_Loss: 0.693837
+2021-05-24 19:40:29 INFO: Time taken for epoch: 0:00:46
+
+2021-05-24 19:40:29 INFO: Currently working on depth: 2
+2021-05-24 19:40:29 INFO: Current resolution: 8 x 8
+2021-05-24 19:40:29 INFO: Epoch: [1]
+2021-05-24 19:40:30 INFO: Elapsed: [0:10:06] Step: 4033  Batch: 1  D_Loss: 1.463989  G_Loss: 0.692592
+2021-05-24 19:41:51 INFO: Elapsed: [0:11:26] Step: 4285  Batch: 253  D_Loss: 1.399802  G_Loss: 0.694220
+2021-05-24 19:43:11 INFO: Time taken for epoch: 0:02:42
+
+2021-05-24 19:43:11 INFO: Epoch: [2]
+2021-05-24 19:43:12 INFO: Elapsed: [0:12:47] Step: 4537  Batch: 1  D_Loss: 1.393126  G_Loss: 0.703151
+2021-05-24 19:44:33 INFO: Elapsed: [0:14:09] Step: 4789  Batch: 253  D_Loss: 1.393947  G_Loss: 0.692918
+2021-05-24 19:45:55 INFO: Time taken for epoch: 0:02:43
+
+2021-05-24 19:45:55 INFO: Epoch: [3]
+2021-05-24 19:45:56 INFO: Elapsed: [0:15:31] Step: 5041  Batch: 1  D_Loss: 1.390764  G_Loss: 0.693336
+2021-05-24 19:47:16 INFO: Elapsed: [0:16:51] Step: 5293  Batch: 253  D_Loss: 1.393657  G_Loss: 0.693849
+2021-05-24 19:48:38 INFO: Time taken for epoch: 0:02:42
+
+2021-05-24 19:48:38 INFO: Epoch: [4]
+2021-05-24 19:48:39 INFO: Elapsed: [0:18:14] Step: 5545  Batch: 1  D_Loss: 1.391761  G_Loss: 0.692266
+2021-05-24 19:49:59 INFO: Elapsed: [0:19:35] Step: 5797  Batch: 253  D_Loss: 1.389742  G_Loss: 0.691637
+2021-05-24 19:51:19 INFO: Time taken for epoch: 0:02:41
+
+2021-05-24 19:51:19 INFO: Epoch: [5]
+2021-05-24 19:51:20 INFO: Elapsed: [0:20:55] Step: 6049  Batch: 1  D_Loss: 1.432087  G_Loss: 0.689892
+2021-05-24 19:52:42 INFO: Elapsed: [0:22:17] Step: 6301  Batch: 253  D_Loss: 1.393034  G_Loss: 0.693701
+2021-05-24 19:54:03 INFO: Time taken for epoch: 0:02:44
+
+2021-05-24 19:54:03 INFO: Epoch: [6]
+2021-05-24 19:54:04 INFO: Elapsed: [0:23:39] Step: 6553  Batch: 1  D_Loss: 1.393131  G_Loss: 0.694019
+2021-05-24 19:55:25 INFO: Elapsed: [0:25:00] Step: 6805  Batch: 253  D_Loss: 1.388115  G_Loss: 0.693129
+2021-05-24 19:56:46 INFO: Time taken for epoch: 0:02:42
+
+2021-05-24 19:56:46 INFO: Epoch: [7]
+2021-05-24 19:56:47 INFO: Elapsed: [0:26:22] Step: 7057  Batch: 1  D_Loss: 1.387740  G_Loss: 0.693335
+2021-05-24 19:58:07 INFO: Elapsed: [0:27:42] Step: 7309  Batch: 253  D_Loss: 1.387158  G_Loss: 0.707061
+2021-05-24 19:59:29 INFO: Time taken for epoch: 0:02:43
+
+2021-05-24 19:59:29 INFO: Epoch: [8]
+2021-05-24 19:59:30 INFO: Elapsed: [0:29:05] Step: 7561  Batch: 1  D_Loss: 1.390516  G_Loss: 0.692831
+2021-05-24 20:00:52 INFO: Elapsed: [0:30:27] Step: 7813  Batch: 253  D_Loss: 1.387763  G_Loss: 0.691793
+2021-05-24 20:02:14 INFO: Time taken for epoch: 0:02:45
+
+2021-05-24 20:02:14 INFO: Epoch: [9]
+2021-05-24 20:02:15 INFO: Elapsed: [0:31:50] Step: 8065  Batch: 1  D_Loss: 1.387083  G_Loss: 0.686561
+2021-05-24 20:03:36 INFO: Elapsed: [0:33:11] Step: 8317  Batch: 253  D_Loss: 1.396201  G_Loss: 0.694241
+2021-05-24 20:04:56 INFO: Time taken for epoch: 0:02:42
+
+2021-05-24 20:04:56 INFO: Epoch: [10]
+2021-05-24 20:04:57 INFO: Elapsed: [0:34:32] Step: 8569  Batch: 1  D_Loss: 1.394087  G_Loss: 0.694554
+2021-05-24 20:06:18 INFO: Elapsed: [0:35:53] Step: 8821  Batch: 253  D_Loss: 1.387525  G_Loss: 0.693537
+2021-05-24 20:07:40 INFO: Time taken for epoch: 0:02:44
+
+2021-05-24 20:07:40 INFO: Epoch: [11]
+2021-05-24 20:07:41 INFO: Elapsed: [0:37:16] Step: 9073  Batch: 1  D_Loss: 1.387131  G_Loss: 0.688969
+2021-05-24 20:09:03 INFO: Elapsed: [0:38:38] Step: 9325  Batch: 253  D_Loss: 1.387411  G_Loss: 0.693175
+2021-05-24 20:10:24 INFO: Time taken for epoch: 0:02:44
+
+2021-05-24 20:10:24 INFO: Epoch: [12]
+2021-05-24 20:10:25 INFO: Elapsed: [0:40:00] Step: 9577  Batch: 1  D_Loss: 1.387277  G_Loss: 0.693819
+2021-05-24 20:11:46 INFO: Elapsed: [0:41:22] Step: 9829  Batch: 253  D_Loss: 1.386391  G_Loss: 0.687877
+2021-05-24 20:13:08 INFO: Time taken for epoch: 0:02:43
+
+2021-05-24 20:13:08 INFO: Epoch: [13]
+2021-05-24 20:13:09 INFO: Elapsed: [0:42:44] Step: 10081  Batch: 1  D_Loss: 1.390236  G_Loss: 0.692083
+2021-05-24 20:14:29 INFO: Elapsed: [0:44:04] Step: 10333  Batch: 253  D_Loss: 1.389622  G_Loss: 0.690754
+2021-05-24 20:15:48 INFO: Time taken for epoch: 0:02:40
+
+2021-05-24 20:15:48 INFO: Epoch: [14]
+2021-05-24 20:15:49 INFO: Elapsed: [0:45:24] Step: 10585  Batch: 1  D_Loss: 1.386690  G_Loss: 0.693490
+2021-05-24 20:17:11 INFO: Elapsed: [0:46:46] Step: 10837  Batch: 253  D_Loss: 1.386467  G_Loss: 0.692241
+2021-05-24 20:18:32 INFO: Time taken for epoch: 0:02:43
+
+2021-05-24 20:18:32 INFO: Epoch: [15]
+2021-05-24 20:18:32 INFO: Elapsed: [0:48:08] Step: 11089  Batch: 1  D_Loss: 1.387348  G_Loss: 0.694300
+2021-05-24 20:19:53 INFO: Elapsed: [0:49:29] Step: 11341  Batch: 253  D_Loss: 1.386729  G_Loss: 0.693011
+2021-05-24 20:21:13 INFO: Time taken for epoch: 0:02:41
+
+2021-05-24 20:21:13 INFO: Epoch: [16]
+2021-05-24 20:21:14 INFO: Elapsed: [0:50:49] Step: 11593  Batch: 1  D_Loss: 1.386688  G_Loss: 0.691923
+2021-05-24 20:22:35 INFO: Elapsed: [0:52:10] Step: 11845  Batch: 253  D_Loss: 1.390141  G_Loss: 0.691673
+2021-05-24 20:23:55 INFO: Time taken for epoch: 0:02:42
+
+2021-05-24 20:23:55 INFO: Currently working on depth: 3
+2021-05-24 20:23:55 INFO: Current resolution: 16 x 16
+2021-05-24 20:23:55 INFO: Epoch: [1]
+2021-05-24 20:23:58 INFO: Elapsed: [0:53:33] Step: 12097  Batch: 1  D_Loss: 1.386314  G_Loss: 0.693376
+2021-05-24 20:28:10 INFO: Elapsed: [0:57:45] Step: 12349  Batch: 253  D_Loss: 1.386625  G_Loss: 0.693649
+2021-05-24 20:32:20 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 20:32:20 INFO: Epoch: [2]
+2021-05-24 20:32:22 INFO: Elapsed: [1:01:57] Step: 12601  Batch: 1  D_Loss: 1.386460  G_Loss: 0.694005
+2021-05-24 20:36:33 INFO: Elapsed: [1:06:09] Step: 12853  Batch: 253  D_Loss: 1.386562  G_Loss: 0.693487
+2021-05-24 20:40:44 INFO: Time taken for epoch: 0:08:23
+
+2021-05-24 20:40:44 INFO: Epoch: [3]
+2021-05-24 20:40:45 INFO: Elapsed: [1:10:21] Step: 13105  Batch: 1  D_Loss: 1.386472  G_Loss: 0.692695
+2021-05-24 20:44:57 INFO: Elapsed: [1:14:33] Step: 13357  Batch: 253  D_Loss: 1.394046  G_Loss: 0.701598
+2021-05-24 20:49:09 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 20:49:09 INFO: Epoch: [4]
+2021-05-24 20:49:10 INFO: Elapsed: [1:18:45] Step: 13609  Batch: 1  D_Loss: 1.387240  G_Loss: 0.691222
+2021-05-24 20:53:22 INFO: Elapsed: [1:22:57] Step: 13861  Batch: 253  D_Loss: 1.386527  G_Loss: 0.692757
+2021-05-24 20:57:33 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 20:57:33 INFO: Epoch: [5]
+2021-05-24 20:57:35 INFO: Elapsed: [1:27:10] Step: 14113  Batch: 1  D_Loss: 1.387038  G_Loss: 0.692577
+2021-05-24 21:01:49 INFO: Elapsed: [1:31:24] Step: 14365  Batch: 253  D_Loss: 1.386433  G_Loss: 0.693518
+2021-05-24 21:05:59 INFO: Time taken for epoch: 0:08:25
+
+2021-05-24 21:05:59 INFO: Epoch: [6]
+2021-05-24 21:06:01 INFO: Elapsed: [1:35:36] Step: 14617  Batch: 1  D_Loss: 1.386559  G_Loss: 0.696501
+2021-05-24 21:10:13 INFO: Elapsed: [1:39:48] Step: 14869  Batch: 253  D_Loss: 1.386694  G_Loss: 0.693008
+2021-05-24 21:14:25 INFO: Time taken for epoch: 0:08:25
+
+2021-05-24 21:14:25 INFO: Epoch: [7]
+2021-05-24 21:14:26 INFO: Elapsed: [1:44:01] Step: 15121  Batch: 1  D_Loss: 1.386619  G_Loss: 0.693024
+2021-05-24 21:18:38 INFO: Elapsed: [1:48:14] Step: 15373  Batch: 253  D_Loss: 1.386580  G_Loss: 0.693968
+2021-05-24 21:22:50 INFO: Time taken for epoch: 0:08:25
+
+2021-05-24 21:22:50 INFO: Epoch: [8]
+2021-05-24 21:22:51 INFO: Elapsed: [1:52:26] Step: 15625  Batch: 1  D_Loss: 1.386227  G_Loss: 0.691355
+2021-05-24 21:27:05 INFO: Elapsed: [1:56:40] Step: 15877  Batch: 253  D_Loss: 1.386712  G_Loss: 0.694175
+2021-05-24 21:31:17 INFO: Time taken for epoch: 0:08:27
+
+2021-05-24 21:31:17 INFO: Epoch: [9]
+2021-05-24 21:31:19 INFO: Elapsed: [2:00:54] Step: 16129  Batch: 1  D_Loss: 1.386416  G_Loss: 0.693563
+2021-05-24 21:35:31 INFO: Elapsed: [2:05:07] Step: 16381  Batch: 253  D_Loss: 1.386404  G_Loss: 0.694967
+2021-05-24 21:39:43 INFO: Time taken for epoch: 0:08:25
+
+2021-05-24 21:39:43 INFO: Epoch: [10]
+2021-05-24 21:39:44 INFO: Elapsed: [2:09:19] Step: 16633  Batch: 1  D_Loss: 1.386378  G_Loss: 0.692883
+2021-05-24 21:43:57 INFO: Elapsed: [2:13:32] Step: 16885  Batch: 253  D_Loss: 1.386420  G_Loss: 0.693436
+2021-05-24 21:48:08 INFO: Time taken for epoch: 0:08:25
+
+2021-05-24 21:48:08 INFO: Epoch: [11]
+2021-05-24 21:48:10 INFO: Elapsed: [2:17:45] Step: 17137  Batch: 1  D_Loss: 1.387121  G_Loss: 0.693878
+2021-05-24 21:52:23 INFO: Elapsed: [2:21:58] Step: 17389  Batch: 253  D_Loss: 1.386538  G_Loss: 0.693332
+2021-05-24 21:56:36 INFO: Time taken for epoch: 0:08:27
+
+2021-05-24 21:56:36 INFO: Epoch: [12]
+2021-05-24 21:56:37 INFO: Elapsed: [2:26:12] Step: 17641  Batch: 1  D_Loss: 1.386526  G_Loss: 0.693989
+2021-05-24 22:00:50 INFO: Elapsed: [2:30:25] Step: 17893  Batch: 253  D_Loss: 1.387060  G_Loss: 0.692445
+2021-05-24 22:05:03 INFO: Time taken for epoch: 0:08:27
+
+2021-05-24 22:05:03 INFO: Epoch: [13]
+2021-05-24 22:05:05 INFO: Elapsed: [2:34:40] Step: 18145  Batch: 1  D_Loss: 1.386451  G_Loss: 0.693274
+2021-05-24 22:09:16 INFO: Elapsed: [2:38:51] Step: 18397  Batch: 253  D_Loss: 1.386264  G_Loss: 0.693130
+2021-05-24 22:13:27 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 22:13:27 INFO: Epoch: [14]
+2021-05-24 22:13:29 INFO: Elapsed: [2:43:04] Step: 18649  Batch: 1  D_Loss: 1.386669  G_Loss: 0.693461
+2021-05-24 22:17:41 INFO: Elapsed: [2:47:16] Step: 18901  Batch: 253  D_Loss: 1.386305  G_Loss: 0.692941
+2021-05-24 22:21:52 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 22:21:52 INFO: Epoch: [15]
+2021-05-24 22:21:53 INFO: Elapsed: [2:51:29] Step: 19153  Batch: 1  D_Loss: 1.386828  G_Loss: 0.693078
+2021-05-24 22:26:06 INFO: Elapsed: [2:55:41] Step: 19405  Batch: 253  D_Loss: 1.386492  G_Loss: 0.693603
+2021-05-24 22:30:19 INFO: Time taken for epoch: 0:08:27
+
+2021-05-24 22:30:19 INFO: Epoch: [16]
+2021-05-24 22:30:21 INFO: Elapsed: [2:59:56] Step: 19657  Batch: 1  D_Loss: 1.386085  G_Loss: 0.693735
+2021-05-24 22:34:33 INFO: Elapsed: [3:04:08] Step: 19909  Batch: 253  D_Loss: 1.386231  G_Loss: 0.693474
+2021-05-24 22:38:44 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 22:38:44 INFO: Epoch: [17]
+2021-05-24 22:38:45 INFO: Elapsed: [3:08:21] Step: 20161  Batch: 1  D_Loss: 1.386769  G_Loss: 0.693003
+2021-05-24 22:42:57 INFO: Elapsed: [3:12:32] Step: 20413  Batch: 253  D_Loss: 1.386500  G_Loss: 0.694439
+2021-05-24 22:47:08 INFO: Time taken for epoch: 0:08:23
+
+2021-05-24 22:47:08 INFO: Epoch: [18]
+2021-05-24 22:47:09 INFO: Elapsed: [3:16:45] Step: 20665  Batch: 1  D_Loss: 1.386369  G_Loss: 0.692992
+2021-05-24 22:51:21 INFO: Elapsed: [3:20:56] Step: 20917  Batch: 253  D_Loss: 1.386380  G_Loss: 0.693520
+2021-05-24 22:55:32 INFO: Time taken for epoch: 0:08:23
+
+2021-05-24 22:55:32 INFO: Epoch: [19]
+2021-05-24 22:55:33 INFO: Elapsed: [3:25:09] Step: 21169  Batch: 1  D_Loss: 1.386780  G_Loss: 0.692155
+2021-05-24 22:59:45 INFO: Elapsed: [3:29:20] Step: 21421  Batch: 253  D_Loss: 1.386215  G_Loss: 0.693712
+2021-05-24 23:03:56 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 23:03:56 INFO: Epoch: [20]
+2021-05-24 23:03:57 INFO: Elapsed: [3:33:33] Step: 21673  Batch: 1  D_Loss: 1.388173  G_Loss: 0.692643
+2021-05-24 23:08:10 INFO: Elapsed: [3:37:45] Step: 21925  Batch: 253  D_Loss: 1.387145  G_Loss: 0.693452
+2021-05-24 23:12:22 INFO: Time taken for epoch: 0:08:26
+
+2021-05-24 23:12:22 INFO: Epoch: [21]
+2021-05-24 23:12:24 INFO: Elapsed: [3:41:59] Step: 22177  Batch: 1  D_Loss: 1.387170  G_Loss: 0.693681
+2021-05-24 23:16:35 INFO: Elapsed: [3:46:11] Step: 22429  Batch: 253  D_Loss: 1.386347  G_Loss: 0.693452
+2021-05-24 23:20:47 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 23:20:47 INFO: Epoch: [22]
+2021-05-24 23:20:48 INFO: Elapsed: [3:50:23] Step: 22681  Batch: 1  D_Loss: 1.386335  G_Loss: 0.693458
+2021-05-24 23:25:00 INFO: Elapsed: [3:54:35] Step: 22933  Batch: 253  D_Loss: 1.386314  G_Loss: 0.693527
+2021-05-24 23:29:11 INFO: Time taken for epoch: 0:08:24
+
+2021-05-24 23:29:11 INFO: Epoch: [23]
+2021-05-24 23:29:12 INFO: Elapsed: [3:58:48] Step: 23185  Batch: 1  D_Loss: 1.386430  G_Loss: 0.693186
+2021-05-24 23:33:26 INFO: Elapsed: [4:03:01] Step: 23437  Batch: 253  D_Loss: 1.386315  G_Loss: 0.692783
+2021-05-24 23:37:40 INFO: Time taken for epoch: 0:08:28
+
+2021-05-24 23:37:40 INFO: Epoch: [24]
+2021-05-24 23:37:41 INFO: Elapsed: [4:07:16] Step: 23689  Batch: 1  D_Loss: 1.386327  G_Loss: 0.691712
+2021-05-24 23:41:55 INFO: Elapsed: [4:11:30] Step: 23941  Batch: 253  D_Loss: 1.386281  G_Loss: 0.693077
+2021-05-24 23:46:06 INFO: Time taken for epoch: 0:08:26
+
+2021-05-24 23:46:06 INFO: Epoch: [25]
+2021-05-24 23:46:08 INFO: Elapsed: [4:15:43] Step: 24193  Batch: 1  D_Loss: 1.386315  G_Loss: 0.693925
+2021-05-24 23:50:19 INFO: Elapsed: [4:19:55] Step: 24445  Batch: 253  D_Loss: 1.386375  G_Loss: 0.692597
+2021-05-24 23:54:30 INFO: Time taken for epoch: 0:08:23
+
+2021-05-24 23:54:30 INFO: Epoch: [26]
+2021-05-24 23:54:31 INFO: Elapsed: [4:24:06] Step: 24697  Batch: 1  D_Loss: 1.386234  G_Loss: 0.692965
+2021-05-24 23:58:43 INFO: Elapsed: [4:28:19] Step: 24949  Batch: 253  D_Loss: 1.386322  G_Loss: 0.693161
+2021-05-25 00:02:54 INFO: Time taken for epoch: 0:08:24
+
+2021-05-25 00:02:54 INFO: Epoch: [27]
+2021-05-25 00:02:55 INFO: Elapsed: [4:32:31] Step: 25201  Batch: 1  D_Loss: 1.386412  G_Loss: 0.692926
+2021-05-25 00:07:07 INFO: Elapsed: [4:36:42] Step: 25453  Batch: 253  D_Loss: 1.386263  G_Loss: 0.693180
+2021-05-25 00:11:17 INFO: Time taken for epoch: 0:08:23
+
+2021-05-25 00:11:17 INFO: Epoch: [28]
+2021-05-25 00:11:19 INFO: Elapsed: [4:40:54] Step: 25705  Batch: 1  D_Loss: 1.386335  G_Loss: 0.693655
+2021-05-25 00:15:30 INFO: Elapsed: [4:45:05] Step: 25957  Batch: 253  D_Loss: 1.386229  G_Loss: 0.694348
+2021-05-25 00:19:41 INFO: Time taken for epoch: 0:08:23
+
+2021-05-25 00:19:41 INFO: Epoch: [29]
+2021-05-25 00:19:42 INFO: Elapsed: [4:49:18] Step: 26209  Batch: 1  D_Loss: 1.386308  G_Loss: 0.693285
+2021-05-25 00:23:55 INFO: Elapsed: [4:53:30] Step: 26461  Batch: 253  D_Loss: 1.386373  G_Loss: 0.694547
+2021-05-25 00:28:06 INFO: Time taken for epoch: 0:08:25
+
+2021-05-25 00:28:06 INFO: Epoch: [30]
+2021-05-25 00:28:07 INFO: Elapsed: [4:57:43] Step: 26713  Batch: 1  D_Loss: 1.386348  G_Loss: 0.695264
+2021-05-25 00:32:20 INFO: Elapsed: [5:01:55] Step: 26965  Batch: 253  D_Loss: 1.386322  G_Loss: 0.693202
+2021-05-25 00:36:33 INFO: Time taken for epoch: 0:08:27
+
+2021-05-25 00:36:33 INFO: Epoch: [31]
+2021-05-25 00:36:35 INFO: Elapsed: [5:06:10] Step: 27217  Batch: 1  D_Loss: 1.386352  G_Loss: 0.693951
+2021-05-25 00:40:47 INFO: Elapsed: [5:10:23] Step: 27469  Batch: 253  D_Loss: 1.386306  G_Loss: 0.696554
+2021-05-25 00:44:59 INFO: Time taken for epoch: 0:08:25
+
+2021-05-25 00:44:59 INFO: Epoch: [32]
+2021-05-25 00:45:00 INFO: Elapsed: [5:14:35] Step: 27721  Batch: 1  D_Loss: 1.386342  G_Loss: 0.693006
+2021-05-25 00:49:12 INFO: Elapsed: [5:18:48] Step: 27973  Batch: 253  D_Loss: 1.386317  G_Loss: 0.693063
+2021-05-25 00:53:24 INFO: Time taken for epoch: 0:08:25
+
+2021-05-25 00:53:24 INFO: Currently working on depth: 4
+2021-05-25 00:53:24 INFO: Current resolution: 32 x 32
+2021-05-25 00:53:24 INFO: Epoch: [1]
+2021-05-25 00:53:30 INFO: Elapsed: [5:23:05] Step: 28225  Batch: 1  D_Loss: 1.386301  G_Loss: 0.692914
+2021-05-25 01:10:23 INFO: Elapsed: [5:39:58] Step: 28729  Batch: 505  D_Loss: 1.386289  G_Loss: 0.693061
+2021-05-25 01:27:14 INFO: Time taken for epoch: 0:33:50
+
+2021-05-25 01:27:14 INFO: Epoch: [2]
+2021-05-25 01:27:17 INFO: Elapsed: [5:56:52] Step: 29233  Batch: 1  D_Loss: 1.386408  G_Loss: 0.692567
+2021-05-25 01:44:09 INFO: Elapsed: [6:13:44] Step: 29737  Batch: 505  D_Loss: 1.386280  G_Loss: 0.692897
+2021-05-25 02:00:58 INFO: Time taken for epoch: 0:33:43
+
+2021-05-25 02:00:58 INFO: Epoch: [3]
+2021-05-25 02:01:01 INFO: Elapsed: [6:30:36] Step: 30241  Batch: 1  D_Loss: 1.386300  G_Loss: 0.693202
+2021-05-25 02:17:53 INFO: Elapsed: [6:47:28] Step: 30745  Batch: 505  D_Loss: 1.386510  G_Loss: 0.692731
+2021-05-25 02:34:44 INFO: Time taken for epoch: 0:33:45
+
+2021-05-25 02:34:44 INFO: Epoch: [4]
+2021-05-25 02:34:46 INFO: Elapsed: [7:04:21] Step: 31249  Batch: 1  D_Loss: 1.385593  G_Loss: 0.693966
+2021-05-25 02:51:39 INFO: Elapsed: [7:21:14] Step: 31753  Batch: 505  D_Loss: 1.386220  G_Loss: 0.693854
+2021-05-25 03:08:30 INFO: Time taken for epoch: 0:33:46
+
+2021-05-25 03:08:30 INFO: Epoch: [5]
+2021-05-25 03:08:33 INFO: Elapsed: [7:38:08] Step: 32257  Batch: 1  D_Loss: 1.386465  G_Loss: 0.694763
+2021-05-25 03:25:25 INFO: Elapsed: [7:55:00] Step: 32761  Batch: 505  D_Loss: 1.386265  G_Loss: 0.693700
+2021-05-25 03:42:16 INFO: Time taken for epoch: 0:33:46
+
+2021-05-25 03:42:16 INFO: Epoch: [6]
+2021-05-25 03:42:19 INFO: Elapsed: [8:11:54] Step: 33265  Batch: 1  D_Loss: 1.386631  G_Loss: 0.696298
+2021-05-25 03:59:12 INFO: Elapsed: [8:28:47] Step: 33769  Batch: 505  D_Loss: 1.386296  G_Loss: 0.693255
+2021-05-25 04:16:03 INFO: Time taken for epoch: 0:33:46
+
+2021-05-25 04:16:03 INFO: Epoch: [7]
+2021-05-25 04:16:06 INFO: Elapsed: [8:45:41] Step: 34273  Batch: 1  D_Loss: 1.386235  G_Loss: 0.693158
+2021-05-25 04:32:58 INFO: Elapsed: [9:02:34] Step: 34777  Batch: 505  D_Loss: 1.386204  G_Loss: 0.691821
+2021-05-25 04:49:50 INFO: Time taken for epoch: 0:33:46
+
+2021-05-25 04:49:50 INFO: Epoch: [8]
+2021-05-25 04:49:52 INFO: Elapsed: [9:19:27] Step: 35281  Batch: 1  D_Loss: 1.386463  G_Loss: 0.694876
+2021-05-25 05:06:45 INFO: Elapsed: [9:36:20] Step: 35785  Batch: 505  D_Loss: 1.386249  G_Loss: 0.693330
+2021-05-25 05:23:35 INFO: Time taken for epoch: 0:33:45
+
+2021-05-25 05:23:35 INFO: Epoch: [9]
+2021-05-25 05:23:37 INFO: Elapsed: [9:53:12] Step: 36289  Batch: 1  D_Loss: 1.386106  G_Loss: 0.690346
+2021-05-25 05:40:30 INFO: Elapsed: [10:10:06] Step: 36793  Batch: 505  D_Loss: 1.386104  G_Loss: 0.694702
+2021-05-25 05:57:22 INFO: Time taken for epoch: 0:33:47
+
+2021-05-25 05:57:22 INFO: Epoch: [10]
+2021-05-25 05:57:24 INFO: Elapsed: [10:27:00] Step: 37297  Batch: 1  D_Loss: 1.386220  G_Loss: 0.694296
+2021-05-25 06:14:17 INFO: Elapsed: [10:43:53] Step: 37801  Batch: 505  D_Loss: 1.386591  G_Loss: 0.694201
+2021-05-25 06:31:09 INFO: Time taken for epoch: 0:33:46
+
+2021-05-25 06:31:09 INFO: Epoch: [11]
+2021-05-25 06:31:11 INFO: Elapsed: [11:00:46] Step: 38305  Batch: 1  D_Loss: 1.386193  G_Loss: 0.694046
+2021-05-25 06:48:04 INFO: Elapsed: [11:17:39] Step: 38809  Batch: 505  D_Loss: 1.385972  G_Loss: 0.693741
+2021-05-25 07:04:56 INFO: Time taken for epoch: 0:33:47
+
+2021-05-25 07:04:56 INFO: Epoch: [12]
+2021-05-25 07:04:58 INFO: Elapsed: [11:34:33] Step: 39313  Batch: 1  D_Loss: 1.387311  G_Loss: 0.689187
+2021-05-25 07:21:51 INFO: Elapsed: [11:51:26] Step: 39817  Batch: 505  D_Loss: 1.386207  G_Loss: 0.695192
+2021-05-25 07:38:42 INFO: Time taken for epoch: 0:33:46
+
+2021-05-25 07:38:42 INFO: Epoch: [13]
+2021-05-25 07:38:44 INFO: Elapsed: [12:08:20] Step: 40321  Batch: 1  D_Loss: 1.386302  G_Loss: 0.692486
+2021-05-25 07:55:38 INFO: Elapsed: [12:25:13] Step: 40825  Batch: 505  D_Loss: 1.386525  G_Loss: 0.694883
+2021-05-25 08:12:29 INFO: Time taken for epoch: 0:33:47
+
+2021-05-25 08:12:29 INFO: Epoch: [14]
+2021-05-25 08:12:32 INFO: Elapsed: [12:42:07] Step: 41329  Batch: 1  D_Loss: 1.386453  G_Loss: 0.694588
+2021-05-25 08:29:24 INFO: Elapsed: [12:59:00] Step: 41833  Batch: 505  D_Loss: 1.385478  G_Loss: 0.694466
+slurmstepd: error: *** JOB 3128510 ON node025 CANCELLED AT 2021-05-25T08:30:19 DUE TO TIME LIMIT ***
