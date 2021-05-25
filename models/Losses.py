@@ -210,6 +210,7 @@ class LogisticGAN(GANLoss):
 
         if r1_gamma != 0.0:
             r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
+            print('HELLO r1', r1_penalty)
             loss += r1_penalty
 
         if print_:
