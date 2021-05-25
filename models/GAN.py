@@ -587,7 +587,7 @@ class StyleGAN:
                    normalize=True, scale_each=True, pad_value=128, padding=1)
 
     def train(self, dataset, num_workers, epochs, batch_sizes, fade_in_percentage, logger, output,
-              num_samples=36, start_depth=0, feedback_factor=100, checkpoint_factor=1):
+              num_samples=12, start_depth=0, feedback_factor=100, checkpoint_factor=1):
         """
         Utility method for training the GAN. Note that you don't have to necessarily use this
         you can use the optimize_generator and optimize_discriminator for your own training routine.
@@ -682,11 +682,12 @@ class StyleGAN:
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
                         with torch.no_grad():
+                            latents = self.dis(images[:num_samples], current_depth, alpha).detach()
+                            recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
+                            samples = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
                             self.create_grid(
-                                samples=self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema
-                                else self.gen_shadow(fixed_input, current_depth, alpha).detach(),
-                                scale_factor=int(
-                                    np.power(2, self.depth - current_depth - 1)) if self.structure == 'linear' else 1,
+                                samples=torch.cat([images[:num_samples], recon, samples]),
+                                scale_factor=int(np.power(2, self.depth - current_depth - 1)) if self.structure == 'linear' else 1,
                                 img_file=gen_img_file,
                             )
 
