@@ -682,7 +682,7 @@ class StyleGAN:
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
                         with torch.no_grad():
-                            latents = self.dis(self.__progressive_down_sampling(images[:num_samples]), current_depth, alpha).detach()
+                            latents = self.dis(self.__progressive_down_sampling(images[:num_samples], current_depth, alpha), current_depth, alpha).detach()
                             recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
                             samples = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
                             self.create_grid(
