@@ -504,7 +504,7 @@ class StyleGAN:
         # return the so computed real_samples
         return real_samples
 
-    def optimize_discriminator(self, noise, real_batch, depth, alpha):
+    def optimize_discriminator(self, latent_input, real_batch, depth, alpha):
         """
         performs one step of weight update on discriminator using the batch of data
 
@@ -520,9 +520,8 @@ class StyleGAN:
         loss_val = 0
         for _ in range(self.d_repeats):
             # generate a batch of samples
-            fake_samples = self.gen(noise, depth, alpha).detach()
-
-            loss = self.loss.dis_loss(real_samples, fake_samples, depth, alpha)
+            fake_samples = self.gen(latent_input, depth, alpha).detach()
+            loss = self.loss.dis_loss(latent_input, real_samples, fake_samples, depth, alpha)
 
             # optimize discriminator
             self.dis_optim.zero_grad()
@@ -643,6 +642,7 @@ class StyleGAN:
             data = get_data_loader(dataset, batch_sizes[current_depth], num_workers)
 
             for epoch in range(1, epochs[current_depth] + 1):
+                self.loss.update_simp(sum(epochs))
                 start = timeit.default_timer()  # record time at the start of epoch
 
                 logger.info("Epoch: [%d]" % epoch)

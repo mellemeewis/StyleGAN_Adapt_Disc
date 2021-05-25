@@ -28,6 +28,13 @@ class GANLoss:
 
     def __init__(self, dis):
         self.dis = dis
+        self.simp = 0
+
+    def update_simp(self, total_epochs):
+        epochs = total_epochs / 2
+        grow = 1/ epochs
+        self.simp = min(0.5, self.simp + grow)
+        print('Simp updated: ', self.simp)
 
     def dis_loss(self, real_samps, fake_samps, height, alpha):
         """
@@ -187,20 +194,35 @@ class LogisticGAN(GANLoss):
         r1_penalty = torch.sum(torch.mul(real_grads, real_grads))
         return r1_penalty
 
-    def dis_loss(self, real_samps, fake_samps, height, alpha, r1_gamma=10.0):
+    def dis_loss(self, latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5):
         # Obtain predictions
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
 
-        loss = torch.mean(nn.Softplus()(f_preds)) + torch.mean(nn.Softplus()(-r_preds))
+        b, l = r_preds.size()
+        r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
+        f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+
+        r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+        f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
+
+        loss = torch.mean(r_loss) + torch.mean(f_loss)
 
         if r1_gamma != 0.0:
             r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
             loss += r1_penalty
+
+        print("HI")
 
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha):
         f_preds = self.dis(fake_samps, height, alpha)
 
-        return torch.mean(nn.Softplus()(-f_preds))
+        b, l = f_preds.size()
+        f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+
+        loss = 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+
+        print("HELLO")
+        return loss

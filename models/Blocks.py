@@ -98,7 +98,7 @@ class DiscriminatorTop(nn.Sequential):
                  activation_layer,
                  resolution=4,
                  in_channels2=None,
-                 output_features=512,
+                 output_features=512*2,
                  last_gain=1):
         """
         :param mbstd_group_size:
