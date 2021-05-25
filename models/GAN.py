@@ -367,12 +367,13 @@ class Discriminator(nn.Module):
                 for block in self.blocks[(self.depth - depth):]:
                     x = block(x)
                     print(f"DEPTH {depth}, BLOCK {l}, X SIZE: ", x.size())
+                    l+= 1
             else:
                 x = self.from_rgb[-1](images_in)
 
             scores_out = self.final_block(x)
 
-            print(f"DEPTH {depth}, FINAL {l}, OUT SIZE: ", scores_out.size())
+            print(f"DEPTH {depth}, FINAL, OUT SIZE: ", scores_out.size())
 
         else:
             raise KeyError("Unknown structure: ", self.structure)
