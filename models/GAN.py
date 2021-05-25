@@ -691,7 +691,6 @@ class StyleGAN:
                             recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
                             samples = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
 
-                            print(images.size(), recon.size(), samples.size())
                             self.create_grid(
                                 samples=torch.cat([images_ds, recon, samples]),
                                 scale_factor=int(np.power(2, self.depth - current_depth - 1)) if self.structure == 'linear' else 1,
