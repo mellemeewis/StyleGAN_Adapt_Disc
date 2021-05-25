@@ -194,7 +194,7 @@ class LogisticGAN(GANLoss):
         r1_penalty = torch.sum(torch.mul(real_grads, real_grads))
         return r1_penalty
 
-    def dis_loss(self, latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5):
+    def dis_loss(self, latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
@@ -212,14 +212,21 @@ class LogisticGAN(GANLoss):
             r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
             loss += r1_penalty
 
+        if print_:
+            print('DIS LOSS REAL: ', r_sig.mean().item(), r_mean.mean().item(),  r_loss.mean().item())
+            print('DIS LOSS FAKE: ', f_sig.mean().item(), f_mean.mean().item(),  f_loss.mean().item())
+
         return loss
 
-    def gen_loss(self, _, fake_samps, height, alpha):
+    def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         f_preds = self.dis(fake_samps, height, alpha)
 
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
         loss = 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+
+        if print_:
+            print('GENERATOR LOSS: ', f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
 
         return torch.mean(loss)

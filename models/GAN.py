@@ -367,7 +367,6 @@ class Discriminator(nn.Module):
                 x = self.from_rgb[-1](images_in)
 
             scores_out = self.final_block(x)
-            print('So', scores_out.size())
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
@@ -504,7 +503,7 @@ class StyleGAN:
         # return the so computed real_samples
         return real_samples
 
-    def optimize_discriminator(self, latent_input, real_batch, depth, alpha):
+    def optimize_discriminator(self, latent_input, real_batch, depth, alpha, print_=False):
         """
         performs one step of weight update on discriminator using the batch of data
 
@@ -521,7 +520,7 @@ class StyleGAN:
         for _ in range(self.d_repeats):
             # generate a batch of samples
             fake_samples = self.gen(latent_input, depth, alpha).detach()
-            loss = self.loss.dis_loss(latent_input, real_samples, fake_samples, depth, alpha)
+            loss = self.loss.dis_loss(latent_input, real_samples, fake_samples, depth, alpha, print_)
 
             # optimize discriminator
             self.dis_optim.zero_grad()
@@ -532,7 +531,7 @@ class StyleGAN:
 
         return loss_val / self.d_repeats
 
-    def optimize_generator(self, noise, real_batch, depth, alpha):
+    def optimize_generator(self, noise, real_batch, depth, alpha, print_=False):
         """
         performs one step of weight update on generator for the given batch_size
 
@@ -549,7 +548,7 @@ class StyleGAN:
         fake_samples = self.gen(noise, depth, alpha)
 
         # Change this implementation for making it compatible for relativisticGAN
-        loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha)
+        loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_)
 
         # optimize the generator
         self.gen_optim.zero_grad()
@@ -661,13 +660,15 @@ class StyleGAN:
                     gan_input = torch.randn(images.shape[0], self.latent_size).to(self.device)
 
                     # optimize the discriminator:
-                    dis_loss = self.optimize_discriminator(gan_input, images, current_depth, alpha)
+                    dis_loss = self.optimize_discriminator(gan_input, images, current_depth, alpha, print_)
 
                     # optimize the generator:
-                    gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha)
+                    gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha, print_)
+                    print_=False
 
                     # provide a loss feedback
                     if i % int(total_batches / feedback_factor + 1) == 0 or i == 1:
+                        print_=True
                         elapsed = time.time() - global_time
                         elapsed = str(datetime.timedelta(seconds=elapsed)).split('.')[0]
                         logger.info(
