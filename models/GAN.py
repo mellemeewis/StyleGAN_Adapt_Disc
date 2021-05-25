@@ -520,8 +520,7 @@ class StyleGAN:
         for _ in range(self.d_repeats):
             # generate a batch of samples
             fake_samples = self.gen(latent_input, depth, alpha).detach()
-            print(" as", print_)
-            loss = self.loss.dis_loss(latent_input, real_samples, fake_samples, depth, alpha, print_)
+            loss = self.loss.dis_loss(latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
 
             # optimize discriminator
             self.dis_optim.zero_grad()
@@ -549,7 +548,7 @@ class StyleGAN:
         fake_samples = self.gen(noise, depth, alpha)
 
         # Change this implementation for making it compatible for relativisticGAN
-        loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_)
+        loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_=print_)
 
         # optimize the generator
         self.gen_optim.zero_grad()
