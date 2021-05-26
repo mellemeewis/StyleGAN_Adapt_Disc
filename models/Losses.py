@@ -203,8 +203,6 @@ class LogisticGAN(GANLoss):
         r_preds, r_preds_label = r_preds[:,:-1], r_preds[:,-1]
         f_preds, f_preds_label = f_preds[:,:-1], f_preds[:,-1]
 
-        print(r_preds.size(), r_preds_label.size())
-
         b, l = r_preds.size()
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
