@@ -429,7 +429,7 @@ class StyleGAN:
 
         # if code is to be run on GPU, we can use DataParallel:
         # TODO
-        print(summary(self.dis, (512, 128, 128)))
+        print(summary(self.dis, (512, 128, 128), 5))
         # define the optimizers for the discriminator and generator
         self.__setup_gen_optim(**g_opt_args)
         self.__setup_dis_optim(**d_opt_args)
