@@ -198,13 +198,17 @@ class LogisticGAN(GANLoss):
         # Obtain predictions
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
+        r_preds, r_pred_label = r_preds[:-1], r_preds[-1]
+        f_preds, f_pred_label = f_preds[:-1], f_preds[-1]
+
+        print(r_preds.size(), r_pred_label.size())
 
         b, l = r_preds.size()
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-        f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
+        r_loss = F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+        f_loss = F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
 
         loss = torch.mean(r_loss) + torch.mean(f_loss)
 
@@ -214,20 +218,21 @@ class LogisticGAN(GANLoss):
         #     loss += r1_penalty
 
         if print_:
-            print('DIS LOSS REAL: ', r_sig.mean().item(), r_mean.mean().item(),  r_loss.mean().item())
-            print('DIS LOSS FAKE: ', f_sig.mean().item(), f_mean.mean().item(),  f_loss.mean().item())
+            print('DIS LOSS REAL: ', r_pred_label.mean().item(), r_sig.mean().item(), r_mean.mean().item(),  r_loss.mean().item())
+            print('DIS LOSS FAKE: ', f_pred_label.mean().item(), f_sig.mean().item(), f_mean.mean().item(),  f_loss.mean().item())
 
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         f_preds = self.dis(fake_samps, height, alpha)
+        f_preds, f_pred_label = f_preds[:-1], f_preds[-1]
 
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        loss = 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+        loss = F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         if print_:
-            print('GENERATOR LOSS: ', f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
+            print('GENERATOR LOSS: ', f_pred_label.mean().item(), f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
 
         return torch.mean(loss)
