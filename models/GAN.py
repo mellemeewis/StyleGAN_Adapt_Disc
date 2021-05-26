@@ -18,7 +18,6 @@ import copy
 import random
 import numpy as np
 from collections import OrderedDict
-from torchsummary import summary
 
 
 import torch
