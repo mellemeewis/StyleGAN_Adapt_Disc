@@ -36,12 +36,10 @@ class GANLoss:
         start, end = simp_start_end
         if start < 0 or end < 0:
             self.simp = None 
-            return
-
-        grow = end/ epochs
-        self.simp = start + cur_epoch * grow
+        else:
+            grow = end/ epochs
+            self.simp = start + cur_epoch * grow
         print('Simp updated: ', self.simp, f'Epoch {cur_epoch} of Total epochs: ', total_epochs)
-        return
 
     def dis_loss(self, real_samps, fake_samps, height, alpha):
         """
