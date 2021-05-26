@@ -253,7 +253,7 @@ class Generator(nn.Module):
         :return:
         """
 
-        print(latents_in[1,:,:10])
+        print(latents_in[1,:])
         dlatents_in = self.g_mapping(latents_in)
         print(dlatents_in[1,:,:10])
         if self.training:
