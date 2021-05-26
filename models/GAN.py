@@ -211,7 +211,7 @@ class Generator(nn.Module):
 
     def __init__(self, resolution, latent_size=512, dlatent_size=512,
                  truncation_psi=0.7, truncation_cutoff=8, dlatent_avg_beta=0.995,
-                 style_mixing_prob=0.9, **kwargs):
+                 style_mixing_prob=None, **kwargs):
         """
         # Style-based generator used in the StyleGAN paper.
         # Composed of two sub-networks (G_mapping and G_synthesis).
@@ -253,9 +253,8 @@ class Generator(nn.Module):
         :return:
         """
 
-        print(latents_in[1,:10])
         dlatents_in = self.g_mapping(latents_in)
-        print(dlatents_in[1,:,:10])
+
         if self.training:
             # Update moving average of W(dlatent).
             # TODO
@@ -279,7 +278,7 @@ class Generator(nn.Module):
 
         fake_images = self.g_synthesis(dlatents_in, depth, alpha)
 
-        return fake_images, dlatents_in
+        return fake_images
 
 
 class Discriminator(nn.Module):
@@ -523,11 +522,8 @@ class StyleGAN:
         loss_val = 0
         for _ in range(self.d_repeats):
             # generate a batch of samples
-            print(latent_input.size())
-            fake_samples, used_latents = self.gen(latent_input, depth, alpha)
-            fake_samples, used_latents = fake_samples.detach(), used_latents.detach()
-            print(used_latents.size())
-            loss = self.loss.dis_loss(used_latents, real_samples, fake_samples, depth, alpha, print_=print_)
+            fake_samples = self.gen(latent_input, depth, alpha).detach()
+            loss = self.loss.dis_loss(latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
 
             # optimize discriminator
             self.dis_optim.zero_grad()
@@ -552,7 +548,7 @@ class StyleGAN:
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
         # generate fake samples:
-        fake_samples, _ = self.gen(noise, depth, alpha)
+        fake_samples = self.gen(noise, depth, alpha)
 
         # Change this implementation for making it compatible for relativisticGAN
         loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_=print_)
@@ -693,8 +689,8 @@ class StyleGAN:
                             b, l = latents.size()
                             latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
 
-                            recon, _ = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
-                            samples, _ = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
+                            recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
+                            samples = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
 
                             self.create_grid(
                                 samples=torch.cat([images_ds, recon, samples]),
