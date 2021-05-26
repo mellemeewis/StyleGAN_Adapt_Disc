@@ -338,7 +338,7 @@ class Discriminator(nn.Module):
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
                                             in_channels=nf(2), intermediate_channels=nf(2),
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
-        print(summary(self.final_block, (128, 512, 4, 4)))
+        print(summary(self.final_block, (512, 4, 4)))
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
         self.from_rgb = nn.ModuleList(from_rgb)
