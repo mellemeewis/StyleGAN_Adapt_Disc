@@ -34,7 +34,7 @@ class GANLoss:
 
     def update_simp(self, total_epochs):
         epochs = total_epochs / 1
-        grow = 0/ epochs
+        grow = 1/ epochs
         self.simp = min(1, self.simp + grow)
         print('Simp updated: ', self.simp, 'Total epochs: ', total_epochs)
 
