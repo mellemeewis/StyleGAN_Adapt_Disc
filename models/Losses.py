@@ -30,9 +30,10 @@ class GANLoss:
 
     def __init__(self, dis):
         self.dis = dis
-        self.simp = 0
+        self.simp = 1
 
     def update_simp(self, total_epochs):
+        return
         epochs = total_epochs / 1
         grow = 0/ epochs
         self.simp = min(0, self.simp + grow)
