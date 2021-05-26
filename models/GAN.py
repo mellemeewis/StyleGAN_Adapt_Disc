@@ -283,7 +283,7 @@ class Generator(nn.Module):
 
 class Discriminator(nn.Module):
 
-    def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=2048,
+    def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512,
                  nonlinearity='lrelu', use_wscale=True, mbstd_group_size=4, mbstd_num_features=1,
                  blur_filter=None, structure='linear', **kwargs):
         """
@@ -335,9 +335,8 @@ class Discriminator(nn.Module):
         self.blocks = nn.ModuleList(blocks)
 
         # Building the final block.
-        print("NF: ", nf(1), nf(2), nf(4), nf(8), nf(10))
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
-                                            in_channels=nf(2), intermediate_channels=nf(2),
+                                            in_channels=nf(2), intermediate_channels=4096,
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
         print(summary(self.final_block.to('cuda'), (512, 4, 4)))
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
