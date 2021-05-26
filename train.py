@@ -128,7 +128,7 @@ if __name__ == '__main__':
                     epochs=opt.sched.epochs,
                     batch_sizes=opt.sched.batch_sizes,
                     fade_in_percentage=opt.sched.fade_in_percentage,
-                    simp_start_end = opt.simp_start_end,
+                    simp_start_end = opt.sched.simp_start_end,
                     logger=logger,
                     output=output_dir,
                     num_samples=opt.num_samples,
