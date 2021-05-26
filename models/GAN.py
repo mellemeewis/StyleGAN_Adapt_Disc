@@ -253,8 +253,9 @@ class Generator(nn.Module):
         :return:
         """
 
+        print(latents_in.size())
         dlatents_in = self.g_mapping(latents_in)
-
+        print(dlatents_in.size())
         if self.training:
             # Update moving average of W(dlatent).
             # TODO
