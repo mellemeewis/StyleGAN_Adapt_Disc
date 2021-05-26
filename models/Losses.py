@@ -32,11 +32,12 @@ class GANLoss:
         self.dis = dis
         self.simp = 0
 
-    def update_simp(self, total_epochs):
-        epochs = total_epochs / 1
-        grow = 1/ epochs
-        self.simp = min(1, self.simp + grow)
-        print('Simp updated: ', self.simp, 'Total epochs: ', total_epochs)
+    def update_simp(self, simp_start_end, cur_epoch, total_epochs):
+        start, end = simp_start_end
+        grow = end/ epochs
+
+        self.simp = start + cur_epoch * grow
+        print('Simp updated: ', self.simp, f'Epoch {cur_epoch} of Total epochs: ', total_epochs)
 
     def dis_loss(self, real_samps, fake_samps, height, alpha):
         """

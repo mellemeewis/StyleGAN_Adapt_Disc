@@ -11,3 +11,4 @@ dataset:
   resolution: 128
 sched:
   epochs: [1,1,1,1,1,50]
+  simp_start_end: [1,1]

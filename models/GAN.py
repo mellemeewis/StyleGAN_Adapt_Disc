@@ -588,7 +588,7 @@ class StyleGAN:
         save_image(samples, img_file, nrow=int(np.sqrt(len(samples))),
                    normalize=True, scale_each=True, pad_value=128, padding=1)
 
-    def train(self, dataset, num_workers, epochs, batch_sizes, fade_in_percentage, logger, output,
+    def train(self, dataset, num_workers, epochs, batch_sizes, fade_in_percentage, simp_start_end, logger, output,
               num_samples=12, start_depth=0, feedback_factor=100, checkpoint_factor=1):
         """
         Utility method for training the GAN. Note that you don't have to necessarily use this
@@ -644,7 +644,7 @@ class StyleGAN:
             data = get_data_loader(dataset, batch_sizes[current_depth], num_workers)
 
             for epoch in range(1, epochs[current_depth] + 1):
-                self.loss.update_simp(sum(epochs))
+                self.loss.update_simp(simp_start_end, epoch, sum(epochs))
                 start = timeit.default_timer()  # record time at the start of epoch
 
                 logger.info("Epoch: [%d]" % epoch)
