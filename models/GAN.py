@@ -336,7 +336,7 @@ class Discriminator(nn.Module):
 
         # Building the final block.
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
-                                            in_channels=nf(2), intermediate_channels=nf(2),
+                                            in_channels=nf(4), intermediate_channels=nf(4),
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
         print(summary(self.final_block.to('cuda'), (512, 4, 4)))
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
