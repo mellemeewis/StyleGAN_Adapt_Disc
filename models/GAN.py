@@ -18,6 +18,8 @@ import copy
 import random
 import numpy as np
 from collections import OrderedDict
+from torchsummary import summary
+
 
 import torch
 import torch.nn as nn
@@ -336,7 +338,7 @@ class Discriminator(nn.Module):
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
                                             in_channels=nf(2), intermediate_channels=nf(2),
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
-        print(self.final_block.conv)
+        print(summary(self.final_block)
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
         self.from_rgb = nn.ModuleList(from_rgb)
