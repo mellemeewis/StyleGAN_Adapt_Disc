@@ -338,7 +338,6 @@ class Discriminator(nn.Module):
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
                                             in_channels=nf(2), intermediate_channels=4096,
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
-        print(summary(self.final_block.to('cuda'), (512, 4, 4)))
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
         self.from_rgb = nn.ModuleList(from_rgb)
@@ -371,7 +370,6 @@ class Discriminator(nn.Module):
             else:
                 x = self.from_rgb[-1](images_in)
 
-                print(x.size())
             scores_out = self.final_block(x)
         else:
             raise KeyError("Unknown structure: ", self.structure)
