@@ -522,8 +522,10 @@ class StyleGAN:
         loss_val = 0
         for _ in range(self.d_repeats):
             # generate a batch of samples
+            print(latent_input.size())
             fake_samples, used_latents = self.gen(latent_input, depth, alpha)
             fake_samples, used_latents = fake_samples.detach(), used_latents.detach()
+            print(used_latents.size())
             loss = self.loss.dis_loss(used_latents, real_samples, fake_samples, depth, alpha, print_=print_)
 
             # optimize discriminator
