@@ -37,7 +37,7 @@ class GANLoss:
         if start < 0 or end < 0:
             self.simp = None 
         else:
-            grow = end/ epochs
+            grow = end/ total_epochs
             self.simp = start + cur_epoch * grow
         print('Simp updated: ', self.simp, f'Epoch {cur_epoch} of Total epochs: ', total_epochs)
 
