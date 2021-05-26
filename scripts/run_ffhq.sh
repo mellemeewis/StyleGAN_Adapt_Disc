@@ -28,7 +28,7 @@ fi
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch/train.py --config /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/ffhq_128_gan.yaml
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/ffhq_128.yaml
 
 wait          # wait until programs are finished
 
@@ -37,4 +37,4 @@ mkdir o`echo $$`
 cd o`echo $$`
 
 cp -R /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ffhq .
-rm -rf /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ffhq
+# rm -rf /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ffhq
