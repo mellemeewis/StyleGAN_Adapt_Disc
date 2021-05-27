@@ -30,15 +30,13 @@ class GANLoss:
 
     def __init__(self, dis):
         self.dis = dis
-        self.simp = 0
+        self.simp = 1
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
         start, end = simp_start_end
-        if start < 0 or end < 0:
-            self.simp = None 
-        else:
-            grow = end/ total_epochs
-            self.simp = start + cur_epoch * grow
+        grow = end - start / total_epochs
+        self.simp = start + cur_epoch * grow
+
         print('Simp updated: ', self.simp, f'Epoch {cur_epoch} of Total epochs: ', total_epochs)
 
     def dis_loss(self, real_samps, fake_samps, height, alpha):
@@ -210,13 +208,8 @@ class LogisticGAN(GANLoss):
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        if self.simp:
-            r_loss = (1- self.simp) * F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + self.simp * 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-            f_loss = (1- self.simp) * F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) +  self.simp * (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
-        else:
-            r_loss = F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-            f_loss = F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
-        
+        r_loss = self.simp * F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+        f_loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
 
         loss = torch.mean(r_loss) + torch.mean(f_loss)
 
@@ -238,12 +231,8 @@ class LogisticGAN(GANLoss):
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        if self.simp:
-            loss = (1- self.simp) * F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + self.simp * 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
-        else:
-            loss = F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
-
-
+        loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+ 
         if print_:
             print('GENERATOR LOSS: ', f_preds_label.mean().item(), f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
 
