@@ -11,7 +11,7 @@ dataset:
   folder: True
   resolution: 128
 sched:
-  epochs: [8,8,8,4,4,64]
+  epochs: [16,32,48,48,64,64]
   simp_start_end: [1,0.75]
 
 
