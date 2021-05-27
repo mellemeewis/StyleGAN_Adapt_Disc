@@ -643,7 +643,7 @@ class StyleGAN:
             data = get_data_loader(dataset, batch_sizes[current_depth], num_workers)
 
             for epoch in range(1, epochs[current_depth] + 1):
-                self.loss.update_simp(simp_start_end, sum(epochs[current_depth-1]) + epoch, sum(epochs))
+                self.loss.update_simp(simp_start_end, sum(:epochs[current_depth-1]) + epoch, sum(epochs))
                 start = timeit.default_timer()  # record time at the start of epoch
 
                 logger.info("Epoch: [%d]" % epoch)
