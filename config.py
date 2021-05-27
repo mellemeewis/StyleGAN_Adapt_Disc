@@ -38,7 +38,7 @@ cfg.sched.epochs = [4, 4, 4, 4, 8, 16, 32, 64, 64]
 # batches for oen 1080Ti with 11G memory
 cfg.sched.batch_sizes = [128, 128, 128, 64, 32, 16, 8, 4, 2]
 cfg.sched.fade_in_percentage = [50, 50, 50, 50, 50, 50, 50, 50, 50]
-cfg.sched.simp_start_end = [0,1] # negative for disable loss schedule
+cfg.sched.simp_start_end = [0,1] 
 
 # TODO
 # cfg.sched.G_lrate_dict = {128: 0.0015, 256: 0.002, 512: 0.003, 1024: 0.003}

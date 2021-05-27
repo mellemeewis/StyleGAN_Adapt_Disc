@@ -208,8 +208,14 @@ class LogisticGAN(GANLoss):
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        r_loss = self.simp * F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-        f_loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
+        if self.simp < 10:
+            r_loss = self.simp * F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+            f_loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
+
+        else:
+            latent_input_shifted = latent_input.add(10)
+            r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+            f_loss = (latent_input_shifted - f_mean).pow(2.0)
 
         loss = torch.mean(r_loss) + torch.mean(f_loss)
 
@@ -231,8 +237,11 @@ class LogisticGAN(GANLoss):
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
- 
+        if self.simp < 10:
+            loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+        else:
+            loss =  0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+
         if print_:
             print('GENERATOR LOSS: ', f_preds_label.mean().item(), f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
 

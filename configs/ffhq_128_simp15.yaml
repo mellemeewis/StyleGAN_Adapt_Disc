@@ -1,6 +1,6 @@
 # Config file for CelebA dataset (200k)
 
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ffhq_simp025/'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ffhq_simp15/'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 0
@@ -11,4 +11,4 @@ dataset:
   resolution: 128
 sched:
   epochs: [1,1,1,1,1,11]  ### 14 uur == 11 epochs
-  simp_start_end: [1,0.25]
+  simp_start_end: [15,15]
