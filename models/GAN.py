@@ -644,7 +644,7 @@ class StyleGAN:
 
             for epoch in range(1, epochs[current_depth] + 1):
                 print(current_depth, epoch, sum(epochs[:current_depth-1]), epochs)
-                self.loss.update_simp(simp_start_end, sum(epochs[:current_depth-1]) + epoch, sum(epochs))
+                self.loss.update_simp(simp_start_end, sum(epochs[:current_depth]) - epoch[current_depth] + epoch, sum(epochs))
                 start = timeit.default_timer()  # record time at the start of epoch
 
                 logger.info("Epoch: [%d]" % epoch)
