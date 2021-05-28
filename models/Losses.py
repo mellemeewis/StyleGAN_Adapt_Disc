@@ -217,7 +217,7 @@ class LogisticGAN(GANLoss):
             r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
             f_mean_distance_to_1 = 1 - f_mean.mean()
             f_mean_aligned = f_mean.add(f_mean_distance_to_1)
-            f_loss = f_mean_distance_to_1 + (latent_input_shifted - f_mean_aligned).pow(2.0)
+            f_loss = f_mean_distance_to_1.pow(2) + (latent_input_shifted - f_mean_aligned).pow(2.0)
 
         loss = 0.1 * torch.mean(r_loss) + torch.mean(f_loss)
 
