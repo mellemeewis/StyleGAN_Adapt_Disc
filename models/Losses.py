@@ -213,11 +213,13 @@ class LogisticGAN(GANLoss):
             f_loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
 
         else:
-            latent_input_shifted = latent_input.add(10)
+            latent_input_shifted = latent_input.add(1)
             r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-            f_loss = (latent_input_shifted - f_mean).pow(2.0)
+            f_mean_distance_to_1 = 1 - f_mean.mean()
+            f_mean_aligned = f_mean.add(f_mean_distance_to_1)
+            f_loss = f_mean_distance_to_1 + (latent_input_shifted - f_mean_aligned).pow(2.0)
 
-        loss = torch.mean(r_loss) + torch.mean(f_loss)
+        loss = 0.1 * torch.mean(r_loss) + torch.mean(f_loss)
 
         # if r1_gamma != 0.0:
         #     r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)

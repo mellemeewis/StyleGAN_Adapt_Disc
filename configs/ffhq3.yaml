@@ -5,10 +5,11 @@ structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 0
 feedback_factor: 1
+d_repeats: 5
 dataset:
   img_dir: '/var/scratch/mms496/data/ffhq/full/thumbnails128x128'
   folder: True
   resolution: 128
 sched:
-  epochs: [1,1,1,1,1,11]  ### 14 uur == 11 epochs
-  simp_start_end: [1,-1]
+  epochs: [8,4,4,2,2,60]  ### 14 uur == 11 epochs
+  simp_start_end: [15,15]
