@@ -689,7 +689,7 @@ class StyleGAN:
                             b, l = latents.size()
                             latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
 
-                            if self.loss.simp >= 10:
+                            if self.loss.simp < 0:
                                 latents = latents - latents.mean(dim=1)[:, None]
 
                             recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
