@@ -5,7 +5,6 @@ structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 0
 feedback_factor: 1
-d_repeats: 3
 dataset:
   img_dir: '/var/scratch/mms496/data/ffhq/full/thumbnails128x128'
   folder: True
