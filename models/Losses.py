@@ -232,7 +232,6 @@ class LogisticGAN(GANLoss):
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         f_preds = self.dis(fake_samps, height, alpha)
-        f_preds, f_preds_label = f_preds[:,:-1], f_preds[:,-1]
 
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
@@ -243,6 +242,6 @@ class LogisticGAN(GANLoss):
             loss =  0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         if print_:
-            print('GENERATOR LOSS: ', f_preds_label.mean().item(), f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
+            print('GENERATOR LOSS: ', f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
 
         return torch.mean(loss)
