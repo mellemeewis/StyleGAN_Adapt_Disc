@@ -424,7 +424,7 @@ class StyleGAN:
         self.dis = Discriminator(num_channels=num_channels,
                                  resolution=resolution,
                                  structure=self.structure,
-                                 output_features=self.latent_size*2
+                                 output_features=self.latent_size*2,
                                  **d_args).to(self.device)
 
         # if code is to be run on GPU, we can use DataParallel:
