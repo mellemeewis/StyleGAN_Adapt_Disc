@@ -30,7 +30,7 @@ class GANLoss:
 
     def __init__(self, dis):
         self.dis = dis
-        self.simp = 1
+        self.simp = 0
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
         start, end = simp_start_end
