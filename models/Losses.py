@@ -35,7 +35,7 @@ class GANLoss:
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
         start, end = simp_start_end
         grow = (end - start) / total_epochs
-        self.simp = max(1, start + cur_epoch * grow)
+        self.simp = min(1, start + cur_epoch * grow)
 
         return f'Simp updated: {self.simp}, Epoch {cur_epoch} of Total epochs: {total_epochs}'
 
