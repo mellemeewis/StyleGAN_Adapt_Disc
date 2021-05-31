@@ -228,7 +228,7 @@ class LogisticGAN(GANLoss):
         if print_:
             print('DIS LOSS REAL: Sig:', r_sig.mean().item(), 'Mean: ', r_mean.mean().item(), 'L: ', r_loss.mean().item())
             if self.simp < 0:
-                print('DIS LOSS FAKE: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', f_loss.mean().item(), '10KL: ', f_kl_10_loss.mean().item())
+                print('DIS LOSS FAKE: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', f_loss.mean().item(), 'D10: ', f_mean_distance_to_10.pow(2).mean().item())
             else:
                 print('DIS LOSS FAKE: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', f_loss.mean().item())
 
