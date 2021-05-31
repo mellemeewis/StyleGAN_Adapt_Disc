@@ -284,7 +284,7 @@ class Discriminator(nn.Module):
 
     def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512,
                  nonlinearity='lrelu', use_wscale=True, mbstd_group_size=4, mbstd_num_features=1,
-                 blur_filter=None, structure='linear', **kwargs):
+                 output_features=1024, blur_filter=None, structure='linear', **kwargs):
         """
         Discriminator used in the StyleGAN paper.
 
@@ -335,7 +335,7 @@ class Discriminator(nn.Module):
 
         # Building the final block.
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
-                                            in_channels=nf(2), intermediate_channels=4096,
+                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features,
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
@@ -424,6 +424,7 @@ class StyleGAN:
         self.dis = Discriminator(num_channels=num_channels,
                                  resolution=resolution,
                                  structure=self.structure,
+                                 output_features=self.latent_size*2
                                  **d_args).to(self.device)
 
         # if code is to be run on GPU, we can use DataParallel:
@@ -693,10 +694,11 @@ class StyleGAN:
 
                             recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
                             samples = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
-                            samples_recon = self.gen(self.dis(samples)).detach() if not self.use_ema else self.gen_shadow(self.dis(samples)).detach()
+                            renconstruced_latents = self.dis(samples, current_depth, alpha).detach()
+                            renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
 
                             self.create_grid(
-                                samples=torch.cat([images_ds, recon, samples, samples_recon]),
+                                samples=torch.cat([images_ds, recon, samples, renconstruced_samples]),
                                 scale_factor=int(np.power(2, self.depth - current_depth - 1)) if self.structure == 'linear' else 1,
                                 img_file=gen_img_file,
                             )
