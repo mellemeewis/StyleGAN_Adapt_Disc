@@ -209,15 +209,15 @@ class LogisticGAN(GANLoss):
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
         if self.simp < 10:
-            r_loss = self.simp * F.binary_cross_entropy_with_logits(r_preds_label, torch.ones(real_samps.shape[0]).to(real_samps.device)) + 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-            f_loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.zeros(fake_samps.shape[0]).to(fake_samps.device)) + (f_sig + (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0))
+            r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+            f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
 
         else:
-            latent_input_shifted = latent_input.add(1)
+            latent_input_shifted = latent_input.add(10)
             r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-            f_mean_distance_to_1 = 1 - f_mean.mean()
-            f_mean_aligned = f_mean.add(f_mean_distance_to_1)
-            f_loss = f_mean_distance_to_1.pow(2) + (latent_input_shifted - f_mean_aligned).pow(2.0)
+            f_mean_distance_to_10 = 10 - f_mean.mean(dim=1) 
+            f_mean_aligned = f_mean.add(f_mean_distance_to_10[:, None])
+            f_loss = f_mean_distance_to_10.pow(2) + (latent_input_shifted - f_mean_aligned).pow(2.0)
 
         loss = 0.1 * torch.mean(r_loss) + torch.mean(f_loss)
 
