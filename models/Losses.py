@@ -213,9 +213,11 @@ class LogisticGAN(GANLoss):
         else:
             latent_input_shifted = latent_input.add(10)
             r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+            f_kl_10_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.sub(10).pow(2) - 1, dim=1)
+
             f_mean_distance_to_10 = 10 - f_mean.mean(dim=1) 
             f_mean_aligned = f_mean.add(f_mean_distance_to_10[:, None])
-            f_loss = f_mean_distance_to_10.pow(2) + (latent_input_shifted - f_mean_aligned).pow(2.0)
+            f_loss = f_kl_10_loss + (latent_input_shifted - f_mean_aligned).pow(2.0)
 
         loss = torch.mean(r_loss) + torch.mean(f_loss)
 
@@ -225,8 +227,12 @@ class LogisticGAN(GANLoss):
         #     loss += r1_penalty
 
         if print_:
-            print('DIS LOSS REAL: ', r_sig.mean().item(), r_mean.mean().item(),  r_loss.mean().item())
-            print('DIS LOSS FAKE: ', f_sig.mean().item(), f_mean.mean().item(),  f_loss.mean().item())
+            print('DIS LOSS REAL: Sig:', r_sig.mean().item(), 'Mean: ', r_mean.mean().item(), 'L: ', r_loss.mean().item())
+            if self.simp >=10:
+                print('DIS LOSS FAKE: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', f_loss.mean().item(), '10KL: ', f_kl_10_loss.mean().item())
+            else:
+                print('DIS LOSS FAKE: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', f_loss.mean().item())
+
 
         return loss
 
@@ -238,6 +244,6 @@ class LogisticGAN(GANLoss):
         loss =  0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         if print_:
-            print('GENERATOR LOSS: ', f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
+            print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())
 
         return torch.mean(loss)
