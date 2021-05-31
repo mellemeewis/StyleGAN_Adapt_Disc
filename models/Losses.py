@@ -235,11 +235,7 @@ class LogisticGAN(GANLoss):
 
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
-
-        if self.simp < 10:
-            loss = self.simp * F.binary_cross_entropy_with_logits(f_preds_label, torch.ones(fake_samps.shape[0]).to(fake_samps.device)) + 0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
-        else:
-            loss =  0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+        loss =  0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         if print_:
             print('GENERATOR LOSS: ', f_sig.mean().item(), f_mean.mean().item(),  loss.mean().item())
