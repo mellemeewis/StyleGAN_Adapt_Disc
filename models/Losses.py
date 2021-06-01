@@ -28,8 +28,9 @@ class GANLoss:
              Note this must be a part of the GAN framework
     """
 
-    def __init__(self, dis):
+    def __init__(self, dis, gen):
         self.dis = dis
+        self.gen = gen
         self.simp = 0
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
@@ -246,3 +247,21 @@ class LogisticGAN(GANLoss):
             print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())
 
         return torch.mean(loss)
+
+    def vae_loss(self, real_samps, height, apha):
+        latents = self.dis(real_samples, depth, alpha)
+        b, l = latents.size()
+
+        latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
+        if self.loss.simp < 0:
+            latents = latents - latents.mean(dim=1)[:, None]
+
+        reconstrution = self.gen(latents, current_depth, alpha)
+        
+        print('REAL SAMPS\n', real_samps)
+        print('recon_loss SAMPS\n', reconstrution)
+        sys.exit()
+        kl_loss = 0.5 * torch.sum(atents[:, l//2:].exp() - atents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
+        recon_loss = 1
+
+

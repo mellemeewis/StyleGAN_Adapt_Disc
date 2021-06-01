@@ -457,13 +457,13 @@ class StyleGAN:
             loss = loss.lower()  # lowercase the string
 
             if loss == "standard-gan":
-                loss = Losses.StandardGAN(self.dis)
+                loss = Losses.StandardGAN(self.dis, self.gen)
             elif loss == "hinge":
-                loss = Losses.HingeGAN(self.dis)
+                loss = Losses.HingeGAN(self.dis, self.gen)
             elif loss == "relativistic-hinge":
-                loss = Losses.RelativisticAverageHingeGAN(self.dis)
+                loss = Losses.RelativisticAverageHingeGAN(self.dis, self.gen)
             elif loss == "logistic":
-                loss = Losses.LogisticGAN(self.dis)
+                loss = Losses.LogisticGAN(self.dis, self.gen)
             else:
                 raise ValueError("Unknown loss function requested")
 
@@ -567,6 +567,12 @@ class StyleGAN:
         # return the loss value
         return loss.item()
 
+    def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
+        real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
+
+        loss = self.loss.vae_loss(real_samples, depth, apha, print_)
+
+
     @staticmethod
     def create_grid(samples, scale_factor, img_file):
         """
@@ -668,6 +674,8 @@ class StyleGAN:
 
                     # optimize the generator:
                     gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha, print_)
+
+                    vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
                     print_=False
 
                     # provide a loss feedback
