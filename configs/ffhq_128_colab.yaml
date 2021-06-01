@@ -11,7 +11,8 @@ dataset:
   folder: True
   resolution: 128
 sched:
-  epochs: [1,1,1,1,1,64]
+  epochs: [32,32,32,16,16,64]
+
   simp_start_end: [0,2]
   vae_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,1), (0,0), (0,0), (0,0)]'
 
