@@ -378,7 +378,7 @@ class Discriminator(nn.Module):
 
 class StyleGAN:
 
-    def __init__(self, structure, resolution, num_channels, latent_size,
+    def __init__(self, structure, resolution, num_channels, latent_size, vae_probs,
                  g_args, d_args, g_opt_args, d_opt_args, loss="relativistic-hinge", drift=0.001,
                  d_repeats=1, use_ema=False, ema_decay=0.999, device=torch.device("cpu")):
         """
@@ -412,7 +412,7 @@ class StyleGAN:
         self.latent_size = latent_size
         self.device = device
         self.d_repeats = d_repeats
-        self.vae_prob = 0
+        self.vae_probs = vae_probs
 
         self.use_ema = use_ema
         self.ema_decay = ema_decay
@@ -446,6 +446,12 @@ class StyleGAN:
             self.ema_updater = update_average
             # initialize the gen_shadow weights equal to the weights of gen
             self.ema_updater(self.gen_shadow, self.gen, beta=0)
+
+    def __return_vae_probability(self, cur_depth, cur_epoch, epochs):
+        epochs = epochs[cur_depth]
+        start, end = self.vae_probs(cur_depth)
+        grow = (end - start) / total_epochs
+        return start + grow * cur_epoch
 
     def __setup_gen_optim(self, learning_rate, beta_1, beta_2, eps):
         self.gen_optim = torch.optim.Adam(self.gen.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
@@ -674,10 +680,10 @@ class StyleGAN:
 
             for epoch in range(1, epochs[current_depth] + 1):
                 update_string = self.loss.update_simp(simp_start_end, sum(epochs[:current_depth]) + epoch, sum(epochs))
-                self.vae_prob += 0.5/sum(epochs)
+                vae_prob = __return_vae_probability(current_depth, epoch, epochs)
                 start = timeit.default_timer()  # record time at the start of epoch
                 logger.info(update_string)
-                logger.info(f'VAE prob updated: {self.vae_prob}')
+                logger.info(f'VAE prob updated: {vae_prob}. Sched: {self.vae_probs}')
                 logger.info("Epoch: [%d]" % epoch)
                 # total_batches = len(iter(data))
                 total_batches = len(data)

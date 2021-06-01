@@ -84,6 +84,7 @@ if __name__ == '__main__':
                          resolution=opt.dataset.resolution,
                          num_channels=opt.dataset.channels,
                          latent_size=opt.model.gen.latent_size,
+                         vae_prob=opt.sched.vae_probs,
                          g_args=opt.model.gen,
                          d_args=opt.model.dis,
                          g_opt_args=opt.model.g_optim,

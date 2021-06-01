@@ -1,0 +1,15 @@
+# Config file for CelebA dataset (200k)
+
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/1|025-05'
+structure: 'linear'
+device_id: ('0')
+checkpoint_factor: 0
+feedback_factor: 1
+dataset:
+  img_dir: '/var/scratch/mms496/data/ffhq/full/thumbnails128x128'
+  folder: True
+  resolution: 128
+sched:
+  epochs: [8,8,8,4,4,15]  ### 14 uur == 11 epochs
+  simp_start_end: [0,1]
+  vae_probs: [(0,0.05), (0.05,0.1), (0.1,0.15), (0.15,0.2), (0.2,0.25), (0.25,0.5), (0,0), (0,0), (0,1)]
