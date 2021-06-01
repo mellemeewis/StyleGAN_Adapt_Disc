@@ -251,9 +251,11 @@ class LogisticGAN(GANLoss):
         return torch.mean(loss)
 
     def vae_loss(self, real_samps, height, alpha, print_=False):
+        
         latents = self.dis(real_samps, height, alpha)
         b, l = latents.size()
-
+        
+        kl_loss = 0.5 * torch.sum(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
         latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
         if self.simp < 0:
             latents = latents - latents.mean(dim=1)[:, None]
@@ -262,7 +264,6 @@ class LogisticGAN(GANLoss):
         
         print('REAL SAMPS\n', real_samps[0,:])
         print('recon_loss SAMPS\n', reconstrution[0,:])
-        kl_loss = 0.5 * torch.sum(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
         recon_loss = F.binary_cross_entropy_with_logits(output, x, reduction='none')
         print(recon_loss.size())
         print(recon_loss)
