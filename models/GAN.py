@@ -447,11 +447,11 @@ class StyleGAN:
             # initialize the gen_shadow weights equal to the weights of gen
             self.ema_updater(self.gen_shadow, self.gen, beta=0)
 
-    def __return_vae_probability(self, cur_depth, cur_epoch, total_epochs):
+    def __return_vae_probability(self, cur_depth, cur_epoch, epochs):
         epochs = epochs[cur_depth]
         start, end = self.vae_probs[cur_depth]
         print(start, end)
-        grow = (float(end) - float(start)) / int(total_epochs)
+        grow = (float(end) - float(start)) / sum(epochs)
         return start + grow * cur_epoch
 
     def __setup_gen_optim(self, learning_rate, beta_1, beta_2, eps):
