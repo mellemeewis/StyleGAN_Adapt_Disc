@@ -59,7 +59,7 @@ if __name__ == '__main__':
     os.makedirs(output_dir)
 
     # copy codes and config file
-    files = list_dir_recursively_with_ignore('.', ignores=['diagrams', 'configs'])
+    files = list_dir_recursively_with_ignore('/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc', ignores=['diagrams', 'configs'])
     if files:
         files = [(f[0], os.path.join(output_dir, "src", f[1])) for f in files]
         copy_files_and_create_dirs(files)
