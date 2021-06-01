@@ -412,6 +412,7 @@ class StyleGAN:
         self.latent_size = latent_size
         self.device = device
         self.d_repeats = d_repeats
+        self.vae_prob = 0
 
         self.use_ema = use_ema
         self.ema_decay = ema_decay
@@ -570,7 +571,28 @@ class StyleGAN:
     def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
+        # reconsruct real samples
         loss = self.loss.vae_loss(real_samples, depth, alpha, print_)
+
+        # optimize model
+        self.gen_optim.zero_grad()
+        self.dis_optim.zero_grad()
+        loss.backward()
+
+        # Gradient Clipping
+        nn.utils.clip_grad_norm_(self.gen.parameters(), max_norm=10.)
+        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=10.)
+
+        self.gen_optim.step()
+        self.dis_optim.step()
+
+        # if use_ema is true, apply ema to the generator parameters
+        if self.use_ema:
+            self.ema_updater(self.gen_shadow, self.gen, self.ema_decay)
+
+        # return the loss value
+        return loss.item()
+
 
 
     @staticmethod
@@ -651,8 +673,10 @@ class StyleGAN:
 
             for epoch in range(1, epochs[current_depth] + 1):
                 update_string = self.loss.update_simp(simp_start_end, sum(epochs[:current_depth]) + epoch, sum(epochs))
+                self.vae_prob += 0.5/sum(epochs)
                 start = timeit.default_timer()  # record time at the start of epoch
                 logger.info(update_string)
+                logger.info(f'VAE prob updated: {self.vae_prob}')
                 logger.info("Epoch: [%d]" % epoch)
                 # total_batches = len(iter(data))
                 total_batches = len(data)
@@ -675,7 +699,9 @@ class StyleGAN:
                     # optimize the generator:
                     gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha, print_)
 
-                    vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
+                    # optimze model as vae:
+                    if random.random() < self.vae_prob:
+                        vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_=True)
                     print_=False
 
                     # provide a loss feedback
@@ -683,8 +709,8 @@ class StyleGAN:
                         elapsed = time.time() - global_time
                         elapsed = str(datetime.timedelta(seconds=elapsed)).split('.')[0]
                         logger.info(
-                            "Elapsed: [%s] Step: %d  Batch: %d  D_Loss: %f  G_Loss: %f"
-                            % (elapsed, step, i, dis_loss, gen_loss))
+                            "Elapsed: [%s] Step: %d  Batch: %d  D_Loss: %f  G_Loss: %f, VAE_loss: %f"
+                            % (elapsed, step, i, dis_loss, gen_loss, vae_loss))
 
                         # create a grid of samples and save it
                         os.makedirs(os.path.join(output, 'samples'), exist_ok=True)
