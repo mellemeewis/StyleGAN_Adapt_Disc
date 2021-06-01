@@ -260,8 +260,8 @@ class LogisticGAN(GANLoss):
 
         reconstrution = self.gen(latents, height, alpha)
         
-        print('REAL SAMPS\n', real_samps)
-        print('recon_loss SAMPS\n', reconstrution)
+        print('REAL SAMPS\n', real_samps[0,:])
+        print('recon_loss SAMPS\n', reconstrution[0,:])
         sys.exit()
         kl_loss = 0.5 * torch.sum(atents[:, l//2:].exp() - atents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
         recon_loss = 1
