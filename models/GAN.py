@@ -569,7 +569,6 @@ class StyleGAN:
         return loss.item()
 
     def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
-        print("Performing VAE step")
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
         # reconsruct real samples
@@ -655,6 +654,7 @@ class StyleGAN:
 
         # create fixed_input for debugging
         fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
+        vae_loss = 0 #only for printing
 
         # config depend on structure
         logger.info("Starting the training process ... \n")
@@ -701,9 +701,8 @@ class StyleGAN:
                     gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha, print_)
 
                     # optimze model as vae:
-                    vae_loss = 0
                     if random.random() < self.vae_prob:
-                        vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_=True)
+                        vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
                     print_=False
 
                     # provide a loss feedback
