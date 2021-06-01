@@ -450,7 +450,7 @@ class StyleGAN:
     def __return_vae_probability(self, cur_depth, cur_epoch, epochs):
         epochs = epochs[cur_depth]
         start, end = self.vae_probs[cur_depth]
-        grow = (end - start) / total_epochs
+        grow = (float(end) - float(start)) / int(total_epochs)
         return start + grow * cur_epoch
 
     def __setup_gen_optim(self, learning_rate, beta_1, beta_2, eps):
