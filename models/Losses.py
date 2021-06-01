@@ -210,9 +210,9 @@ class LogisticGAN(GANLoss):
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
         if self.simp >= 0:
-            r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+            r_loss = 0.5 * torch.mean(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
             f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
-
+            f_loss = torch.mean(f_loss, dim=1)
         else:
             r_loss = 0.5 * torch.sum(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
             latent_input_shifted = latent_input.add(10)
@@ -220,8 +220,10 @@ class LogisticGAN(GANLoss):
             f_mean_aligned = f_mean.add(f_mean_distance_to_10[:, None])
 
             f_loss = -self.simp*f_mean_distance_to_10.pow(2)[:, None] + f_sig + (latent_input_shifted - f_mean_aligned).pow(2.0)
+            f_loss = torch.mean(f_loss, dim=1)
 
-        loss = torch.mean(r_loss) + torch.mean(f_loss)
+
+        loss = torch.mean(r_loss + f_loss)
 
         # if r1_gamma != 0.0:
         #     r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
@@ -243,7 +245,7 @@ class LogisticGAN(GANLoss):
 
         b, l = f_preds.size()
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
-        loss =  0.5 * torch.sum(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+        loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         if print_:
             print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())
@@ -255,16 +257,16 @@ class LogisticGAN(GANLoss):
         latents = self.dis(real_samps, height, alpha)
         b, l = latents.size()
         
-        kl_loss = 0.5 * torch.sum(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
+        kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
         latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
         if self.simp < 0:
             latents = latents - latents.mean(dim=1)[:, None]
 
         reconstrution = self.gen(latents, height, alpha)
         
-        recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).sum(dim=1, keepdim=True)
+        recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
-        loss = torch.mean(kl_loss) + torch.mean(recon_loss)
+        loss = torch.mean(kl_loss + recon_loss)
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
