@@ -60,9 +60,10 @@ if __name__ == '__main__':
 
     # copy codes and config file
     files = list_dir_recursively_with_ignore('.', ignores=['diagrams', 'configs'])
-    files = [(f[0], os.path.join(output_dir, "src", f[1])) for f in files]
-    copy_files_and_create_dirs(files)
-    shutil.copy2(args.config, output_dir)
+    if files:
+        files = [(f[0], os.path.join(output_dir, "src", f[1])) for f in files]
+        copy_files_and_create_dirs(files)
+        shutil.copy2(args.config, output_dir)
 
     # logger
     logger = make_logger("project", opt.output_dir, 'log')
