@@ -264,7 +264,7 @@ class LogisticGAN(GANLoss):
         
         recon_loss = F.binary_cross_entropy_with_logits(reconstrution, real_samps, reduction='none').view(b, -1).sum(dim=1, keepdim=True)
 
-        loss = kl_loss + recon_loss
+        loss = torch.mean(kl_loss) + torch.mean(recon_loss)
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
