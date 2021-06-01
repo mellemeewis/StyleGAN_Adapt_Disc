@@ -210,7 +210,7 @@ class Generator(nn.Module):
 
     def __init__(self, resolution, latent_size=512, dlatent_size=512,
                  truncation_psi=0.7, truncation_cutoff=8, dlatent_avg_beta=0.995,
-                 style_mixing_prob=None, **kwargs):
+                 style_mixing_prob=0.9, **kwargs):
         """
         # Style-based generator used in the StyleGAN paper.
         # Composed of two sub-networks (G_mapping and G_synthesis).
@@ -243,7 +243,7 @@ class Generator(nn.Module):
         else:
             self.truncation = None
 
-    def forward(self, latents_in, depth, alpha, labels_in=None):
+    def forward(self, latents_in, depth, alpha, labels_in=None, use_truncation=False, use_style_mixing=False):
         """
         :param latents_in: First input: Latent vectors (Z) [mini_batch, latent_size].
         :param depth: current depth from where output is required
@@ -257,11 +257,11 @@ class Generator(nn.Module):
         if self.training:
             # Update moving average of W(dlatent).
             # TODO
-            if self.truncation is not None:
+            if use_truncation == True and self.truncation is not None:
                 self.truncation.update(dlatents_in[0, 0].detach())
 
             # Perform style mixing regularization.
-            if self.style_mixing_prob is not None and self.style_mixing_prob > 0:
+            if use_style_mixing == True and self.style_mixing_prob is not None and self.style_mixing_prob > 0:
                 latents2 = torch.randn(latents_in.shape).to(latents_in.device)
                 dlatents2 = self.g_mapping(latents2)
                 layer_idx = torch.from_numpy(np.arange(self.num_layers)[np.newaxis, :, np.newaxis]).to(
@@ -272,7 +272,7 @@ class Generator(nn.Module):
                 dlatents_in = torch.where(layer_idx < mixing_cutoff, dlatents_in, dlatents2)
 
             # Apply truncation trick.
-            if self.truncation is not None:
+            if use_truncation == True and self.truncation is not None:
                 dlatents_in = self.truncation(dlatents_in)
 
         fake_images = self.g_synthesis(dlatents_in, depth, alpha)
@@ -549,7 +549,7 @@ class StyleGAN:
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
         # generate fake samples:
-        fake_samples = self.gen(noise, depth, alpha)
+        fake_samples = self.gen(noise, depth, alpha, use_style_mixing=True)
 
         # Change this implementation for making it compatible for relativisticGAN
         loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_=print_)
