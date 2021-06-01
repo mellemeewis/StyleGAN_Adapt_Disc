@@ -277,7 +277,7 @@ class Generator(nn.Module):
 
         fake_images = self.g_synthesis(dlatents_in, depth, alpha)
 
-        return fake_images
+        return torch.sigmoid(fake_images)
 
 
 class Discriminator(nn.Module):
