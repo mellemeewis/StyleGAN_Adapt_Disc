@@ -264,7 +264,7 @@ class LogisticGAN(GANLoss):
         
         print('REAL SAMPS\n', real_samps[0,:])
         print('recon_loss SAMPS\n', reconstrution[0,:])
-        recon_loss = F.binary_cross_entropy_with_logits(output, x, reduction='none')
+        recon_loss = F.binary_cross_entropy_with_logits(reconstrution, real_samps, reduction='none')
         print(recon_loss.size())
         print(recon_loss)
         sys.exit()
