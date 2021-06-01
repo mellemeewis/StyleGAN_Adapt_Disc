@@ -569,6 +569,7 @@ class StyleGAN:
         return loss.item()
 
     def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
+        print("Performing VAE step")
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
         # reconsruct real samples
