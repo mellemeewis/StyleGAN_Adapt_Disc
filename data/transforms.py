@@ -21,13 +21,13 @@ def get_transform(new_size=None):
             RandomHorizontalFlip(),
             Resize(new_size),
             ToTensor(),
-            Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+            # Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
 
     else:
         image_transform = Compose([
             RandomHorizontalFlip(),
             ToTensor(),
-            Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+            # Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
     return image_transform
