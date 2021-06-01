@@ -680,7 +680,7 @@ class StyleGAN:
 
             for epoch in range(1, epochs[current_depth] + 1):
                 update_string = self.loss.update_simp(simp_start_end, sum(epochs[:current_depth]) + epoch, sum(epochs))
-                vae_prob = __return_vae_probability(current_depth, epoch, epochs)
+                vae_prob = self.__return_vae_probability(current_depth, epoch, epochs)
                 start = timeit.default_timer()  # record time at the start of epoch
                 logger.info(update_string)
                 logger.info(f'VAE prob updated: {vae_prob}. Sched: {self.vae_probs}')
