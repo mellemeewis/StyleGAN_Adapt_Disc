@@ -708,7 +708,7 @@ class StyleGAN:
                     gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha, print_)
 
                     # optimze model as vae:
-                    if random.random() < self.vae_prob:
+                    if random.random() < vae_prob:
                         vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
                     print_=False
 
