@@ -40,7 +40,7 @@ class GANLoss:
         grow = (end - start) / total_epochs
         self.simp = min(1, start + cur_epoch * grow)
 
-        return f'Simp updated: {self.simp}, Epoch {cur_epoch} of Total epochs: {total_epochs}'
+        return f'Simp updated: {self.simp}, Epoch {cur_epoch} of Total epochs: {total_epochs}, Sched: {simp_start_end}'
 
     def dis_loss(self, real_samps, fake_samps, height, alpha):
         """
