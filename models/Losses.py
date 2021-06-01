@@ -249,14 +249,14 @@ class LogisticGAN(GANLoss):
         return torch.mean(loss)
 
     def vae_loss(self, real_samps, height, alpha, print_=False):
-        latents = self.dis(real_samples, depth, alpha)
+        latents = self.dis(real_samps, height, alpha)
         b, l = latents.size()
 
         latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
         if self.loss.simp < 0:
             latents = latents - latents.mean(dim=1)[:, None]
 
-        reconstrution = self.gen(latents, current_depth, alpha)
+        reconstrution = self.gen(latents, height, alpha)
         
         print('REAL SAMPS\n', real_samps)
         print('recon_loss SAMPS\n', reconstrution)
