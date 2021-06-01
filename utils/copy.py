@@ -21,6 +21,8 @@ def list_dir_recursively_with_ignore(dir_path: str, ignores: List[str] = None, a
         List[Tuple[str, str]]:
     """List all files recursively in a given directory while ignoring given file and directory names.
     Returns list of tuples containing both absolute and relative paths."""
+    print(os.getcwd())
+    print(dir_path)
     if not os.path.isdir(dir_path):
         return None
     base_name = os.path.basename(os.path.normpath(dir_path))
