@@ -262,7 +262,7 @@ class LogisticGAN(GANLoss):
         
         print('REAL SAMPS\n', real_samps[0,:])
         print('recon_loss SAMPS\n', reconstrution[0,:])
-        kl_loss = 0.5 * torch.sum(atents[:, l//2:].exp() - atents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
+        kl_loss = 0.5 * torch.sum(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
         recon_loss = F.binary_cross_entropy_with_logits(output, x, reduction='none')
         print(recon_loss.size())
         print(recon_loss)
