@@ -12,13 +12,13 @@ source /home/mms496/.bashrc
 
 cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
-if [ -d "/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/025|0-05" ] 
+if [ -d "/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/-1|05-2" ] 
 then
     echo $$
 	mkdir oo`echo $$`
 	cd oo`echo $$` 
-	cp -R '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/025|0-05' .
-	rm -rf '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/025|0-05'
+	cp -R '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/-1|05-2' .
+	rm -rf '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/-1|05-2'
 	cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 else 
@@ -28,7 +28,7 @@ fi
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/025|0-05.yaml'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/-1|05-2.yaml'
 
 wait          # wait until programs are finished
 
