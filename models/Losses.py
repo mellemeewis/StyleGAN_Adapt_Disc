@@ -202,7 +202,7 @@ class LogisticGAN(GANLoss):
 
     def dis_loss(self, latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
+        # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
 
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
@@ -243,7 +243,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
+        # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
         f_preds = self.dis(fake_samps, height, alpha)
 
         b, l = f_preds.size()
@@ -267,10 +267,10 @@ class LogisticGAN(GANLoss):
 
         reconstrution = self.gen(latents, height, alpha)
 
-        reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
-        
-        # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
-        recon_loss = -reconstrution_distribution.log_prob(real_samps)
+        # reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
+        # recon_loss = -reconstrution_distribution.log_prob(real_samps)
+
+        recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
         loss = torch.mean(kl_loss + recon_loss)
 
@@ -285,7 +285,7 @@ class LogisticGAN(GANLoss):
         with torch.no_grad:
             # generate fake samples:
             fake_samples = self.gen(noise, depth, alpha, use_style_mixing=False)
-            fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
+            # fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
         b, l = reconstructed_latents.size()
