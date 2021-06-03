@@ -291,6 +291,7 @@ class LogisticGAN(GANLoss):
         b, l = reconstructed_latents.size()
 
         zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
+        zmean = zmean - zmean.mean(dim=1, keepdim=True)
         zvar = zsig.exp() # variance
         loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (noise - zmean).pow(2.0)
 
