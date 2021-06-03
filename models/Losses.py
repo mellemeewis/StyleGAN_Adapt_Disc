@@ -292,7 +292,7 @@ class LogisticGAN(GANLoss):
 
         zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
         zvar = zsig.exp() # variance
-        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + eps)) * (noise - zmean).pow(2.0)
+        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (noise - zmean).pow(2.0)
 
         with torch.no_grad():
             distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
