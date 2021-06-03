@@ -284,7 +284,7 @@ class LogisticGAN(GANLoss):
 
         with torch.no_grad():
             # generate fake samples:
-            fake_samples = self.gen(noise, depth, alpha, use_style_mixing=False)
+            fake_samples = self.gen(noise, height, alpha, use_style_mixing=False)
             # fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
