@@ -10,6 +10,6 @@ dataset:
   folder: True
   resolution: 128
 sched:
-  epochs: [8,8,8,4,3,10]  ### 14 uur == 11 epochs
+  epochs: [8,8,8,3,3,10]  ### 14 uur == 11 epochs
   simp_start_end: [-1,-1]
-  vae_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,1), (0,0), (0,0), (0,0)]'
+  vae_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,4), (0,0), (0,0), (0,0)]'
