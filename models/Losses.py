@@ -282,7 +282,7 @@ class LogisticGAN(GANLoss):
 
     def sleep_loss(self, noise, height, alpha, print_=False):
 
-        with torch.no_grad:
+        with torch.no_grad():
             # generate fake samples:
             fake_samples = self.gen(noise, depth, alpha, use_style_mixing=False)
             # fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
