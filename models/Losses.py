@@ -296,7 +296,7 @@ class LogisticGAN(GANLoss):
 
         with torch.no_grad():
             distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
-            d_loss = -distribution.log_prob(target)
+            d_loss = -distribution.log_prob(noise)
 
         if print_:
             print('SLEEP LOSS', loss.mean().item(), 'D ', d_loss.mean().item())
