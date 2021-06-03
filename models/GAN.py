@@ -725,6 +725,7 @@ class StyleGAN:
                     if random.random() < vae_prob:
                         vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
 
+                    sleep_prob = 1
                     if random.random() < sleep_prob:
                         gan_input = torch.randn(images.shape[0], self.latent_size).to(self.device)
                         sleep_loss = self.optimize_with_sleep_phase(gan_input, current_depth, alpha, print_)
