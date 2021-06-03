@@ -577,7 +577,6 @@ class StyleGAN:
     def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
-        # reconsruct real samples
         loss = self.loss.vae_loss(real_samples, depth, alpha, print_)
 
         # optimize model
@@ -598,6 +597,22 @@ class StyleGAN:
 
         # return the loss value
         return loss.item()
+
+    def optimize_with_sleep_phase(self, noise, depth, alpha, print_=False):
+
+        
+        loss = self.loss.sleep_loss(noise, depth, alpha, print_)
+
+        # optimize model
+        self.dis_optim.zero_grad()
+
+        # Gradient Clipping
+        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=10.)
+
+        self.dis_optim.step()
+
+        return loss.item()
+
 
 
 
@@ -709,6 +724,10 @@ class StyleGAN:
                     # optimze model as vae:
                     if random.random() < vae_prob:
                         vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
+
+                    if random.random() < sleep_prob:
+                        gan_input = torch.randn(images.shape[0], self.latent_size).to(self.device)
+                        sleep_loss = self.optimize_with_sleep_phase(gan_input, current_depth, alpha, print_)
                     print_=False
 
                     # provide a loss feedback

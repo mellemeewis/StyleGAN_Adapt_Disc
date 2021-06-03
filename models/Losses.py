@@ -202,6 +202,8 @@ class LogisticGAN(GANLoss):
 
     def dis_loss(self, latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
+
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
 
@@ -241,6 +243,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
         f_preds = self.dis(fake_samps, height, alpha)
 
         b, l = f_preds.size()
@@ -263,8 +266,11 @@ class LogisticGAN(GANLoss):
             latents = latents - latents.mean(dim=1)[:, None]
 
         reconstrution = self.gen(latents, height, alpha)
+
+        reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
         
-        recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
+        # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
+        recon_loss = -reconstrution_distribution.log_prob(real_samps)
 
         loss = torch.mean(kl_loss + recon_loss)
 
@@ -272,4 +278,28 @@ class LogisticGAN(GANLoss):
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
 
         return loss
+
+
+    def sleep_loss(self, noise, height, alpha, print_=False):
+
+        with torch.no_grad:
+            # generate fake samples:
+            fake_samples = self.gen(noise, depth, alpha, use_style_mixing=False)
+            fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
+
+        reconstructed_latents = self.dis(fake_samples, height, alpha)
+        b, l = reconstructed_latents.size()
+
+        zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
+        zvar = zsig.exp() # variance
+        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + eps)) * (noise - zmean).pow(2.0)
+
+        with torch.no_grad():
+            distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
+            d_loss = -distribution.log_prob(target)
+
+        print(loss.mean(), d_loss.mean())
+
+
+    return torch.mean(loss)
 
