@@ -451,26 +451,29 @@ class StyleGAN:
             self.ema_updater(self.gen_shadow, self.gen, beta=0)
 
     def __return_probabilities(self, cur_depth, cur_epoch, all_epochs):
-        # VAE probability
         epochs = all_epochs[cur_depth]
+
+        # VAE probability
         start, end = self.vae_probs[cur_depth]
         grow = (float(end) - float(start)) / epochs
         vae_prob = max(0, min(1, start + grow * cur_epoch))
 
         # Discriminator probabibility
-        epochs = all_epochs[cur_depth]
         start, end = self.dis_probs[cur_depth]
+        grow = (float(end) - float(start)) / epochs
         dis_prob = max(0, min(1, start + grow * cur_epoch))
 
 
         # Generator probability
         epochs = all_epochs[cur_depth]
         start, end = self.gen_probs[cur_depth]
+        grow = (float(end) - float(start)) / epochs
         gen_prob = max(0, min(1, start + grow * cur_epoch))
 
         # Sleep probability
         epochs = all_epochs[cur_depth]
         start, end = self.sleep_probs[cur_depth]
+        grow = (float(end) - float(start)) / epochs
         sleep_prob = max(0, min(1, start + grow * cur_epoch))
 
         return {'vae': vae_prob, 'dis': dis_prob, 'gen': gen_prob, 'sleep': sleep_prob}
