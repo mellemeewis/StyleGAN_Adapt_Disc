@@ -300,7 +300,7 @@ class LogisticGAN(GANLoss):
         #     d_loss = -distribution.log_prob(noise)
 
         if print_:
-            print('SLEEP LOSS', loss.mean().item(), 'D ', d_loss.mean().item())
+            print('SLEEP LOSS', loss.mean().item())
 
 
         return torch.mean(loss)
