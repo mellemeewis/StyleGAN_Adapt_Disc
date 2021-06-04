@@ -621,9 +621,9 @@ class StyleGAN:
         return loss.item()
 
     def optimize_with_sleep_phase(self, batch_size, depth, alpha, print_=False):
-        gan_input = torch.randn(batch_size, self.latent_size).to(self.device)
+        latent_input = torch.randn(batch_size, self.latent_size).to(self.device)
         
-        loss = self.loss.sleep_loss(noise, depth, alpha, print_)
+        loss = self.loss.sleep_loss(latent_input, depth, alpha, print_)
 
         # optimize model
         self.dis_optim.zero_grad()
