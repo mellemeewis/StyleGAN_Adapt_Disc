@@ -458,18 +458,18 @@ class StyleGAN:
         vae_prob = max(0, min(1, start + grow * cur_epoch))
 
         # Discriminator probabibility
-        epochs = epochs[cur_depth]
+        epochs = all_epochs[cur_depth]
         start, end = self.dis_probs[cur_depth]
         dis_prob = max(0, min(1, start + grow * cur_epoch))
 
 
         # Generator probability
-        epochs = epochs[cur_depth]
+        epochs = all_epochs[cur_depth]
         start, end = self.gen_probs[cur_depth]
         gen_prob = max(0, min(1, start + grow * cur_epoch))
 
         # Sleep probability
-        epochs = epochs[cur_depth]
+        epochs = all_epochs[cur_depth]
         start, end = self.sleep_probs[cur_depth]
         sleep_prob = max(0, min(1, start + grow * cur_epoch))
 
