@@ -295,9 +295,9 @@ class LogisticGAN(GANLoss):
         zvar = zsig.exp() # variance
         loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (noise - zmean).pow(2.0)
 
-        with torch.no_grad():
-            distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
-            d_loss = -distribution.log_prob(noise)
+        # with torch.no_grad():
+        #     distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
+        #     d_loss = -distribution.log_prob(noise)
 
         if print_:
             print('SLEEP LOSS', loss.mean().item(), 'D ', d_loss.mean().item())

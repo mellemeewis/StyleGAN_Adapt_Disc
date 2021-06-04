@@ -378,7 +378,7 @@ class Discriminator(nn.Module):
 
 class StyleGAN:
 
-    def __init__(self, structure, resolution, num_channels, latent_size, vae_probs,
+    def __init__(self, structure, resolution, num_channels, latent_size, vae_probs, dis_probs, gen_probs, sleep_probs,
                  g_args, d_args, g_opt_args, d_opt_args, loss="relativistic-hinge", drift=0.001,
                  d_repeats=1, use_ema=False, ema_decay=0.999, device=torch.device("cpu")):
         """
@@ -413,6 +413,9 @@ class StyleGAN:
         self.device = device
         self.d_repeats = d_repeats
         self.vae_probs = vae_probs
+        self.dis_probs = dis_probs
+        self.gen_probs = gen_probs
+        self.sleep_probs = sleep_probs
 
         self.use_ema = use_ema
         self.ema_decay = ema_decay
@@ -447,11 +450,30 @@ class StyleGAN:
             # initialize the gen_shadow weights equal to the weights of gen
             self.ema_updater(self.gen_shadow, self.gen, beta=0)
 
-    def __return_vae_probability(self, cur_depth, cur_epoch, epochs):
+    def __return_probabilities(self, cur_depth, cur_epoch, epochs):
+        # VAE probability
         epochs = epochs[cur_depth]
         start, end = self.vae_probs[cur_depth]
         grow = (float(end) - float(start)) / epochs
-        return min(1, start + grow * cur_epoch)
+        vae_prob = max(0, min(1, start + grow * cur_epoch))
+
+        # Discriminator probabibility
+        epochs = epochs[cur_depth]
+        start, end = self.dis_probs[cur_depth]
+        dis_prob = max(0, min(1, start + grow * cur_epoch))
+
+
+        # Generator probability
+        epochs = epochs[cur_depth]
+        start, end = self.gen_probs[cur_depth]
+        gen_prob = max(0, min(1, start + grow * cur_epoch))
+
+        # Sleep probability
+        epochs = epochs[cur_depth]
+        start, end = self.sleep_probs[cur_depth]
+        sleep_prob = max(0, min(1, start + grow * cur_epoch))
+
+        return {'vae': vae_prob, 'dis': dis_prob, 'gen': gen_prob, 'sleep': sleep_prob}
 
     def __setup_gen_optim(self, learning_rate, beta_1, beta_2, eps):
         self.gen_optim = torch.optim.Adam(self.gen.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
@@ -513,7 +535,7 @@ class StyleGAN:
         # return the so computed real_samples
         return real_samples
 
-    def optimize_discriminator(self, latent_input, real_batch, depth, alpha, print_=False):
+    def optimize_discriminator(self, real_batch, depth, alpha, print_=False):
         """
         performs one step of weight update on discriminator using the batch of data
 
@@ -523,7 +545,7 @@ class StyleGAN:
         :param alpha: current alpha for fade-in
         :return: current loss (Wasserstein loss)
         """
-
+        latent_input = torch.randn(real_batch.shape[0], self.latent_size).to(self.device)
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
         loss_val = 0
@@ -541,7 +563,7 @@ class StyleGAN:
 
         return loss_val / self.d_repeats
 
-    def optimize_generator(self, noise, real_batch, depth, alpha, print_=False):
+    def optimize_generator(self, real_batch, depth, alpha, print_=False):
         """
         performs one step of weight update on generator for the given batch_size
 
@@ -551,11 +573,11 @@ class StyleGAN:
         :param alpha: value of alpha for fade-in effect
         :return: current loss (Wasserstein estimate)
         """
-
+        latent_input = torch.randn(real_batch.shape[0], self.latent_size).to(self.device)
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
         # generate fake samples:
-        fake_samples = self.gen(noise, depth, alpha, use_style_mixing=True)
+        fake_samples = self.gen(latent_input, depth, alpha, use_style_mixing=True)
 
         # Change this implementation for making it compatible for relativisticGAN
         loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_=print_)
@@ -598,8 +620,8 @@ class StyleGAN:
         # return the loss value
         return loss.item()
 
-    def optimize_with_sleep_phase(self, noise, depth, alpha, print_=False):
-
+    def optimize_with_sleep_phase(self, batch_size, depth, alpha, print_=False):
+        gan_input = torch.randn(batch_size, self.latent_size).to(self.device)
         
         loss = self.loss.sleep_loss(noise, depth, alpha, print_)
 
@@ -675,7 +697,7 @@ class StyleGAN:
 
         # create fixed_input for debugging
         fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
-        vae_loss = 0 #only for printing
+        vae_loss, dis_loss, gen_loss, sleep_loss = 0, 0, 0, 0 #only for printing
 
         # config depend on structure
         logger.info("Starting the training process ... \n")
@@ -695,10 +717,10 @@ class StyleGAN:
 
             for epoch in range(1, epochs[current_depth] + 1):
                 update_string = self.loss.update_simp(simp_start_end, sum(epochs[:current_depth]) + epoch, sum(epochs))
-                vae_prob = self.__return_vae_probability(current_depth, epoch, epochs)
+                probabilities = self.__return_probabilities(current_depth, epoch, epochs)
                 start = timeit.default_timer()  # record time at the start of epoch
                 logger.info(update_string)
-                logger.info(f'VAE prob updated: {vae_prob}. Sched: {self.vae_probs}')
+                logger.info(f'Probabilites updated: {probabilities}.')
                 logger.info("Epoch: [%d]" % epoch)
                 # total_batches = len(iter(data))
                 total_batches = len(data)
@@ -713,22 +735,19 @@ class StyleGAN:
 
                     # extract current batch of data for training
                     images = batch.to(self.device)
-                    gan_input = torch.randn(images.shape[0], self.latent_size).to(self.device)
 
                     # optimize the discriminator:
-                    dis_loss = self.optimize_discriminator(gan_input, images, current_depth, alpha, print_)
+                    dis_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss
 
                     # optimize the generator:
-                    gen_loss = self.optimize_generator(gan_input, images, current_depth, alpha, print_)
+                    gen_loss = self.optimize_generator(images, current_depth, alpha, print_) if random.random() < probabilities['gen'] else gen_loss
 
                     # optimze model as vae:
-                    if random.random() < vae_prob:
-                        vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
+                    vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_) if random.random() < probabilities['vae'] else vae_loss
 
-                    sleep_prob = 1
-                    if random.random() < sleep_prob:
-                        gan_input = torch.randn(images.shape[0], self.latent_size).to(self.device)
-                        sleep_loss = self.optimize_with_sleep_phase(gan_input, current_depth, alpha, print_)
+                    # optimeze model with sleep phase
+                    sleep_loss = self.optimize_with_sleep_phase(images.shape[0], current_depth, alpha, print_) if random.random() < probabilities['sleep'] else sleep_loss
+                    
                     print_=False
 
                     # provide a loss feedback
