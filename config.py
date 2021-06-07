@@ -68,6 +68,8 @@ cfg.model.gen.mapping_layers = 4
 cfg.model.gen.blur_filter = [1, 2, 1]
 cfg.model.gen.truncation_psi = -1
 cfg.model.gen.truncation_cutoff = 0
+cfg.model.gen.use_styles = True
+cfg.model.gen.const_input_layer = True
 
 # ---------------------------------------------------------------------------- #
 # Options for Discriminator
