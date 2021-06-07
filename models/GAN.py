@@ -30,7 +30,7 @@ from data import get_data_loader
 from models import update_average
 from models.Blocks import DiscriminatorTop, DiscriminatorBlock, InputBlock, GSynthesisBlock
 from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear, Truncation
-from models.StyleGenerator import Generator
+from models.Generator import Generator
 from models.Discriminator import Discriminator
 
 class StyleGAN:
