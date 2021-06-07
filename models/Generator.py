@@ -122,6 +122,7 @@ class GSynthesis(nn.Module):
         #     blur_filter = [1, 2, 1]
 
         print(f"Use Styles: {use_styles}, Use Constant Input Layer: {const_input_layer}")
+        
         def nf(stage):
             return min(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_max)
 
