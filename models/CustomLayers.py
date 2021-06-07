@@ -243,8 +243,8 @@ class LayerEpilogue(nn.Module):
         x = self.top_epi(x)
         if self.style_mod is not None:
             x = self.style_mod(x, dlatents_in_slice)
-        else:
-            assert dlatents_in_slice is None
+        # else:
+        #     assert dlatents_in_slice is None
         return x
 
 
