@@ -10,6 +10,7 @@
 from data.datasets import FlatDirectoryImageDataset, FoldersDistributedDataset
 from data.transforms import get_transform
 import torchvision
+from torchvision.transforms import ToTensor, Normalize, Compose, Resize, RandomHorizontalFlip, Pad
 
 def make_dataset(cfg):
     if cfg.folder:
