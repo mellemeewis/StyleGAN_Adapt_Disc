@@ -270,6 +270,10 @@ class LogisticGAN(GANLoss):
         # reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
         # recon_loss = -reconstrution_distribution.log_prob(real_samps)
 
+        if real_samps[real_samps>1].sum() != 0 or real_samps[real_samps<0].sum() != 0:
+            print("clamped")
+            real_samps = real_samps.clamp(min=0, max=1)
+
         recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
         loss = torch.mean(kl_loss + recon_loss)
