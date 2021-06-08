@@ -9,7 +9,7 @@
 
 from data.datasets import FlatDirectoryImageDataset, FoldersDistributedDataset
 from data.transforms import get_transform
-
+import torchvision
 
 def make_dataset(cfg):
     if cfg.folder:
@@ -17,7 +17,14 @@ def make_dataset(cfg):
     else:
         Dataset = FlatDirectoryImageDataset
 
-    _dataset = Dataset(data_dir=cfg.img_dir, transform=get_transform(new_size=(cfg.resolution, cfg.resolution)))
+    if 'mnist' in cfg.img_dir:
+        transform = Compose([ToTensor(), Pad(2, fill=0, padding_mode='constant')])
+
+        _dataset = torchvision.datasets.MNIST(root=cfg.img_dir, train=True,
+                                                download=True, transform=transform)
+
+    else:
+        _dataset = Dataset(data_dir=cfg.img_dir, transform=get_transform(new_size=(cfg.resolution, cfg.resolution)))
 
     return _dataset
 

@@ -217,6 +217,9 @@ class StyleGAN:
             # optimize discriminator
             self.dis_optim.zero_grad()
             loss.backward()
+
+            nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=1.)
+
             self.dis_optim.step()
 
             loss_val += loss.item()
@@ -246,7 +249,7 @@ class StyleGAN:
         self.gen_optim.zero_grad()
         loss.backward()
         # Gradient Clipping
-        nn.utils.clip_grad_norm_(self.gen.parameters(), max_norm=10.)
+        nn.utils.clip_grad_norm_(self.gen.parameters(), max_norm=1.)
         self.gen_optim.step()
 
         # if use_ema is true, apply ema to the generator parameters
@@ -267,8 +270,8 @@ class StyleGAN:
         loss.backward()
 
         # Gradient Clipping
-        nn.utils.clip_grad_norm_(self.gen.parameters(), max_norm=10.)
-        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=10.)
+        nn.utils.clip_grad_norm_(self.gen.parameters(), max_norm=1.)
+        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=1.)
 
         self.gen_optim.step()
         self.dis_optim.step()
@@ -289,7 +292,7 @@ class StyleGAN:
         self.dis_optim.zero_grad()
 
         # Gradient Clipping
-        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=10.)
+        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=1.)
 
         self.dis_optim.step()
 

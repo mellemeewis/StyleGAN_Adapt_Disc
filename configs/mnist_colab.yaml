@@ -7,7 +7,7 @@ use_ema: False
 checkpoint_factor: 0
 feedback_factor: 2
 dataset:
-  img_dir: '/content/drive/MyDrive/datasets/mnist/training'
+  img_dir: '/content/drive/MyDrive/datasets/mnist'
   folder: True
   resolution: 32
 sched:
