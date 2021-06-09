@@ -11,6 +11,8 @@ from data.datasets import FlatDirectoryImageDataset, FoldersDistributedDataset
 from data.transforms import get_transform
 import torchvision
 from torchvision.transforms import ToTensor, Normalize, Compose, Resize, RandomHorizontalFlip, Pad
+from six.moves import urllib
+
 
 def make_dataset(cfg):
     if cfg.folder:
@@ -19,10 +21,8 @@ def make_dataset(cfg):
         Dataset = FlatDirectoryImageDataset
 
     if 'mnist' in cfg.img_dir:
-        transform = Compose([ToTensor(), Pad(2, fill=0, padding_mode='constant')])
 
-        _dataset = torchvision.datasets.MNIST(root=cfg.img_dir, train=True,
-                                                download=True, transform=transform)
+        _dataset = Dataset(data_dir=cfg.img_dir, transform=get_transform(new_size=(cfg.resolution, cfg.resolution), grayscale=True, flip=False))
 
     else:
         _dataset = Dataset(data_dir=cfg.img_dir, transform=get_transform(new_size=(cfg.resolution, cfg.resolution)))

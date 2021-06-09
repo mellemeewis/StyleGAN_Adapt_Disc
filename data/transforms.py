@@ -8,26 +8,24 @@
 """
 
 
-def get_transform(new_size=None):
+def get_transform(new_size=None, grayscale=False, flip=True):
     """
     obtain the image transforms required for the input data
     :param new_size: size of the resized images
     :return: image_transform => transform object from TorchVision
     """
-    from torchvision.transforms import ToTensor, Normalize, Compose, Resize, RandomHorizontalFlip
+    from torchvision.transforms import ToTensor, Normalize, Compose, Resize, RandomHorizontalFlip, Grayscale
+
+    image_transform = Compose([ToTensor()])
 
     if new_size is not None:
-        image_transform = Compose([
-            RandomHorizontalFlip(),
-            Resize(new_size),
-            ToTensor(),
-            # Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
-        ])
+        image_transform.insert(0, Resize(new_size))
 
-    else:
-        image_transform = Compose([
-            RandomHorizontalFlip(),
-            ToTensor(),
-            # Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
-        ])
+    if flip:
+        image_transform.insert(0, RandomHorizontalFlip())
+
+    if grayscale:
+        image_transform.insert(-2, Grayscale())
+
+
     return image_transform
