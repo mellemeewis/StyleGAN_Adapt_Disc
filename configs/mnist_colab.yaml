@@ -10,6 +10,7 @@ dataset:
   img_dir: '/content/drive/MyDrive/datasets/mnist'
   folder: True
   resolution: 32
+  channels: 1
 sched:
   epochs: [8,8,4,32,64,64]
   batch_sizes: [128, 128, 128, 64, 32, 16, 8, 4, 2]
