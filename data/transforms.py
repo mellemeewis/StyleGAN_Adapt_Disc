@@ -16,7 +16,7 @@ def get_transform(new_size=None, grayscale=False, flip=True):
     """
     from torchvision.transforms import ToTensor, Normalize, Compose, Resize, RandomHorizontalFlip, Grayscale
 
-    image_transform = Compose([ToTensor()])
+    image_transform = [ToTensor()]
 
     if new_size is not None:
         image_transform.insert(0, Resize(new_size))
@@ -28,4 +28,4 @@ def get_transform(new_size=None, grayscale=False, flip=True):
         image_transform.insert(-2, Grayscale())
 
 
-    return image_transform
+    return Compose(image_transform)
