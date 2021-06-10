@@ -272,9 +272,6 @@ class LogisticGAN(GANLoss):
         dis_hidden_layer_real = self.dis(real_samps, height, alpha, use_for_recon_error=True)
         dis_hidden_layer_recon = self.dis(reconstrution, height, alpha, use_for_recon_error=True)
 
-        # distributions - torch.distributions.normal.Normal(dis_out_recon, torch.ones(dis_out_recon.size()))
-        # print(distributions)
-        # mv_distribution = torch.distributions.multivariate_normal.MultivariateNormal(loc=dis_out_recon, covariance_matrix=
 
         # recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
         recon_loss= F.mse_loss(dis_hidden_layer_real, dis_hidden_layer_recon, reduction='none').mean(dim=(1,2,3))[:,None]
@@ -285,6 +282,7 @@ class LogisticGAN(GANLoss):
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
+            print("SIZE OF USED HIDDEN LAYER: "dis_hidden_layer_recon.size())
 
         return loss
 
