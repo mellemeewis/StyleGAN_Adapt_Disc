@@ -84,7 +84,7 @@ class Discriminator(nn.Module):
         # register the temporary downSampler
         self.temporaryDownsampler = nn.AvgPool2d(2)
 
-    def forward(self, images_in, depth, alpha=1., labels_in=None):
+    def forward(self, images_in, depth, alpha=1., labels_in=None, use_for_recon_error=False):
         """
         :param images_in: First input: Images [mini_batch, channel, height, width].
         :param labels_in: Second input: Labels [mini_batch, label_size].
@@ -98,6 +98,9 @@ class Discriminator(nn.Module):
             x = self.from_rgb[0](images_in)
             for i, block in enumerate(self.blocks):
                 x = block(x)
+
+            if use_for_recon_error:
+                return x
             scores_out = self.final_block(x)
         elif self.structure == 'linear':
             if depth > 0:
@@ -108,6 +111,9 @@ class Discriminator(nn.Module):
                     x = block(x)
             else:
                 x = self.from_rgb[-1](images_in)
+
+            if use_for_recon_error:
+                return x
 
             scores_out = self.final_block(x)
         else:
