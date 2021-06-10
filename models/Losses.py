@@ -269,8 +269,8 @@ class LogisticGAN(GANLoss):
 
         # reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
         # recon_loss = -reconstrution_distribution.log_prob(real_samps)
-        dis_hidden_layer_real = self.dis(real_samps, height, alpha, use_for_recon_error=True)
-        dis_hidden_layer_recon = self.dis(reconstrution, height, alpha, use_for_recon_error=True)
+        # dis_hidden_layer_real = self.dis(real_samps, height, alpha, use_for_recon_error=True)
+        # dis_hidden_layer_recon = self.dis(reconstrution, height, alpha, use_for_recon_error=True)
 
 
         # recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
