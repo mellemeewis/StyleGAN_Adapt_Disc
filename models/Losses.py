@@ -276,7 +276,9 @@ class LogisticGAN(GANLoss):
         # print(distributions)
         # mv_distribution = torch.distributions.multivariate_normal.MultivariateNormal(loc=dis_out_recon, covariance_matrix=
 
-        recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
+        # recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
+        recon_loss= F.mse(dis_hidden_layer_real, dis_hidden_layer_real)
+        print(recon_loss.size())
         # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
         loss = torch.mean(kl_loss + recon_loss)
