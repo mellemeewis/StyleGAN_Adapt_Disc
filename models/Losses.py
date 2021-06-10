@@ -282,7 +282,7 @@ class LogisticGAN(GANLoss):
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
-            print("SIZE OF USED HIDDEN LAYER: "dis_hidden_layer_recon.size())
+            print("SIZE OF USED HIDDEN LAYER: ", dis_hidden_layer_recon.size())
 
         return loss
 
