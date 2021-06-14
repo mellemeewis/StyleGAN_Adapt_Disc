@@ -293,9 +293,6 @@ class LogisticGAN(GANLoss):
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
 
-        def 
-
-
         return loss
 
 
