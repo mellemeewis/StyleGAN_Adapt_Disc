@@ -12,7 +12,7 @@ dataset:
   resolution: 64
   channels: 3
 sched:
-  epochs: [8,8,4,32,64,64]
+  epochs: [8,8,8,8,64,64]
   batch_sizes: [128, 128, 128, 64, 32, 16, 8, 4, 2]
   simp_start_end: [0,1] 
   vae_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]'

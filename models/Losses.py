@@ -14,7 +14,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-
+from torchvision.models import vgg19_bn
 
 
 
@@ -34,6 +34,9 @@ class GANLoss:
         self.dis = dis
         self.gen = gen
         self.simp = 0
+        self.feature_network = vgg19_bn(pretrained=True)
+        self.feature_layers = ['14', '24', '34', '43']
+
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
         start, end = simp_start_end
@@ -276,13 +279,22 @@ class LogisticGAN(GANLoss):
         # recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
         # recon_loss= F.mse_loss(dis_hidden_layer_real, dis_hidden_layer_recon, reduction='none').mean(dim=(1,2,3))[:,None]
         # print(recon_loss.size())
-        recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
+        # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
+        features_real, features_recon = self.extract_features(real_samps), self.extract_features(reconstrution)
+        feature_loss = 0.0
+        for (r, i) in zip(recons_features, input_features):
+            feature_loss += F.mse_loss(r, i)
+
+        recon_loss = feature_loss
         loss = torch.mean(kl_loss + recon_loss)
+
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
-            print("SIZE OF USED HIDDEN LAYER: ", dis_hidden_layer_recon.size())
+
+        def 
+
 
         return loss
 
@@ -309,6 +321,29 @@ class LogisticGAN(GANLoss):
         if print_:
             print('SLEEP LOSS', loss.mean().item())
 
-
         return torch.mean(loss)
+
+
+    def extract_features(self,
+                         input: Tensor,
+                         feature_layers: List = None) -> List[Tensor]:
+        """
+        Extracts the features from the pretrained model
+        at the layers indicated by feature_layers.
+        :param input: (Tensor) [B x C x H x W]
+        :param feature_layers: List of string of IDs
+        :return: List of the extracted features
+        """
+        if self.feature_layers is None:
+            self.feature_layers = ['14', '24', '34', '43']
+        features = []
+        result = input
+        for (key, module) in self.feature_network.features._modules.items():
+            result = module(result)
+            if(key in self.feature_layers):
+                features.append(result)
+
+        return features
+
+
 
