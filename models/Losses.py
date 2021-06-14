@@ -286,7 +286,7 @@ class LogisticGAN(GANLoss):
      
 
         feature_loss = 0.0
-        for (r, i) in zip(recons_features, input_features):
+        for (r, i) in zip(features_recon, features_real):
             feature_loss += F.mse_loss(r, i)
 
         recon_loss = feature_loss
