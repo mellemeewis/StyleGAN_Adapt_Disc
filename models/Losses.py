@@ -34,7 +34,7 @@ class GANLoss:
         self.dis = dis
         self.gen = gen
         self.simp = 0
-        self.feature_network = vgg19_bn(pretrained=True).to('cuda')
+        self.feature_network = vgg19_bn(pretrained=True).to(self.dis.device)
         self.feature_layers = ['14', '24', '34', '43']
 
 
@@ -334,6 +334,7 @@ class LogisticGAN(GANLoss):
         features = []
         result = input
         for (key, module) in self.feature_network.features._modules.items():
+            print(1)
             result = module(result)
             if(key in self.feature_layers):
                 features.append(result)
