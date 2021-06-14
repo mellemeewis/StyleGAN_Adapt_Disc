@@ -34,7 +34,7 @@ class GANLoss:
         self.dis = dis
         self.gen = gen
         self.simp = 0
-        self.feature_network = vgg19_bn(pretrained=True).to(self.dis.device)
+        self.feature_network = vgg19_bn(pretrained=True).to('cuda')
         self.feature_layers = ['14', '24', '34', '43']
 
 
