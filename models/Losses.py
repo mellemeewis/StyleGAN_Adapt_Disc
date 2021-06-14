@@ -15,6 +15,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 from torchvision.models import vgg19_bn
+from torch.nn.functional import interpolate
 
 
 
