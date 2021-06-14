@@ -338,6 +338,8 @@ class LogisticGAN(GANLoss):
         result = input
         for (key, module) in self.feature_network.features._modules.items():
             print(key)
+            if key > self.feature_layers[-1]:
+                break
             result = module(result)
             if(key in self.feature_layers):
                 features.append(result)
