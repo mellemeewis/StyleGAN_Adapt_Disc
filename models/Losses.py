@@ -281,7 +281,6 @@ class LogisticGAN(GANLoss):
         # recon_loss= F.mse_loss(dis_hidden_layer_real, dis_hidden_layer_recon, reduction='none').mean(dim=(1,2,3))[:,None]
         # print(recon_loss.size())
         # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
-        print(real_samps.size())
         features_real, features_recon = self.extract_features(interpolate(real_samps, scale_factor=64//real_samps.shape[-1])), self.extract_features(interpolate(reconstrution, scale_factor=64//real_samps.shape[-1]))
      
 
