@@ -1,6 +1,6 @@
 # Config file for CelebA dataset (200k)
 
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/celeba_sleep'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/celeba_100'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 0
@@ -12,4 +12,4 @@ dataset:
 sched:
   epochs: [8,8,8,8,100,100]  ### 14 uur == 11 epochs
   simp_start_end: [0,1]
-  sleep_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
+  vae_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'

@@ -28,7 +28,7 @@ cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/celeba_sleep.yaml'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/celeba_100.yaml'
 wait          # wait until programs are finished
 
 # echo $$
