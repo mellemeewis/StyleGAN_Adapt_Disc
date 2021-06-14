@@ -321,7 +321,7 @@ class LogisticGAN(GANLoss):
         return torch.mean(loss)
 
 
-    def extract_features(self, input) -> List[Tensor]:
+    def extract_features(self, input):
         """
         Extracts the features from the pretrained model
         at the layers indicated by feature_layers.
