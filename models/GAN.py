@@ -433,8 +433,8 @@ class StyleGAN:
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
                             latents = self.dis(images_ds, current_depth, alpha).detach()
-                            b, l = latents.size()
-                            latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
+                            b, w, l = latents.size()
+                            latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
 
                             if self.loss.simp < 0:
                                 latents = latents - latents.mean(dim=1)[:, None]
