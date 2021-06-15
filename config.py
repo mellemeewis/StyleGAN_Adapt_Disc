@@ -82,7 +82,7 @@ cfg.model.dis.blur_filter = [1, 2, 1]
 # Options for Generator Optimizer
 # ---------------------------------------------------------------------------- #
 cfg.model.g_optim = CN()
-cfg.model.g_optim.learning_rate = 0.003
+cfg.model.g_optim.learning_rate = 0.0003
 cfg.model.g_optim.beta_1 = 0
 cfg.model.g_optim.beta_2 = 0.99
 cfg.model.g_optim.eps = 1e-8
@@ -91,7 +91,7 @@ cfg.model.g_optim.eps = 1e-8
 # Options for Discriminator Optimizer
 # ---------------------------------------------------------------------------- #
 cfg.model.d_optim = CN()
-cfg.model.d_optim.learning_rate = 0.003
+cfg.model.d_optim.learning_rate = 0.0003
 cfg.model.d_optim.beta_1 = 0
 cfg.model.d_optim.beta_2 = 0.99
 cfg.model.d_optim.eps = 1e-8
