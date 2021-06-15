@@ -243,6 +243,7 @@ class Generator(nn.Module):
         # latents_in = torch.randn(128, 512).to(latents_in.device)
         # dlatents_in = self.g_mapping(latents_in)
         # print(dlatents_in.size())
+        dlatents_in = latents_in
         if self.training:
             # Update moving average of W(dlatent).
             # TODO
