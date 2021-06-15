@@ -37,7 +37,7 @@ from models.Discriminator import Discriminator
 class StyleGAN:
 
     def __init__(self, structure, resolution, num_channels, latent_size, vae_probs, dis_probs, gen_probs, sleep_probs,
-                 g_args, d_args, g_opt_args, d_opt_args, loss="relativistic-hinge", drift=0.001,
+                 g_args, d_args, g_opt_args, d_opt_args, loss="relativistic-hinge", drift=0.001, recon_beta=5,
                  d_repeats=1, use_ema=False, ema_decay=0.999, device=torch.device("cpu")):
         """
         Wrapper around the Generator and the Discriminator.
@@ -98,7 +98,7 @@ class StyleGAN:
 
         # define the loss function used for training the GAN
         self.drift = drift
-        self.loss = self.__setup_loss(loss)
+        self.loss = self.__setup_loss(loss, recon_beta)
 
         # Use of ema
         if self.use_ema:
@@ -143,18 +143,18 @@ class StyleGAN:
     def __setup_dis_optim(self, learning_rate, beta_1, beta_2, eps):
         self.dis_optim = torch.optim.Adam(self.dis.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
 
-    def __setup_loss(self, loss):
+    def __setup_loss(self, loss, recon_beta):
         if isinstance(loss, str):
             loss = loss.lower()  # lowercase the string
 
             if loss == "standard-gan":
-                loss = Losses.StandardGAN(self.dis, self.gen)
+                loss = Losses.StandardGAN(self.dis, self.gen, recon_beta)
             elif loss == "hinge":
                 loss = Losses.HingeGAN(self.dis, self.gen)
             elif loss == "relativistic-hinge":
-                loss = Losses.RelativisticAverageHingeGAN(self.dis, self.gen)
+                loss = Losses.RelativisticAverageHingeGAN(self.dis, self.gen, recon_beta)
             elif loss == "logistic":
-                loss = Losses.LogisticGAN(self.dis, self.gen)
+                loss = Losses.LogisticGAN(self.dis, self.gen, recon_beta)
             else:
                 raise ValueError("Unknown loss function requested")
 

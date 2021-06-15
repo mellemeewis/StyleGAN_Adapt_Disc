@@ -18,6 +18,7 @@ cfg.device_id = '3'
 cfg.structure = 'fixed'
 cfg.loss = "logistic"
 cfg.drift = 0.001
+cfg.recon_beta = 5
 cfg.d_repeats = 1
 cfg.use_ema = True
 cfg.ema_decay = 0.999

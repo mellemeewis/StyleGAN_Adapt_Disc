@@ -31,10 +31,11 @@ class GANLoss:
              Note this must be a part of the GAN framework
     """
 
-    def __init__(self, dis, gen):
+    def __init__(self, dis, gen, recon_beta):
         self.dis = dis
         self.gen = gen
         self.simp = 0
+        self.recon_beta =recon_beta
         self.feature_network = vgg19_bn(pretrained=True).to('cuda')
         self.feature_layers = ['14', '24', '34', '43']
 
@@ -211,8 +212,6 @@ class LogisticGAN(GANLoss):
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
 
-        print(r_preds.size())
-
         b, l = r_preds.size()
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
@@ -290,7 +289,7 @@ class LogisticGAN(GANLoss):
             feature_loss += F.mse_loss(r, i)
 
         recon_loss = feature_loss
-        loss = torch.mean(kl_loss + recon_loss)
+        loss = torch.mean(kl_loss + self.recon_beta*recon_loss)
 
 
         if print_:
