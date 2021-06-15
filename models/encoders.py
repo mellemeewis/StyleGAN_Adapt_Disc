@@ -164,11 +164,11 @@ class BackboneEncoderUsingLastLayerIntoWPlus(Module):
         self.input_layer = Sequential(Conv2d(3, 64, (3, 3), 1, 1, bias=False),
                                       BatchNorm2d(64),
                                       PReLU(64))
-        self.output_layer_2 = Sequential(BatchNorm2d(512),
+        self.output_layer_2 = Sequential(BatchNorm2d(1024),
                                          torch.nn.AdaptiveAvgPool2d((7, 7)),
                                          Flatten(),
-                                         Linear(512 * 7 * 7, 512))
-        self.linear = EqualLinear(512, 512 * self.n_styles, lr_mul=1)
+                                         Linear(512 * 7 * 7, 1024))
+        self.linear = EqualLinear(1024, 1024 * self.n_styles, lr_mul=1)
         modules = []
         for block in blocks:
             for bottleneck in block:
@@ -187,5 +187,5 @@ class BackboneEncoderUsingLastLayerIntoWPlus(Module):
         print(x.size())
         x = self.linear(x)
         print(x.size())
-        x = x.view(-1, self.n_styles, 512)
+        x = x.view(-1, self.n_styles, 1024)
         return x
