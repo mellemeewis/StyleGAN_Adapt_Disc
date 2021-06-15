@@ -270,7 +270,6 @@ class LogisticGAN(GANLoss):
         kl_loss = 0.5 * torch.mean(latents[:, :, l//2:].exp() - latents[:, :, l//2:] + latents[:, :, :l//2].pow(2) - 1, dim=1)
         latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:,:, l//2:] * 0.5).exp()
 
-        print(latents.size())
         reconstrution = self.gen(latents, height, alpha)
 
         # reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
