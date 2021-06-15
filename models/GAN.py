@@ -32,6 +32,8 @@ from models.Blocks import DiscriminatorTop, DiscriminatorBlock, InputBlock, GSyn
 from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear, Truncation
 from models.Generator import Generator
 from models.Discriminator import Discriminator
+from models.encoder import BackboneEncoderUsingLastLayerIntoWPlus
+
 
 class StyleGAN:
 
@@ -82,11 +84,13 @@ class StyleGAN:
                              resolution=resolution,
                              structure=self.structure,
                              **g_args).to(self.device)
-        self.dis = Discriminator(num_channels=num_channels,
-                                 resolution=resolution,
-                                 structure=self.structure,
-                                 output_features=self.latent_size*2,
-                                 **d_args).to(self.device)
+        # self.dis = Discriminator(num_channels=num_channels,
+        #                          resolution=resolution,
+        #                          structure=self.structure,
+        #                          output_features=self.latent_size*2,
+        #                          **d_args).to(self.device)
+
+        self.dis = BackboneEncoderUsingLastLayerIntoWPlus(50, 'ir_se')
 
         # if code is to be run on GPU, we can use DataParallel:
         # TODO
