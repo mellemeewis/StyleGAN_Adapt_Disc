@@ -22,7 +22,7 @@ from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear
 
 class Discriminator(nn.Module):
 
-    def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512, unmapping=4
+    def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512, unmapping=4,
                  nonlinearity='lrelu', use_wscale=True, mbstd_group_size=4, mbstd_num_features=1,
                  output_features=1024, blur_filter=None, structure='linear', **kwargs):
         """
