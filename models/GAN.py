@@ -32,7 +32,6 @@ from models.Blocks import DiscriminatorTop, DiscriminatorBlock, InputBlock, GSyn
 from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear, Truncation
 from models.Generator import Generator
 from models.Discriminator import Discriminator
-from models.encoders import BackboneEncoderUsingLastLayerIntoWPlus
 
 
 class StyleGAN:
