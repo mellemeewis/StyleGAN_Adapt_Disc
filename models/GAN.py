@@ -84,13 +84,12 @@ class StyleGAN:
                              resolution=resolution,
                              structure=self.structure,
                              **g_args).to(self.device)
-        # self.dis = Discriminator(num_channels=num_channels,
-        #                          resolution=resolution,
-        #                          structure=self.structure,
-        #                          output_features=self.latent_size*2,
-        #                          **d_args).to(self.device)
+        self.dis = Discriminator(num_channels=num_channels,
+                                 resolution=resolution,
+                                 structure=self.structure,
+                                 output_features=self.latent_size*2,
+                                 **d_args).to(self.device)
 
-        self.dis = BackboneEncoderUsingLastLayerIntoWPlus(50, 'ir_se').to(self.device)
 
         # if code is to be run on GPU, we can use DataParallel:
         # TODO
