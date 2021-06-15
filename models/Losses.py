@@ -185,8 +185,8 @@ class RelativisticAverageHingeGAN(GANLoss):
 
 
 class LogisticGAN(GANLoss):
-    def __init__(self, dis, gen):
-        super().__init__(dis, gen)
+    def __init__(self, dis, gen, recon_beta):
+        super().__init__(dis, gen, recon_beta)
 
     # gradient penalty
     def R1Penalty(self, real_img, height, alpha):

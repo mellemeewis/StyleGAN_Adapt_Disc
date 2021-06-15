@@ -150,7 +150,7 @@ class StyleGAN:
             if loss == "standard-gan":
                 loss = Losses.StandardGAN(self.dis, self.gen, recon_beta)
             elif loss == "hinge":
-                loss = Losses.HingeGAN(self.dis, self.gen)
+                loss = Losses.HingeGAN(self.dis, self.gen, recon_beta)
             elif loss == "relativistic-hinge":
                 loss = Losses.RelativisticAverageHingeGAN(self.dis, self.gen, recon_beta)
             elif loss == "logistic":
