@@ -22,7 +22,7 @@ from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear
 
 class Discriminator(nn.Module):
 
-    def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512,
+    def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512, unmapping=4
                  nonlinearity='lrelu', use_wscale=True, mbstd_group_size=4, mbstd_num_features=1,
                  output_features=1024, blur_filter=None, structure='linear', **kwargs):
         """
@@ -84,6 +84,12 @@ class Discriminator(nn.Module):
         # register the temporary downSampler
         self.temporaryDownsampler = nn.AvgPool2d(2)
 
+        um = []
+        for _ in range(unmapping):
+            um.append(act)
+            um.append(nn.Linear(output_features, output_features))
+        self.unmapping = nn.Sequential(*um)
+
     def forward(self, images_in, depth, alpha=1., labels_in=None, use_for_recon_error=False):
         """
         :param images_in: First input: Images [mini_batch, channel, height, width].
@@ -116,7 +122,8 @@ class Discriminator(nn.Module):
                 return x
 
             scores_out = self.final_block(x)
+            out = self.unmapping(scores_out)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
-        return scores_out
+        return out
