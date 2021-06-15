@@ -212,7 +212,7 @@ class LogisticGAN(GANLoss):
         f_preds = self.dis(fake_samps, height, alpha)
 
         print(r_preds.size())
-        
+
         b, l = r_preds.size()
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
@@ -264,6 +264,7 @@ class LogisticGAN(GANLoss):
     def vae_loss(self, real_samps, height, alpha, print_=False):
         
         latents = self.dis(real_samps, height, alpha)
+        print(latents.size())
         b, l = latents.size()
         
         kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
