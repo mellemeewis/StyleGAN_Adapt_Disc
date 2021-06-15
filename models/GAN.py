@@ -363,7 +363,7 @@ class StyleGAN:
         global_time = time.time()
 
         # create fixed_input for debugging
-        fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
+        fixed_input = torch.randn(num_samples, 10, self.latent_size).to(self.device)
         vae_loss, dis_loss, gen_loss, sleep_loss = 0, 0, 0, 0 #only for printing
 
         # config depend on structure
