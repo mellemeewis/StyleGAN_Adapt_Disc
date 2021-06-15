@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch import nn
 from torch.nn import Linear, Conv2d, BatchNorm2d, PReLU, Sequential, Module
 from models.helpers import get_blocks, Flatten, bottleneck_IR, bottleneck_IR_SE, EqualLinear
-
+import math
 
 class GradualStyleBlock(Module):
     def __init__(self, in_c, out_c, spatial):
