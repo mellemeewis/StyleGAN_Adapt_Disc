@@ -167,7 +167,7 @@ class BackboneEncoderUsingLastLayerIntoWPlus(Module):
         self.output_layer_2 = Sequential(BatchNorm2d(1024),
                                          torch.nn.AdaptiveAvgPool2d((7, 7)),
                                          Flatten(),
-                                         Linear(512 * 7 * 7, 1024))
+                                         Linear(1024 * 7 * 7, 1024))
         self.linear = EqualLinear(1024, 1024 * self.n_styles, lr_mul=1)
         modules = []
         for block in blocks:
