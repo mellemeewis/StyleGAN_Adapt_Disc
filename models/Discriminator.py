@@ -121,8 +121,7 @@ class Discriminator(nn.Module):
             if use_for_recon_error:
                 return x
 
-            scores_out = self.final_block(x)
-            out = self.unmapping(scores_out)
+            out = self.final_block(x)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
