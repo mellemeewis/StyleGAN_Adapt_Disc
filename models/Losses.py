@@ -265,7 +265,9 @@ class LogisticGAN(GANLoss):
         
         latents = self.dis(real_samps, height, alpha)
         print(latents.size())
-        b, l = latents.size()
+
+        b, l = latents.size()[0], latents.size()[-1]
+        print(b,l)
         
         kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
         latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
