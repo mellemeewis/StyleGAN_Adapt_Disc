@@ -178,14 +178,9 @@ class BackboneEncoderUsingLastLayerIntoWPlus(Module):
         self.body = Sequential(*modules)
 
     def forward(self, x,_,__):
-        print(x.size())
         x = self.input_layer(x)
-        print(x.size())        
         x = self.body(x)
-        print(x.size())
         x = self.output_layer_2(x)
-        print(x.size())
         x = self.linear(x)
-        print(x.size())
         x = x.view(-1, self.n_styles, 1024)
         return x
