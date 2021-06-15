@@ -291,7 +291,7 @@ class LogisticGAN(GANLoss):
             feature_loss += F.mse_loss(r, i)
 
         recon_loss = feature_loss
-        loss = torch.mean(kl_loss + recon_loss)
+        loss = torch.mean(kl_loss + 5*recon_loss)
 
 
         if print_:
