@@ -84,13 +84,12 @@ class StyleGAN:
                              resolution=resolution,
                              structure=self.structure,
                              **g_args).to(self.device)
-        # self.dis = Discriminator(num_channels=num_channels,
-        #                          resolution=resolution,
-        #                          structure=self.structure,
-        #                          output_features=self.latent_size*2,
-        #                          **d_args).to(self.device)
+        self.dis = Discriminator(num_channels=num_channels,
+                                 resolution=resolution,
+                                 structure=self.structure,
+                                 output_features=self.latent_size*2,
+                                 **d_args).to(self.device)
 
-        self.dis = BackboneEncoderUsingLastLayerIntoWPlus(50, 'ir_se').to(self.device)
 
         # if code is to be run on GPU, we can use DataParallel:
         # TODO
@@ -363,7 +362,7 @@ class StyleGAN:
         global_time = time.time()
 
         # create fixed_input for debugging
-        fixed_input = torch.randn(num_samples, 10, self.latent_size).to(self.device)
+        fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
         vae_loss, dis_loss, gen_loss, sleep_loss = 0, 0, 0, 0 #only for printing
 
         # config depend on structure
@@ -433,8 +432,8 @@ class StyleGAN:
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
                             latents = self.dis(images_ds, current_depth, alpha).detach()
-                            b, w, l = latents.size()
-                            latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
+                            b, l = latents.size()
+                            latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
 
                             if self.loss.simp < 0:
                                 latents = latents - latents.mean(dim=1)[:, None]

@@ -22,8 +22,8 @@ from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear
 
 class GMapping(nn.Module):
 
-    def __init__(self, latent_size=512, dlatent_size=512, dlatent_broadcast=None,
-                 mapping_layers=8, mapping_fmaps=512, mapping_lrmul=0.01, mapping_nonlinearity='lrelu',
+    def __init__(self, latent_size=512, dlatent_size=512*10, dlatent_broadcast=None,
+                 mapping_layers=8, mapping_fmaps=512*10, mapping_lrmul=0.01, mapping_nonlinearity='lrelu',
                  use_wscale=True, normalize_latents=True, **kwargs):
         """
         Mapping network used in the StyleGAN paper.
@@ -45,7 +45,7 @@ class GMapping(nn.Module):
         super().__init__()
 
         self.latent_size = latent_size
-        self.mapping_fmaps = mapping_fmaps
+        self.mapping_fmaps = dlatent_size
         self.dlatent_size = dlatent_size
         self.dlatent_broadcast = dlatent_broadcast
 
@@ -78,7 +78,9 @@ class GMapping(nn.Module):
 
     def forward(self, x):
         # First input: Latent vectors (Z) [mini_batch, latent_size].
+        b, l = x.size()
         x = self.map(x)
+        x = x.view(b, -1, l)
 
         # Broadcast -> batch_size * dlatent_broadcast * dlatent_size
         if self.dlatent_broadcast is not None:
@@ -220,7 +222,7 @@ class Generator(nn.Module):
 
         # Setup components.
         self.num_layers = (int(np.log2(resolution)) - 1) * 2
-        self.g_mapping = GMapping(latent_size, dlatent_size, dlatent_broadcast=self.num_layers, **kwargs)
+        self.g_mapping = GMapping(latent_size, dlatent_size*num_layers, dlatent_broadcast=None, **kwargs)
         self.g_synthesis = GSynthesis(resolution=resolution, **kwargs)
 
         if truncation_psi > 0:
