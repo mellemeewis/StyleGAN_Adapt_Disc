@@ -291,7 +291,7 @@ class LogisticGAN(GANLoss):
 
         recon_loss = feature_loss
         loss = torch.mean(kl_loss + 5*recon_loss)
-        print(kl_loss, recon_loss)
+        print(kl_loss.mean(), recon_loss.mean())
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
@@ -304,7 +304,7 @@ class LogisticGAN(GANLoss):
         with torch.no_grad():
             # generate fake samples:
             fake_samples = self.gen(noise, height, alpha, use_style_mixing=False)
-            # fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
+            # fake_samples = torch.distributions.continuous_b)ernoulli.ContinuousBernoulli(fake_samples).sample()
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
         b, l = reconstructed_latents.size()
