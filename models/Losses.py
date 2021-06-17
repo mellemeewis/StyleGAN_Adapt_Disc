@@ -211,8 +211,6 @@ class LogisticGAN(GANLoss):
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
 
-        print(r_preds.size())
-
         b, l = r_preds.size()
         r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
