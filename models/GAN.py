@@ -441,7 +441,7 @@ class StyleGAN:
                             recon = self.gen(latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha).detach()
                             samples = self.gen(fixed_input, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha).detach()
                             renconstruced_latents = self.dis(samples, current_depth, alpha).detach()
-                            renconstruced_latents = renconstruced_latents[:, :, :l//2] + Variable(torch.randn(b, 10, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:, :, l//2:] * 0.5).exp()
+                            renconstruced_latents = renconstruced_latents[:, :l//2] + Variable(torch.randn(b, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:, l//2:] * 0.5).exp()
 
                             renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
 
