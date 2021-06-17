@@ -222,7 +222,7 @@ class Generator(nn.Module):
 
         # Setup components.
         self.num_layers = (int(np.log2(resolution)) - 1) * 2
-        self.g_mapping = GMapping(latent_size, dlatent_size*num_layers, dlatent_broadcast=None, **kwargs)
+        self.g_mapping = GMapping(latent_size, dlatent_size*self.num_layers, dlatent_broadcast=None, **kwargs)
         self.g_synthesis = GSynthesis(resolution=resolution, **kwargs)
 
         if truncation_psi > 0:
