@@ -28,7 +28,7 @@ cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/vae+vae+gan_single_latent.yaml'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/vae_gan_single_latent.yaml'
 wait          # wait until programs are finished
 
 # echo $$
