@@ -39,7 +39,7 @@ cfg.sched.epochs = [4, 4, 4, 4, 8, 16, 32, 64, 64]
 # batches for oen 1080Ti with 11G memory
 cfg.sched.batch_sizes = [128, 128, 128, 64, 32, 16, 8, 4, 2]
 cfg.sched.fade_in_percentage = [50, 50, 50, 50, 50, 50, 50, 50, 50]
-cfg.sched.simp_start_end = [0,1] 
+cfg.sched.simp_start_end = [0.005,0.005] 
 cfg.sched.vae_probs = [(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]
 cfg.sched.dis_probs = [(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]
 cfg.sched.gen_probs = [(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]
