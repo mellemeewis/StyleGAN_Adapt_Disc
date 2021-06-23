@@ -19,8 +19,8 @@ sched:
   gen_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
 model:
   g_optim:
-    learning_rate: 0.000003
-    beta_1: 0
+    learning_rate: 0.003
+    beta_1: 0.
   d_optim:
-    learning_rate: 0.000003
-    beta_1: 0
+    learning_rate: 0.003
+    beta_1: 0.
