@@ -39,7 +39,7 @@ from models.Discriminator import Discriminator
 class StyleGAN:
 
     def __init__(self, structure, resolution, num_channels, latent_size, vae_probs, dis_probs, gen_probs, sleep_probs,
-                 g_args, d_args, g_opt_args, d_opt_args, loss="relativistic-hinge", drift=0.001, recon_beta=1, feature_beta=5
+                 g_args, d_args, g_opt_args, d_opt_args, loss="relativistic-hinge", drift=0.001, recon_beta=1, feature_beta=5,
                  d_repeats=1, use_ema=False, ema_decay=0.999, device=torch.device("cpu")):
         """
         Wrapper around the Generator and the Discriminator.
