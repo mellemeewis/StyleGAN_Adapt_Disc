@@ -24,6 +24,8 @@ import torch
 import torch.nn as nn
 from torch.nn.functional import interpolate
 from torch.autograd import Variable
+from torch.utils.tensorboard import SummaryWriter
+
 
 import models.Losses as Losses
 from data import get_data_loader
@@ -77,6 +79,7 @@ class StyleGAN:
 
         self.use_ema = use_ema
         self.ema_decay = ema_decay
+        self.writer = SummaryWriter()
 
         # Create the Generator and the Discriminator
         self.gen = Generator(num_channels=num_channels,
@@ -398,6 +401,9 @@ class StyleGAN:
                     # calculate the alpha for fading in the layers
                     alpha = ticker / fade_point if ticker <= fade_point else 1
 
+                    if epoch ==1:
+                        writer.add_graph(self.dis, (batch, current_depth, alpa))
+                        writer.add_graph(self.gen, (torch.randn(4,512), cur_epoch, alpha))
                     # extract current batch of data for training
                     images = batch.to(self.device)
 
@@ -420,13 +426,18 @@ class StyleGAN:
                         elapsed = time.time() - global_time
                         elapsed = str(datetime.timedelta(seconds=elapsed)).split('.')[0]
                         logger.info(
-                            "Elapsed: [%s] Step: %d  Batch: %d  D_Loss: %f  G_Loss: %f, VAE_loss: %f"
-                            % (elapsed, step, i, dis_loss, gen_loss, vae_loss))
+                            "Elapsed: [%s] Step: %d  Batch: %d  D_Loss: %f  G_Loss: %f, SLEEP_loss: %f"
+                            % (elapsed, step, i, dis_loss, gen_loss, vae_loss, sleep_loss))
 
                         # create a grid of samples and save it
                         os.makedirs(os.path.join(output, 'samples'), exist_ok=True)
                         gen_img_file = os.path.join(output, 'samples', "gen_" + str(current_depth)
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
+
+                        writer.add_scalar('Loss/vae', vae_loss, step)
+                        writer.add_scalar('Loss/dis', gen_loss, step)
+                        writer.add_scalar('Accuracy/gen', dis_loss, step)
+                        writer.add_scalar('Accuracy/sleep', sleep_loss, step)
 
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
