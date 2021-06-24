@@ -436,8 +436,8 @@ class StyleGAN:
 
                         self.writer.add_scalar('Loss/vae', vae_loss, step)
                         self.writer.add_scalar('Loss/dis', gen_loss, step)
-                        self.writer.add_scalar('Accuracy/gen', dis_loss, step)
-                        self.writer.add_scalar('Accuracy/sleep', sleep_loss, step)
+                        self.writer.add_scalar('Loss/gen', dis_loss, step)
+                        self.writer.add_scalar('Loss/sleep', sleep_loss, step)
 
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
