@@ -402,8 +402,8 @@ class StyleGAN:
                     alpha = ticker / fade_point if ticker <= fade_point else 1
 
                     if epoch ==1:
-                        writer.add_graph(self.dis, (batch, current_depth, alpa))
-                        writer.add_graph(self.gen, (torch.randn(4,512), cur_epoch, alpha))
+                        self.writer.add_graph(self.dis, (batch, current_depth, alpa))
+                        self.writer.add_graph(self.gen, (torch.randn(4,512), cur_epoch, alpha))
                     # extract current batch of data for training
                     images = batch.to(self.device)
 
@@ -434,10 +434,10 @@ class StyleGAN:
                         gen_img_file = os.path.join(output, 'samples', "gen_" + str(current_depth)
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
-                        writer.add_scalar('Loss/vae', vae_loss, step)
-                        writer.add_scalar('Loss/dis', gen_loss, step)
-                        writer.add_scalar('Accuracy/gen', dis_loss, step)
-                        writer.add_scalar('Accuracy/sleep', sleep_loss, step)
+                        self.writer.add_scalar('Loss/vae', vae_loss, step)
+                        self.writer.add_scalar('Loss/dis', gen_loss, step)
+                        self.writer.add_scalar('Accuracy/gen', dis_loss, step)
+                        self.writer.add_scalar('Accuracy/sleep', sleep_loss, step)
 
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
