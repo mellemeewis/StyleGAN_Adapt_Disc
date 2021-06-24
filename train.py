@@ -96,6 +96,7 @@ if __name__ == '__main__':
                          loss=opt.loss,
                          drift=opt.drift,
                          recon_beta=opt.recon_beta,
+                         feature_beta=opt.feature_beta,
                          d_repeats=opt.d_repeats,
                          use_ema=opt.use_ema,
                          ema_decay=opt.ema_decay,

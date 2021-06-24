@@ -31,11 +31,12 @@ class GANLoss:
              Note this must be a part of the GAN framework
     """
 
-    def __init__(self, dis, gen, recon_beta):
+    def __init__(self, dis, gen, recon_beta, feature_beta):
         self.dis = dis
         self.gen = gen
         self.simp = 0
         self.recon_beta =recon_beta
+        self.feature_beta = feature_beta
         self.feature_network = vgg19_bn(pretrained=True).to('cuda')
         self.feature_layers = ['14', '24', '34', '43']
 
@@ -271,7 +272,7 @@ class LogisticGAN(GANLoss):
         # recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
         # recon_loss= F.mse_loss(dis_hidden_layer_real, dis_hidden_layer_recon, reduction='none').mean(dim=(1,2,3))[:,None]
         # print(recon_loss.size())
-        # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
+        recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
         features_real, features_recon = self.extract_features(interpolate(real_samps, scale_factor=64//real_samps.shape[-1])), self.extract_features(interpolate(reconstrution, scale_factor=64//real_samps.shape[-1]))
      
 
@@ -280,7 +281,7 @@ class LogisticGAN(GANLoss):
             feature_loss += F.mse_loss(r, i)
 
         recon_loss = feature_loss
-        loss = torch.mean(kl_loss + self.recon_beta*recon_loss)
+        loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
 
         if print_:
