@@ -401,9 +401,9 @@ class StyleGAN:
                     # calculate the alpha for fading in the layers
                     alpha = ticker / fade_point if ticker <= fade_point else 1
 
-                    if epoch ==1:
-                        self.writer.add_graph(self.dis, (batch, torch.tensor([current_depth]), torch.tensor([alpha])))
-                        self.writer.add_graph(self.gen, (torch.randn(4,512), torch.tensor([current_depth]), torch.tensor([alpha])))
+                    # if epoch ==1:
+                    #     self.writer.add_graph(self.dis, (batch, torch.tensor([current_depth]), torch.tensor([alpha])))
+                    #     self.writer.add_graph(self.gen, (torch.randn(4,512), torch.tensor([current_depth]), torch.tensor([alpha])))
                     # extract current batch of data for training
                     images = batch.to(self.device)
 
