@@ -402,7 +402,7 @@ class StyleGAN:
                     alpha = ticker / fade_point if ticker <= fade_point else 1
 
                     if epoch ==1:
-                        self.writer.add_graph(self.dis, (batch, current_depth, alpa))
+                        self.writer.add_graph(self.dis, (batch, current_depth, alpha))
                         self.writer.add_graph(self.gen, (torch.randn(4,512), cur_epoch, alpha))
                     # extract current batch of data for training
                     images = batch.to(self.device)
