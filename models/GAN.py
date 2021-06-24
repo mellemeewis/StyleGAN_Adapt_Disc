@@ -426,7 +426,7 @@ class StyleGAN:
                         elapsed = time.time() - global_time
                         elapsed = str(datetime.timedelta(seconds=elapsed)).split('.')[0]
                         logger.info(
-                            "Elapsed: [%s] Step: %d  Batch: %d  D_Loss: %f  G_Loss: %f, SLEEP_loss: %f"
+                            "Elapsed: [%s] Step: %d  Batch: %d  D_Loss: %f  G_Loss: %f, VAE_loss: %f, SLEEP_loss: %f"
                             % (elapsed, step, i, dis_loss, gen_loss, vae_loss, sleep_loss))
 
                         # create a grid of samples and save it
