@@ -248,7 +248,7 @@ class LogisticGAN(GANLoss):
         # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
         f_preds = self.dis(fake_samps, height, alpha)
         
-        if len(list(r_preds.size())) == 2:
+        if len(list(f_preds.size())) == 2:
             b, l = f_preds.size()
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
