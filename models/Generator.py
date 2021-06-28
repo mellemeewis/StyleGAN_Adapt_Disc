@@ -231,7 +231,7 @@ class Generator(nn.Module):
         else:
             self.truncation = None
 
-    def forward(self, latents_in, depth, alpha, labels_in=None, use_truncation=False, use_style_mixing=False):
+    def forward(self, latents_in, depth, alpha, labels_in=None, use_truncation=False, use_style_mixing=False, latent_are_in_extended_space=False):
         """
         :param latents_in: First input: Latent vectors (Z) [mini_batch, latent_size].
         :param depth: current depth from where output is required
@@ -240,7 +240,10 @@ class Generator(nn.Module):
         :return:
         """
 
-        dlatents_in = self.g_mapping(latents_in)
+        if not latent_are_in_extended_space:
+            dlatents_in = self.g_mapping(latents_in)
+        else:
+            dlatents_in = latents_in
 
         if self.training:
             # Update moving average of W(dlatent).

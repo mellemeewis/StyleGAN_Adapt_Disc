@@ -75,7 +75,7 @@ class Discriminator(nn.Module):
 
         # Building the final block.
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
-                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features,
+                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features*10,
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
@@ -87,10 +87,10 @@ class Discriminator(nn.Module):
         um = []
         for _ in range(unmapping):
             um.append(act)
-            um.append(nn.Linear(output_features, output_features))
+            um.append(nn.Linear(output_features*10, output_features*10))
         self.unmapping = nn.Sequential(*um)
 
-    def forward(self, images_in, depth, alpha=1., labels_in=None, use_for_recon_error=False):
+    def forward(self, images_in, depth, alpha=1., labels_in=None):
         """
         :param images_in: First input: Images [mini_batch, channel, height, width].
         :param labels_in: Second input: Labels [mini_batch, label_size].
@@ -105,9 +105,7 @@ class Discriminator(nn.Module):
             for i, block in enumerate(self.blocks):
                 x = block(x)
 
-            if use_for_recon_error:
-                return x
-            scores_out = self.final_block(x)
+            out = self.final_block(x)
         elif self.structure == 'linear':
             if depth > 0:
                 residual = self.from_rgb[self.depth - depth](self.temporaryDownsampler(images_in))
@@ -118,10 +116,8 @@ class Discriminator(nn.Module):
             else:
                 x = self.from_rgb[-1](images_in)
 
-            if use_for_recon_error:
-                return x
-
             out = self.final_block(x)
+            out = self.unmapping(out)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 

@@ -255,13 +255,18 @@ class LogisticGAN(GANLoss):
     def vae_loss(self, real_samps, height, alpha, print_=False):
         
         latents = self.dis(real_samps, height, alpha)
-        b, l = latents.size()
-        kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
-        latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
-        if self.simp < 0:
-            latents = latents - latents.mean(dim=1)[:, None]
 
-        reconstrution = self.gen(latents, height, alpha)
+        if len(list(latents.size())) == 2:
+            b, l = latents.size()
+            kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
+            latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
+            reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=False)
+
+        else:
+            b, w, l = latents.size()
+            kl_loss = 0.5 * torch.mean(latents[:, :, l//2:].exp() - latents[:,:,l//2:] + latents[:,: :l//2].pow(2) - 1, dim=1)
+            latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
+            reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
         # reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
         # recon_loss = -reconstrution_distribution.log_prob(real_samps)
