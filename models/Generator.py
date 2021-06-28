@@ -231,7 +231,7 @@ class Generator(nn.Module):
         else:
             self.truncation = None
 
-    def forward(self, latents_in, depth, alpha, labels_in=None, use_truncation=False, use_style_mixing=False, latent_are_in_extended_space=False):
+    def forward(self, latents_in, depth, alpha, labels_in=None, use_truncation=False, use_style_mixing=False, latent_are_in_extended_space=False, return_extended_latent_input=False):
         """
         :param latents_in: First input: Latent vectors (Z) [mini_batch, latent_size].
         :param depth: current depth from where output is required
@@ -268,4 +268,6 @@ class Generator(nn.Module):
 
         fake_images = self.g_synthesis(dlatents_in, depth, alpha)
 
+        if return_extended_latent_input:
+            return torch.sigmoid(fake_images), dlatents_in
         return torch.sigmoid(fake_images)

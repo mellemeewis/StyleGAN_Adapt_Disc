@@ -206,7 +206,7 @@ class LogisticGAN(GANLoss):
         r1_penalty = torch.sum(torch.mul(real_grads, real_grads))
         return r1_penalty
 
-    def dis_loss(self, latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
+    def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
         # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
 
@@ -223,7 +223,7 @@ class LogisticGAN(GANLoss):
             f_mean, f_sig = f_preds[:,:,:l//2], f_preds[:,:, l//2:]           
 
         r_loss = 0.5 * torch.mean(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-        f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
+        f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (extended_latent_input - f_mean).pow(2.0)
         f_loss = torch.mean(f_loss, dim=1)
 
 
