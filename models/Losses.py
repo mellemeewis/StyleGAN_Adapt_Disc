@@ -264,7 +264,7 @@ class LogisticGAN(GANLoss):
 
         else:
             b, w, l = latents.size()
-            kl_loss = 0.5 * torch.mean(latents[:, :, l//2:].exp() - latents[:,:,l//2:] + latents[:,: :l//2].pow(2) - 1, dim=1)
+            kl_loss = 0.5 * torch.mean(latents[:, :, l//2:].exp() - latents[:,:,l//2:] + latents[:,:,:l//2].pow(2) - 1, dim=1)
             latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 

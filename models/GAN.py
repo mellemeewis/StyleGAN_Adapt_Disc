@@ -462,7 +462,7 @@ class StyleGAN:
                                 renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
 
                             else:
-                                renconstruced_latents = renconstruced_latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:,: l//2:] * 0.5).exp()
+                                renconstruced_latents = renconstruced_latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:,:, l//2:] * 0.5).exp()
                                 renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
 
                             self.create_grid(
