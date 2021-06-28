@@ -117,7 +117,7 @@ class Discriminator(nn.Module):
                 x = self.from_rgb[-1](images_in)
 
             out = self.final_block(x)
-            out = self.unmapping(out)
+            out = self.unmapping(out).view(-1,10,-1)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
