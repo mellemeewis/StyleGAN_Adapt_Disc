@@ -213,9 +213,14 @@ class LogisticGAN(GANLoss):
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
 
-        b, l = r_preds.size()
-        r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
-        f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+        if len(list(r_preds.size())) == 2:
+            b, l = r_preds.size()
+            r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
+            f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+        else:
+            b, w, l = r_preds.size()
+            r_mean, r_sig = r_preds[:,:, :l//2], r_preds[:,:, l//2:]
+            f_mean, f_sig = f_preds[:,:,:l//2], f_preds[:,:, l//2:]           
 
         r_loss = 0.5 * torch.mean(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
         f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
@@ -242,8 +247,15 @@ class LogisticGAN(GANLoss):
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
         f_preds = self.dis(fake_samps, height, alpha)
+        
+        if len(list(r_preds.size())) == 2:
+            b, l = f_preds.size()
+            f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
 
-        b, l = f_preds.size()
+        else:
+            b,w,l = f_preds.size()
+            f_mean, f_sig = f_preds[:,:, :l//2], f_preds[:, :,l//2:]
+
         f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
         loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
