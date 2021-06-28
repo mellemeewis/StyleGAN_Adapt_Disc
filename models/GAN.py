@@ -216,7 +216,7 @@ class StyleGAN:
         loss_val = 0
         for _ in range(self.d_repeats):
             # generate a batch of samples
-            fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True).detach()
+            fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
             fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
             loss = self.loss.dis_loss(extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
 
@@ -248,7 +248,6 @@ class StyleGAN:
         # generate fake samples:
         fake_samples = self.gen(latent_input, depth, alpha, use_style_mixing=True)
 
-        # Change this implementation for making it compatible for relativisticGAN
         loss = self.loss.gen_loss(real_samples, fake_samples, depth, alpha, print_=print_)
 
         # optimize the generator

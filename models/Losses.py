@@ -256,7 +256,6 @@ class LogisticGAN(GANLoss):
             b,w,l = f_preds.size()
             f_mean, f_sig = f_preds[:,:, :l//2], f_preds[:, :,l//2:]
 
-        f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
         loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         if print_:
