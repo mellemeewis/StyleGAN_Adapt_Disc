@@ -78,12 +78,14 @@ class GMapping(nn.Module):
 
     def forward(self, x):
         # First input: Latent vectors (Z) [mini_batch, latent_size].
+        b, l = x.size()
         x = self.map(x)
 
         # Broadcast -> batch_size * dlatent_broadcast * dlatent_size
         if self.dlatent_broadcast is not None:
             x = x.unsqueeze(1).expand(-1, self.dlatent_broadcast, -1)
-        return x
+
+        return x.view(b, -1, l)
 
 
 class GSynthesis(nn.Module):
