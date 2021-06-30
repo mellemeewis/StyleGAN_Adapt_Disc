@@ -117,7 +117,6 @@ class Discriminator(nn.Module):
                 i=0
                 for block in self.blocks[(self.depth - depth):]:
                     x = block(x)
-                    print(f"BLOCK {i}, "x.size()); i+=1
 
             else:
                 x = self.from_rgb[-1](images_in)
