@@ -346,8 +346,7 @@ class StyleGAN:
         :param checkpoint_factor:
         :return: None (Writes multiple files to disk)
         """
-        torch.cuda.empty_cache()
-        print(torch.cuda.memory_summary())
+
         assert self.depth <= len(epochs), "epochs not compatible with depth"
         assert self.depth <= len(batch_sizes), "batch_sizes not compatible with depth"
         assert self.depth <= len(fade_in_percentage), "fade_in_percentage not compatible with depth"
@@ -363,9 +362,6 @@ class StyleGAN:
 
         # create fixed_input for debugging
         fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
-
-        print("fixed_input")
-        print(torch.cuda.memory_summary())
         vae_loss, dis_loss, gen_loss, sleep_loss = 0, 0, 0, 0 #only for printing
 
         # config depend on structure
@@ -396,21 +392,9 @@ class StyleGAN:
 
                 fade_point = int((fade_in_percentage[current_depth] / 100)
                                  * epochs[current_depth] * total_batches)
-                print_=True
+                print_=False
 
                 for (i, batch) in enumerate(data, 1):
-                    # print('\n\n\n')
-                    # print(i, len(batch))
-                    # print(torch.cuda.memory_summary())
-
-                    # for obj in gc.get_objects():
-                    #     try:
-                    #         if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
-                    #             print(type(obj), obj.size())
-                    #     except:
-                    #         pass
-
-
                     # calculate the alpha for fading in the layers
                     alpha = ticker / fade_point if ticker <= fade_point else 1
 
