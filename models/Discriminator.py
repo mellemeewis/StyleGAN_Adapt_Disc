@@ -84,11 +84,11 @@ class Discriminator(nn.Module):
         # register the temporary downSampler
         self.temporaryDownsampler = nn.AvgPool2d(2)
 
-        um = []
-        for _ in range(unmapping):
-            um.append(act)
-            um.append(nn.Linear(output_features*10, output_features*10))
-        self.unmapping = nn.Sequential(*um)
+        # um = []
+        # for _ in range(unmapping):
+        #     um.append(act)
+        #     um.append(nn.Linear(output_features*10, output_features*10))
+        # self.unmapping = nn.Sequential(*um)
 
     def forward(self, images_in, depth, alpha=1., labels_in=None):
         """
@@ -105,22 +105,28 @@ class Discriminator(nn.Module):
             for i, block in enumerate(self.blocks):
                 x = block(x)
 
-            out = self.final_block(x)
+            x = self.final_block(x)
+            b,_ = x.size()
+            x = x.view(b,10,-1)
+
         elif self.structure == 'linear':
             if depth > 0:
                 residual = self.from_rgb[self.depth - depth](self.temporaryDownsampler(images_in))
                 straight = self.blocks[self.depth - depth - 1](self.from_rgb[self.depth - depth - 1](images_in))
                 x = (alpha * straight) + ((1 - alpha) * residual)
+                i=0
                 for block in self.blocks[(self.depth - depth):]:
                     x = block(x)
+                    print(f"BLOCK {i}, "x.size()); i+=1
+
             else:
                 x = self.from_rgb[-1](images_in)
 
 
-            out = self.final_block(x)
-            b,_ = out.size()
-            out = self.unmapping(out).view(b,10,-1)
+            x = self.final_block(x)
+            b,_ = x.size()
+            x = x.view(b,10,-1)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
-        return out
+        return x

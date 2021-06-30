@@ -66,7 +66,7 @@ cfg.model = CN()
 cfg.model.gen = CN()
 cfg.model.gen.latent_size = 512
 # 8 in original paper
-cfg.model.gen.mapping_layers = 8
+cfg.model.gen.mapping_layers = 4
 cfg.model.gen.blur_filter = [1, 2, 1]
 cfg.model.gen.truncation_psi = -1
 cfg.model.gen.truncation_cutoff = 0

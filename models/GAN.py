@@ -18,6 +18,7 @@ import copy
 import random
 import numpy as np
 from collections import OrderedDict
+import gc
 
 
 import torch
@@ -213,24 +214,20 @@ class StyleGAN:
         latent_input = torch.randn(real_batch.shape[0], self.latent_size).to(self.device)
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
-        loss_val = 0
-        for _ in range(self.d_repeats):
-            # generate a batch of samples
-            fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
-            fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
-            loss = self.loss.dis_loss(extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
+        # generate a batch of samples
+        fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
+        fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
+        loss = self.loss.dis_loss(extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
 
-            # optimize discriminator
-            self.dis_optim.zero_grad()
-            loss.backward()
+        # optimize discriminator
+        self.dis_optim.zero_grad()
+        loss.backward()
 
-            nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=1.)
+        nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=1.)
 
-            self.dis_optim.step()
+        self.dis_optim.step()
 
-            loss_val += loss.item()
-
-        return loss_val / self.d_repeats
+        return loss.item()
 
     def optimize_generator(self, real_batch, depth, alpha, print_=False):
         """
@@ -349,7 +346,8 @@ class StyleGAN:
         :param checkpoint_factor:
         :return: None (Writes multiple files to disk)
         """
-
+        torch.cuda.empty_cache()
+        print(torch.cuda.memory_summary())
         assert self.depth <= len(epochs), "epochs not compatible with depth"
         assert self.depth <= len(batch_sizes), "batch_sizes not compatible with depth"
         assert self.depth <= len(fade_in_percentage), "fade_in_percentage not compatible with depth"
@@ -365,6 +363,9 @@ class StyleGAN:
 
         # create fixed_input for debugging
         fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
+
+        print("fixed_input")
+        print(torch.cuda.memory_summary())
         vae_loss, dis_loss, gen_loss, sleep_loss = 0, 0, 0, 0 #only for printing
 
         # config depend on structure
@@ -398,6 +399,18 @@ class StyleGAN:
                 print_=True
 
                 for (i, batch) in enumerate(data, 1):
+                    # print('\n\n\n')
+                    # print(i, len(batch))
+                    # print(torch.cuda.memory_summary())
+
+                    # for obj in gc.get_objects():
+                    #     try:
+                    #         if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
+                    #             print(type(obj), obj.size())
+                    #     except:
+                    #         pass
+
+
                     # calculate the alpha for fading in the layers
                     alpha = ticker / fade_point if ticker <= fade_point else 1
 
@@ -434,10 +447,10 @@ class StyleGAN:
                         gen_img_file = os.path.join(output, 'samples', "gen_" + str(current_depth)
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
-                        self.writer.add_scalar('Loss/vae', vae_loss, step)
-                        self.writer.add_scalar('Loss/dis', gen_loss, step)
-                        self.writer.add_scalar('Loss/gen', dis_loss, step)
-                        self.writer.add_scalar('Loss/sleep', sleep_loss, step)
+                        self.writer.add_scalar('Loss/vae', float(vae_loss), step)
+                        self.writer.add_scalar('Loss/dis', float(gen_loss), step)
+                        self.writer.add_scalar('Loss/gen', float(dis_loss), step)
+                        self.writer.add_scalar('Loss/sleep',float(sleep_loss), step)
 
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)

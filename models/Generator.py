@@ -176,7 +176,7 @@ class GSynthesis(nn.Module):
             x = self.init_block(dlatents_in[:, 0:2])
             for i, block in enumerate(self.blocks):
                 x = block(x, dlatents_in[:, 2 * (i + 1):2 * (i + 2)])
-            images_out = self.to_rgb[-1](x)
+            x = self.to_rgb[-1](x)
         elif self.structure == 'linear':
             x = self.init_block(dlatents_in[:, 0:2])
 
@@ -187,13 +187,13 @@ class GSynthesis(nn.Module):
                 residual = self.to_rgb[depth - 1](self.temporaryUpsampler(x))
                 straight = self.to_rgb[depth](self.blocks[depth - 1](x, dlatents_in[:, 2 * depth:2 * (depth + 1)]))
 
-                images_out = (alpha * straight) + ((1 - alpha) * residual)
+                x = (alpha * straight) + ((1 - alpha) * residual)
             else:
-                images_out = self.to_rgb[0](x)
+                x = self.to_rgb[0](x)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
-        return images_out
+        return x
 
 class Generator(nn.Module):
 
