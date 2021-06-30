@@ -243,7 +243,9 @@ class Generator(nn.Module):
         """
 
         if not latent_are_in_extended_space:
+            b,l = dlatents_in.size()
             dlatents_in = self.g_mapping(latents_in)
+            dlatents_in = dlatents_in.view(b,-1,l)
         else:
             dlatents_in = latents_in
 
