@@ -223,7 +223,7 @@ class Generator(nn.Module):
         # Setup components.
         self.num_layers = (int(np.log2(resolution)) - 1) * 2
         # self.g_mapping = GMapping(latent_size, dlatent_size, dlatent_broadcast=self.num_layers, **kwargs)
-        self.g_mapping = GMapping(latent_size, latent_size*10, dlatent_broadcast=None, **kwargs)
+        self.g_mapping = GMapping(latent_size, latent_size*self.num_layers, dlatent_broadcast=None, **kwargs)
 
         self.g_synthesis = GSynthesis(resolution=resolution, **kwargs)
 
