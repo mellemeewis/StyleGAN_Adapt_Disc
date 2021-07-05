@@ -53,6 +53,7 @@ class Discriminator(nn.Module):
         # if blur_filter is None:
         #     blur_filter = [1, 2, 1]
 
+        self.num_layers = (int(np.log2(resolution)) - 1) * 2
         resolution_log2 = int(np.log2(resolution))
         assert resolution == 2 ** resolution_log2 and resolution >= 4
         self.depth = resolution_log2 - 1
@@ -75,7 +76,7 @@ class Discriminator(nn.Module):
 
         # Building the final block.
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
-                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features*10,
+                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features*self.num_layers,
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
@@ -107,7 +108,7 @@ class Discriminator(nn.Module):
 
             x = self.final_block(x)
             b,_ = x.size()
-            x = x.view(b,10,-1)
+            x = x.view(b,self.num_layers,-1)
 
         elif self.structure == 'linear':
             if depth > 0:
@@ -124,7 +125,7 @@ class Discriminator(nn.Module):
 
             x = self.final_block(x)
             b,_ = x.size()
-            x = x.view(b,10,-1)
+            x = x.view(b,self.num_layers,-1)
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
