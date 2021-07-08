@@ -287,8 +287,10 @@ class StyleGAN:
 
     def optimize_with_sleep_phase(self, batch_size, depth, alpha, print_=False):
         latent_input = torch.randn(batch_size, self.latent_size).to(self.device)
-        
-        loss = self.loss.sleep_loss(latent_input, depth, alpha, print_)
+        fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
+
+        fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
+        loss = self.loss.sleep_loss(extended_latent_input, fake_samples, print_=print_)
 
         # optimize model
         self.dis_optim.zero_grad()

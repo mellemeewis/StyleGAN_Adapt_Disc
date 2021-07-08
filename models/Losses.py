@@ -71,144 +71,14 @@ class GANLoss:
         raise NotImplementedError("gen_loss method has not been implemented")
 
 
-class ConditionalGANLoss:
-    """ Base class for all conditional losses """
-
-    def __init__(self, dis):
-        self.dis = dis
-
-    def dis_loss(self, real_samps, fake_samps, labels, height, alpha):
-        raise NotImplementedError("dis_loss method has not been implemented")
-
-    def gen_loss(self, real_samps, fake_samps, labels, height, alpha):
-        raise NotImplementedError("gen_loss method has not been implemented")
-
-
-# =============================================================
-# Normal versions of the Losses:
-# =============================================================
-
-class StandardGAN(GANLoss):
-
-    def __init__(self, dis):
-        from torch.nn import BCEWithLogitsLoss
-
-        super().__init__(dis)
-
-        # define the criterion and activation used for object
-        self.criterion = BCEWithLogitsLoss()
-
-    def dis_loss(self, real_samps, fake_samps, height, alpha):
-        # small assertion:
-        assert real_samps.device == fake_samps.device, \
-            "Real and Fake samples are not on the same device"
-
-        # device for computations:
-        device = fake_samps.device
-
-        # predictions for real images and fake images separately :
-        r_preds = self.dis(real_samps, height, alpha)
-        f_preds = self.dis(fake_samps, height, alpha)
-
-        # calculate the real loss:
-        real_loss = self.criterion(
-            torch.squeeze(r_preds),
-            torch.ones(real_samps.shape[0]).to(device))
-
-        # calculate the fake loss:
-        fake_loss = self.criterion(
-            torch.squeeze(f_preds),
-            torch.zeros(fake_samps.shape[0]).to(device))
-
-        # return final losses
-        return (real_loss + fake_loss) / 2
-
-    def gen_loss(self, _, fake_samps, height, alpha):
-        preds, _, _ = self.dis(fake_samps, height, alpha)
-        return self.criterion(torch.squeeze(preds),
-                              torch.ones(fake_samps.shape[0]).to(fake_samps.device))
-
-
-class HingeGAN(GANLoss):
-
-    def __init__(self, dis):
-        super().__init__(dis)
-
-    def dis_loss(self, real_samps, fake_samps, height, alpha):
-        r_preds = self.dis(real_samps, height, alpha)
-        f_preds = self.dis(fake_samps, height, alpha)
-
-        loss = (torch.mean(nn.ReLU()(1 - r_preds)) +
-                torch.mean(nn.ReLU()(1 + f_preds)))
-
-        return loss
-
-    def gen_loss(self, _, fake_samps, height, alpha):
-        return -torch.mean(self.dis(fake_samps, height, alpha))
-
-
-class RelativisticAverageHingeGAN(GANLoss):
-
-    def __init__(self, dis):
-        super().__init__(dis)
-
-    def dis_loss(self, real_samps, fake_samps, height, alpha):
-        # Obtain predictions
-        r_preds = self.dis(real_samps, height, alpha)
-        f_preds = self.dis(fake_samps, height, alpha)
-
-        # difference between real and fake:
-        r_f_diff = r_preds - torch.mean(f_preds)
-
-        # difference between fake and real samples
-        f_r_diff = f_preds - torch.mean(r_preds)
-
-        # return the loss
-        loss = (torch.mean(nn.ReLU()(1 - r_f_diff))
-                + torch.mean(nn.ReLU()(1 + f_r_diff)))
-
-        return loss
-
-    def gen_loss(self, real_samps, fake_samps, height, alpha):
-        # Obtain predictions
-        r_preds = self.dis(real_samps, height, alpha)
-        f_preds = self.dis(fake_samps, height, alpha)
-
-        # difference between real and fake:
-        r_f_diff = r_preds - torch.mean(f_preds)
-
-        # difference between fake and real samples
-        f_r_diff = f_preds - torch.mean(r_preds)
-
-        # return the loss
-        return (torch.mean(nn.ReLU()(1 + r_f_diff))
-                + torch.mean(nn.ReLU()(1 - f_r_diff)))
-
 
 class LogisticGAN(GANLoss):
     def __init__(self, dis, gen, recon_beta, feature_beta):
         super().__init__(dis, gen, recon_beta, feature_beta)
 
-    # gradient penalty
-    def R1Penalty(self, real_img, height, alpha):
-
-        # TODO: use_loss_scaling, for fp16
-        apply_loss_scaling = lambda x: x * torch.exp(x * torch.Tensor([np.float32(np.log(2.0))]).to(real_img.device))
-        undo_loss_scaling = lambda x: x * torch.exp(-x * torch.Tensor([np.float32(np.log(2.0))]).to(real_img.device))
-
-        real_img = torch.autograd.Variable(real_img, requires_grad=True)
-        real_logit = self.dis(real_img, height, alpha)
-        # real_logit = apply_loss_scaling(torch.sum(real_logit))
-        real_grads = torch.autograd.grad(outputs=real_logit, inputs=real_img,
-                                         grad_outputs=torch.ones(real_logit.size()).to(real_img.device),
-                                         create_graph=True, retain_graph=True)[0].view(real_img.size(0), -1)
-        # real_grads = undo_loss_scaling(real_grads)
-        r1_penalty = torch.sum(torch.mul(real_grads, real_grads))
-        return r1_penalty
-
     def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
-        # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
 
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
@@ -245,7 +115,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        # fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:
@@ -279,16 +149,12 @@ class LogisticGAN(GANLoss):
             latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
-        # reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
-        # recon_loss = -reconstrution_distribution.log_prob(real_samps)
-        # dis_hidden_layer_real = self.dis(real_samps, height, alpha, use_for_recon_error=True)
-        # dis_hidden_layer_recon = self.dis(reconstrution, height, alpha, use_for_recon_error=True)
+        reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
+        recon_loss = -reconstrution_distribution.log_prob(real_samps).view(b, -1).mean(dim=1, keepdim=True)
+        reconstrution = reconstrution_distribution.rsample()
 
-
-        # recon_loss = torch.sum(0.5*(dis_hidden_layer_real - dis_hidden_layer_real) ** 2, 1)
-        # recon_loss= F.mse_loss(dis_hidden_layer_real, dis_hidden_layer_recon, reduction='none').mean(dim=(1,2,3))[:,None]
-        # print(recon_loss.size())
         recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
+
         features_real, features_recon = self.extract_features(interpolate(real_samps, scale_factor=64//real_samps.shape[-1])), self.extract_features(interpolate(reconstrution, scale_factor=64//real_samps.shape[-1]))
      
 
@@ -306,20 +172,16 @@ class LogisticGAN(GANLoss):
         return loss
 
 
-    def sleep_loss(self, noise, height, alpha, print_=False):
+    def sleep_loss(self, extended_latent_input, fake_samples, print_=False):
 
-        with torch.no_grad():
-            # generate fake samples:
-            fake_samples = self.gen(noise, height, alpha, use_style_mixing=False)
-            # fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
+        fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
-        b, l = reconstructed_latents.size()
+        b, w, l = reconstructed_latents.size()
 
-        zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
-        zmean = zmean - zmean.mean(dim=1, keepdim=True)
+        zmean, zsig = reconstructed_latents[:, :, :l//2], reconstructed_latents[:, :, l//2:]
         zvar = zsig.exp() # variance
-        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (noise - zmean).pow(2.0)
+        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (extended_latent_input - zmean).pow(2.0)
 
         # with torch.no_grad():
         #     distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
