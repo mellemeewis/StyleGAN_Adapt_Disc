@@ -162,7 +162,6 @@ class LogisticGAN(GANLoss):
         for (r, i) in zip(features_recon, features_real):
             feature_loss += F.mse_loss(r, i)
 
-        recon_loss = feature_loss
         loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
 
@@ -190,7 +189,7 @@ class LogisticGAN(GANLoss):
         if print_:
             print('SLEEP LOSS', loss.mean().item())
 
-        return torch.mean(loss)
+        return 0.01 * torch.mean(loss)
 
 
     def extract_features(self, input):
