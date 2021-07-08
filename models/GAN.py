@@ -290,7 +290,7 @@ class StyleGAN:
         fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
 
         fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
-        loss = self.loss.sleep_loss(extended_latent_input, fake_samples, print_=print_)
+        loss = self.loss.sleep_loss(extended_latent_input, fake_samples, depth, print_=print_)
 
         # optimize model
         self.dis_optim.zero_grad()
