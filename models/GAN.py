@@ -242,6 +242,7 @@ class StyleGAN:
         latent_input = torch.randn(real_batch.shape[0], self.latent_size).to(self.device)
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
+
         # generate fake samples:
         fake_samples = self.gen(latent_input, depth, alpha, use_style_mixing=True)
 
@@ -295,6 +296,7 @@ class StyleGAN:
 
         # optimize model
         self.dis_optim.zero_grad()
+        loss.backward()
 
         # Gradient Clipping
         nn.utils.clip_grad_norm_(self.dis.parameters(), max_norm=1.)
