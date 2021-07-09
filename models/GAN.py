@@ -455,7 +455,7 @@ class StyleGAN:
                                 b, w, l = latents.size()
                                 latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:,:, l//2:] * 0.5).exp()
                                 recon = self.gen(latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
-                                recon = torch.distributions.continuous_bernoulli.ContinuousBernoulli(recon).sample()
+                                recon = torch.distributions.continuous_bernoulli.ContinuousBernoulli(recon).sample_n(10000).mean(dim=0)
 
                             samples = self.gen(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach()
                             samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples).sample_n(10000).mean(dim=0)
