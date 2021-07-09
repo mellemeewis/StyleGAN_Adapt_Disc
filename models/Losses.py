@@ -173,7 +173,8 @@ class LogisticGAN(GANLoss):
 
     def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
 
-        fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample()
+        with torch.no_grad():
+            fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample_n(100).mean(dim=0)
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
         b, w, l = reconstructed_latents.size()
