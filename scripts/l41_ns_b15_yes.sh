@@ -15,20 +15,20 @@ cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 # if [ -d "/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ON|05-1" ] 
 # then
 #     echo $$
-# 	mkdir oo`echo $$`
-# 	cd oo`echo $$` 
-# 	cp -R '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ON|05-1' .
-# 	rm -rf '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ON|05-1'
-# 	cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
+#   mkdir oo`echo $$`
+#   cd oo`echo $$` 
+#   cp -R '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ON|05-1' .
+#   rm -rf '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/ON|05-1'
+#   cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 # else 
-# 	echo 'no problem'
+#   echo 'no problem'
 # fi
 
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/ffhq-0.yaml'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/l41_ns_b15_yes.yaml'
 wait          # wait until programs are finished
 
 # echo $$

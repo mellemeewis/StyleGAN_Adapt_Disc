@@ -1,10 +1,12 @@
 # Config file for CelebA dataset (200k)
 
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/celeba-test_v+g+s'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/l42_ns_b15_no'
 structure: 'linear'
 device_id: ('0')
-checkpoint_factor: 0
+checkpoint_factor: 1
 feedback_factor: 1
+recon_beta: 1
+feature_beta: 5
 dataset:
   img_dir: '/var/scratch/mms496/data/celeba'
   folder: False
@@ -14,11 +16,11 @@ sched:
   simp_start_end: [0.005,0.005]
   fade_in_percentage: [50, 50, 50, 50, 1, 50, 50, 50, 50]
   vae_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
-  sleep_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
+  sleep_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
   dis_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
   gen_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
 model:
   g_optim:
-    learning_rate: 0.00004
+    learning_rate: 0.0002
   d_optim:
-    learning_rate: 0.00004
+    learning_rate: 0.0004
