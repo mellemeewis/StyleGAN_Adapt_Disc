@@ -115,7 +115,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample((1000,)).mean(dim=0)
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:
