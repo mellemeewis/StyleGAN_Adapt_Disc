@@ -78,7 +78,7 @@ class LogisticGAN(GANLoss):
 
     def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample()
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean
 
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
@@ -115,7 +115,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample()
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample((1000,)).mean(dim=0)
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:
@@ -174,7 +174,7 @@ class LogisticGAN(GANLoss):
     def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
 
         with torch.no_grad():
-            fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample_n(100).mean(dim=0)
+            fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).sample((100,)).mean(dim=0)
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
         b, w, l = reconstructed_latents.size()
