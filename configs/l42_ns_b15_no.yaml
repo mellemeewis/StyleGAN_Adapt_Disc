@@ -3,7 +3,7 @@
 output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/l42_ns_b15_no'
 structure: 'linear'
 device_id: ('0')
-checkpoint_factor: 1
+checkpoint_factor: 2
 feedback_factor: 1
 recon_beta: 1
 feature_beta: 5

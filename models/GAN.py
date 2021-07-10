@@ -485,16 +485,16 @@ class StyleGAN:
                 elapsed = str(datetime.timedelta(seconds=elapsed)).split('.')[0]
                 logger.info("Time taken for epoch: %s\n" % elapsed)
 
-                if checkpoint_factor > 0:
+                if checkpoint_factor > 0 and current_depth == self.depth:
                     if epoch % checkpoint_factor == 0 or epoch == 1 or epoch == epochs[current_depth]:
-                        save_dir = os.path.join(output, 'models')
+                        save_dir = os.path.join('/var/scratch/mms496', 'models', output.split('/')[-1])
                         os.makedirs(save_dir, exist_ok=True)
-                        gen_save_file = os.path.join(save_dir, "GAN_GEN_" + str(current_depth) + "_" + str(epoch) + ".pth")
-                        dis_save_file = os.path.join(save_dir, "GAN_DIS_" + str(current_depth) + "_" + str(epoch) + ".pth")
+                        gen_save_file = os.path.join(save_dir, "GAN_GEN_" + str(current_depth)  + ".pth") #+ "_" + str(epoch) 
+                        dis_save_file = os.path.join(save_dir, "GAN_DIS_" + str(current_depth)  + ".pth") #+ "_" + str(epoch)
                         gen_optim_save_file = os.path.join(
-                            save_dir, "GAN_GEN_OPTIM_" + str(current_depth) + "_" + str(epoch) + ".pth")
+                            save_dir, "GAN_GEN_OPTIM_" + str(current_depth) + ".pth")  #+ "_" + str(epoch)
                         dis_optim_save_file = os.path.join(
-                            save_dir, "GAN_DIS_OPTIM_" + str(current_depth) + "_" + str(epoch) + ".pth")
+                            save_dir, "GAN_DIS_OPTIM_" + str(current_depth) + ".pth")  #+ "_" + str(epoch)
 
                         torch.save(self.gen.state_dict(), gen_save_file)
                         logger.info("Saving the model to: %s\n" % gen_save_file)
@@ -505,7 +505,7 @@ class StyleGAN:
                         # also save the shadow generator if use_ema is True
                         if self.use_ema:
                             gen_shadow_save_file = os.path.join(
-                                save_dir, "GAN_GEN_SHADOW_" + str(current_depth) + "_" + str(epoch) + ".pth")
+                                save_dir, "GAN_GEN_SHADOW_" + str(current_depth) + ".pth") #+ "_" + str(epoch)
                             torch.save(self.gen_shadow.state_dict(), gen_shadow_save_file)
                             logger.info("Saving the model to: %s\n" % gen_shadow_save_file)
 
