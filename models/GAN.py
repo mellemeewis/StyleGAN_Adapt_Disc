@@ -485,7 +485,7 @@ class StyleGAN:
                 elapsed = str(datetime.timedelta(seconds=elapsed)).split('.')[0]
                 logger.info("Time taken for epoch: %s\n" % elapsed)
 
-                if checkpoint_factor > 0 and current_depth == self.depth:
+                if checkpoint_factor > 0 and current_depth >= self.depth - 1:
                     try:
                         if epoch % checkpoint_factor == 0 or epoch == 1 or epoch == epochs[current_depth]:
                             save_dir = os.path.join('/var/scratch/mms496', 'models', output.split('/')[-1])
