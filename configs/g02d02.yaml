@@ -1,4 +1,6 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/g05d05'
+# Config file for CelebA dataset (200k)
+
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/g02d02'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
@@ -19,6 +21,6 @@ sched:
   gen_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
 model:
   g_optim:
-    learning_rate: 0.00005
+    learning_rate: 0.00002
   d_optim:
-    learning_rate: 0.00005
+    learning_rate: 0.00002

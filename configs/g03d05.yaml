@@ -1,4 +1,4 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/g1d05'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/g03d05'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
@@ -19,6 +19,6 @@ sched:
   gen_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'
 model:
   g_optim:
-    learning_rate: 0.0001
+    learning_rate: 0.00003
   d_optim:
     learning_rate: 0.00005
