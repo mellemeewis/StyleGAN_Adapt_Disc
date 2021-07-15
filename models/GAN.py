@@ -33,8 +33,8 @@ from data import get_data_loader
 from models import update_average
 from models.Blocks import DiscriminatorTop, DiscriminatorBlock, InputBlock, GSynthesisBlock
 from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear, Truncation
-from models.Generator import Generator
-from models.Discriminator import Discriminator
+from models.Generator import Generator, GeneratorAccomplice
+from models.Discriminator import Discriminator, GeneratorAccomplice
 
 
 class StyleGAN:
@@ -92,6 +92,8 @@ class StyleGAN:
                                  structure=self.structure,
                                  output_features=self.latent_size*2,
                                  **d_args).to(self.device)
+
+        self.gen_acc = GeneratorAccomplice(num_channels=num_channels, use_wscale=g_args['use_wscale'])
 
 
         # if code is to be run on GPU, we can use DataParallel:

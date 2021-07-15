@@ -38,7 +38,7 @@ class GANLoss:
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
         self.feature_network = vgg19_bn(pretrained=True).to('cuda')
-        self.feature_layers = ['14', '24', '34', '43']
+        self.gen_accomplice = 
 
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
@@ -79,7 +79,7 @@ class LogisticGAN(GANLoss):
     def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
         with torch.no_grad():
-            fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean
+            fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample((20,)).mean(dim=0)
 
         r_preds = self.dis(real_samps, height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
@@ -116,7 +116,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample((20,)).mean(dim=0) #rsample((1000,)).mean(dim=0)
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:
@@ -202,8 +202,6 @@ class LogisticGAN(GANLoss):
         :param feature_layers: List of string of IDs
         :return: List of the extracted features
         """
-        if self.feature_layers is None:
-            self.feature_layers = ['14', '24', '34', '43']
         features = []
         result = input
         for (key, module) in self.feature_network.features._modules.items():
