@@ -34,7 +34,7 @@ class GANLoss:
     def __init__(self, dis, gen, gen_acc, recon_beta, feature_beta):
         self.dis = dis
         self.gen = gen
-        self.gen_accomplice = gen_acc
+        self.gen_acc = gen_acc
         self.simp = 0
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
@@ -119,7 +119,7 @@ class LogisticGAN(GANLoss):
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample((20,)).mean(dim=0) #rsample((1000,)).mean(dim=0)
         fake_samps = self.gen_acc(fake_samps)
-        
+
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:

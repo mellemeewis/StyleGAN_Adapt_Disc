@@ -145,7 +145,7 @@ class StyleGAN:
 
     def __setup_gen_optim(self, learning_rate, beta_1, beta_2, eps):
         self.gen_optim = torch.optim.Adam(self.gen.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
-        self.gen__ac optim = torch.optim.Adam(self.gen_acc.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
+        self.gen_acc_optim = torch.optim.Adam(self.gen_acc.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
 
     def __setup_dis_optim(self, learning_rate, beta_1, beta_2, eps):
         self.dis_optim = torch.optim.Adam(self.dis.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
