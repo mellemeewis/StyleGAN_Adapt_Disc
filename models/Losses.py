@@ -31,14 +31,14 @@ class GANLoss:
              Note this must be a part of the GAN framework
     """
 
-    def __init__(self, dis, gen, recon_beta, feature_beta):
+    def __init__(self, dis, gen, gen_acc, recon_beta, feature_beta):
         self.dis = dis
         self.gen = gen
+        self.gen_accomplice = gen_acc
         self.simp = 0
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
         self.feature_network = vgg19_bn(pretrained=True).to('cuda')
-        self.gen_accomplice = 
 
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
@@ -73,8 +73,8 @@ class GANLoss:
 
 
 class LogisticGAN(GANLoss):
-    def __init__(self, dis, gen, recon_beta, feature_beta):
-        super().__init__(dis, gen, recon_beta, feature_beta)
+    def __init__(self, dis, gen, gen_acc, recon_beta, feature_beta):
+        super().__init__(dis, gen, gen_acc, recon_beta, feature_beta)
 
     def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions

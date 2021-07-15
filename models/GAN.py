@@ -160,7 +160,7 @@ class StyleGAN:
             elif loss == "relativistic-hinge":
                 loss = Losses.RelativisticAverageHingeGAN(self.dis, self.gen, recon_beta, feature_beta)
             elif loss == "logistic":
-                loss = Losses.LogisticGAN(self.dis, self.gen, recon_beta, feature_beta)
+                loss = Losses.LogisticGAN(self.dis, self.gen, self.gen_acc, recon_beta, feature_beta)
             else:
                 raise ValueError("Unknown loss function requested")
 
