@@ -279,7 +279,9 @@ class Generator(nn.Module):
 
 class GeneratorAccomplice(nn.Module):
 
-    def __init__(self, num_channels=3, use_wscale)
+    def __init__(self, num_channels=3, use_wscale=True ):
+        super(GeneratorAccomplice, self).__init__()
+
         self.layer = EqualizedConv2d(num_channels, num_channels, 1, gain=1, use_wscale=use_wscale)
 
 
