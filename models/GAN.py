@@ -33,7 +33,7 @@ from data import get_data_loader
 from models import update_average
 from models.Blocks import DiscriminatorTop, DiscriminatorBlock, InputBlock, GSynthesisBlock
 from models.CustomLayers import EqualizedConv2d, PixelNormLayer, EqualizedLinear, Truncation
-from models.Generator import Generator, GeneratorAccomplice
+from models.Generator import Generator
 from models.Discriminator import Discriminator
 
 
@@ -93,8 +93,6 @@ class StyleGAN:
                                  output_features=self.latent_size*2,
                                  **d_args).to(self.device)
 
-        self.gen_acc = GeneratorAccomplice(num_channels=num_channels).to(self.device)
-
 
         # if code is to be run on GPU, we can use DataParallel:
         # TODO
@@ -145,7 +143,6 @@ class StyleGAN:
 
     def __setup_gen_optim(self, learning_rate, beta_1, beta_2, eps):
         self.gen_optim = torch.optim.Adam(self.gen.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
-        self.gen_acc_optim = torch.optim.Adam(self.gen_acc.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
 
     def __setup_dis_optim(self, learning_rate, beta_1, beta_2, eps):
         self.dis_optim = torch.optim.Adam(self.dis.parameters(), lr=learning_rate, betas=(beta_1, beta_2), eps=eps)
@@ -161,7 +158,7 @@ class StyleGAN:
             elif loss == "relativistic-hinge":
                 loss = Losses.RelativisticAverageHingeGAN(self.dis, self.gen, recon_beta, feature_beta)
             elif loss == "logistic":
-                loss = Losses.LogisticGAN(self.dis, self.gen, self.gen_acc, recon_beta, feature_beta)
+                loss = Losses.LogisticGAN(self.dis, self.gen, recon_beta, feature_beta)
             else:
                 raise ValueError("Unknown loss function requested")
 
@@ -253,15 +250,12 @@ class StyleGAN:
 
         # optimize the generator
         self.gen_optim.zero_grad()
-        self.gen_acc_optim.zero_grad()
 
         loss.backward()
         # Gradient Clipping
         nn.utils.clip_grad_norm_(self.gen.parameters(), max_norm=1.)
-        nn.utils.clip_grad_norm_(self.gen_acc.parameters(), max_norm=1.)
 
         self.gen_optim.step()
-        self.gen_acc_optim.step()
 
         # if use_ema is true, apply ema to the generator parameters
         if self.use_ema:

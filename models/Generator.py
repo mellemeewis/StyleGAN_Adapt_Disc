@@ -275,16 +275,3 @@ class Generator(nn.Module):
         if return_extended_latent_input:
             return torch.sigmoid(fake_images), dlatents_in
         return torch.sigmoid(fake_images)
-
-
-class GeneratorAccomplice(nn.Module):
-
-    def __init__(self, num_channels=3, use_wscale=True ):
-        super(GeneratorAccomplice, self).__init__()
-
-        self.layer = EqualizedConv2d(num_channels, num_channels, 1, gain=1, use_wscale=use_wscale)
-
-
-    def forward(self, x):
-        x = torch.sigmoid(self.layer(x))
-        return x

@@ -31,10 +31,9 @@ class GANLoss:
              Note this must be a part of the GAN framework
     """
 
-    def __init__(self, dis, gen, gen_acc, recon_beta, feature_beta):
+    def __init__(self, dis, gen, recon_beta, feature_beta):
         self.dis = dis
         self.gen = gen
-        self.gen_acc = gen_acc
         self.simp = 0
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
@@ -73,16 +72,15 @@ class GANLoss:
 
 
 class LogisticGAN(GANLoss):
-    def __init__(self, dis, gen, gen_acc, recon_beta, feature_beta):
-        super().__init__(dis, gen, gen_acc, recon_beta, feature_beta)
+    def __init__(self, dis, gen, recon_beta, feature_beta):
+        super().__init__(dis, gen, recon_beta, feature_beta)
 
     def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
         with torch.no_grad():
-            fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).sample((20,)).mean(dim=0)
-            fake_samps = self.gen_acc(fake_samps)
+            fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #sample((20,)).mean(dim=0)
 
-        r_preds = self.dis(real_samps, height, alpha)
+        r_preds = self.dis(real_samps.clamp(min=0.0627, max=0.9373), height, alpha)
         f_preds = self.dis(fake_samps, height, alpha)
 
         if len(list(r_preds.size())) == 2:
@@ -117,9 +115,7 @@ class LogisticGAN(GANLoss):
         return loss
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).rsample((20,)).mean(dim=0) #rsample((1000,)).mean(dim=0)
-        fake_samps = self.gen_acc(fake_samps)
-
+        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:
