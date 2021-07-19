@@ -217,7 +217,7 @@ class StyleGAN:
         # generate a batch of samples
         fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
         fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
-        loss = self.loss.dis_loss(extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
+        loss, r_loss, f_loss = self.loss.dis_loss(extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
 
         # optimize discriminator
         self.dis_optim.zero_grad()
@@ -227,7 +227,7 @@ class StyleGAN:
 
         self.dis_optim.step()
 
-        return loss.item()
+        return loss.item(), r_loss, f_loss
 
     def optimize_generator(self, real_batch, depth, alpha, print_=False):
         """
@@ -267,7 +267,7 @@ class StyleGAN:
     def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
-        loss = self.loss.vae_loss(real_samples, depth, alpha, print_)
+        loss, kl_loss, recon_loss, feature_loss = self.loss.vae_loss(real_samples, depth, alpha, print_)
 
         # optimize model
         self.gen_optim.zero_grad()
@@ -286,7 +286,7 @@ class StyleGAN:
             self.ema_updater(self.gen_shadow, self.gen, self.ema_decay)
 
         # return the loss value
-        return loss.item()
+        return loss.item(), kl_loss, recon_loss, feature_loss
 
     def optimize_with_sleep_phase(self, batch_size, depth, alpha, print_=False):
         with torch.no_grad():
@@ -412,13 +412,13 @@ class StyleGAN:
                     images = batch.to(self.device)
 
                     # optimize the discriminator:
-                    dis_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss
+                    dis_loss, r_loss, f_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss
 
                     # optimize the generator:
                     gen_loss = self.optimize_generator(images, current_depth, alpha, print_) if random.random() < probabilities['gen'] else gen_loss
 
                     # optimze model as vae:
-                    vae_loss = self.optimeze_as_vae(images, current_depth, alpha, print_) if random.random() < probabilities['vae'] else vae_loss
+                    vae_loss, kl_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_) if random.random() < probabilities['vae'] else vae_loss
 
                     # optimeze model with sleep phase
                     sleep_loss = self.optimize_with_sleep_phase(images.shape[0], current_depth, alpha, print_) if random.random() < probabilities['sleep'] else sleep_loss
@@ -438,9 +438,14 @@ class StyleGAN:
                         gen_img_file = os.path.join(output, 'samples', "gen_" + str(current_depth)
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
-                        self.writer.add_scalar('Loss/vae', float(vae_loss), step)
-                        self.writer.add_scalar('Loss/dis', float(gen_loss), step)
-                        self.writer.add_scalar('Loss/gen', float(dis_loss), step)
+                        self.writer.add_scalar('Loss/vae/total', float(vae_loss), step)
+                        self.writer.add_scalar('Loss/vae/kl', float(kl_loss), step)
+                        self.writer.add_scalar('Loss/vae/recon', float(recon_loss), step)
+                        self.writer.add_scalar('Loss/vae/feature', float(feature_loss), step)
+                        self.writer.add_scalar('Loss/dis/total', float(dis_loss), step)
+                        self.writer.add_scalar('Loss/dis/real', float(r_loss), step)
+                        self.writer.add_scalar('Loss/dis/fake', float(f_loss), step)
+                        self.writer.add_scalar('Loss/gen', float(gen_loss), step)
                         self.writer.add_scalar('Loss/sleep',float(sleep_loss), step)
 
                         with torch.no_grad():

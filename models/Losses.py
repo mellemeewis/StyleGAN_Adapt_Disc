@@ -38,6 +38,7 @@ class GANLoss:
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
         self.feature_network = vgg19_bn(pretrained=True).to('cuda')
+        self.feature_layers = ['14', '24', '34', '43']
 
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
@@ -112,7 +113,7 @@ class LogisticGAN(GANLoss):
                 print('DIS LOSS FAKE: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', f_loss.mean().item())
 
 
-        return loss
+        return loss, r_loss.mean().item(), f_loss.mean().item()
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
@@ -149,18 +150,21 @@ class LogisticGAN(GANLoss):
             latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
+
         reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
         recon_loss = -reconstrution_distribution.log_prob(real_samps).view(b, -1).mean(dim=1, keepdim=True)
         reconstrution = reconstrution_distribution.mean
 
         # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
-        features_real, features_recon = self.extract_features(interpolate(real_samps, scale_factor=64//real_samps.shape[-1])), self.extract_features(interpolate(reconstrution, scale_factor=64//real_samps.shape[-1]))
-     
+        if self.feature_beta > 0:
+            features_real, features_recon = self.extract_features(interpolate(real_samps, scale_factor=64//real_samps.shape[-1])), self.extract_features(interpolate(reconstrution, scale_factor=64//real_samps.shape[-1]))
+            feature_loss = 0.0
+            for (r, i) in zip(features_recon, features_real):
+                feature_loss += F.mse_loss(r, i)
 
-        feature_loss = 0.0
-        for (r, i) in zip(features_recon, features_real):
-            feature_loss += F.mse_loss(r, i)
+        else:
+            feature_loss = torch.tensor([0.]).to(kl_loss.device)
 
         loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
@@ -168,7 +172,7 @@ class LogisticGAN(GANLoss):
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
 
-        return loss
+        return loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item()
 
 
     def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
@@ -190,7 +194,7 @@ class LogisticGAN(GANLoss):
         if print_:
             print('SLEEP LOSS', loss.mean().item())
 
-        return 0.01 * torch.mean(loss)
+        return torch.mean(loss)
 
 
     def extract_features(self, input):
