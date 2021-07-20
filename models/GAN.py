@@ -369,7 +369,7 @@ class StyleGAN:
 
         # create fixed_input for debugging
         fixed_input = torch.randn(num_samples, self.latent_size).to(self.device)
-        vae_loss, dis_loss, gen_loss, sleep_loss = 0, 0, 0, 0 #only for printing
+        vae_loss, kl_loss, recon_loss, feature_loss, dis_loss, r_loss, f_loss, gen_loss, sleep_loss = 0, 0, 0, 0, 0, 0, 0, 0, 0 #only for printing
 
         # config depend on structure
         logger.info("Starting the training process ... \n")
@@ -412,13 +412,14 @@ class StyleGAN:
                     images = batch.to(self.device)
 
                     # optimize the discriminator:
-                    dis_loss, r_loss, f_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss
+                    dis_loss, r_loss, f_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss, r_loss, f_loss
 
                     # optimize the generator:
                     gen_loss = self.optimize_generator(images, current_depth, alpha, print_) if random.random() < probabilities['gen'] else gen_loss
 
                     # optimze model as vae:
-                    vae_loss, kl_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_) if random.random() < probabilities['vae'] else vae_loss
+                    vae_loss, kl_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_) if random.random() < probabilities['vae'] else vae_loss, kl_loss, recon_loss, feature_loss
+                    vae_loss, kl_loss, recon_loss, feature_loss = vae_loss #FIX THIS LATER --> UGLY
 
                     # optimeze model with sleep phase
                     sleep_loss = self.optimize_with_sleep_phase(images.shape[0], current_depth, alpha, print_) if random.random() < probabilities['sleep'] else sleep_loss
