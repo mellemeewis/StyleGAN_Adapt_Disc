@@ -89,7 +89,7 @@ class LogisticGAN(GANLoss):
 
         r_loss = F.binary_cross_entropy(r_preds, torch.ones_like(r_preds), reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
-        f_loss = F.binary_cross_entropy(f_preds, torch.zeros_like(f_preds), reduction='none').view(b, -1).mean(dim=1, keepdim=True) + self.simp * F.mse_loss(extended_latent_input, latent_recon_fake).view(b, -1).mean(dim=1, keepdim=True)
+        f_loss = F.binary_cross_entropy(f_preds, torch.zeros_like(f_preds), reduction='none').view(b, -1).mean(dim=1, keepdim=True) + self.simp * F.mse_loss(extended_latent_input, latent_recon_fake, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
         f_loss = torch.mean(f_loss, dim=1)
 
 
