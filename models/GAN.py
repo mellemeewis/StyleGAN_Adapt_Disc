@@ -90,7 +90,7 @@ class StyleGAN:
         self.dis = Discriminator(num_channels=num_channels,
                                  resolution=resolution,
                                  structure=self.structure,
-                                 output_features=self.latent_size*2,
+                                 output_features=self.latent_size,
                                  **d_args).to(self.device)
 
 
@@ -420,7 +420,7 @@ class StyleGAN:
 
                     # optimze model as vae:
                     if random.random() < probabilities['vae']:
-                        vae_loss, kl_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
+                        vae_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
 
                     # optimeze model with sleep phase
                     sleep_loss = self.optimize_with_sleep_phase(images.shape[0], current_depth, alpha, print_) if random.random() < probabilities['sleep'] else sleep_loss
@@ -441,7 +441,7 @@ class StyleGAN:
                                                     + "_" + str(epoch) + "_" + str(i) + ".png")
 
                         self.writer.add_scalar('Loss/vae/total', float(vae_loss), step)
-                        self.writer.add_scalar('Loss/vae/kl', float(kl_loss), step)
+                        # self.writer.add_scalar('Loss/vae/kl', float(kl_loss), step)
                         self.writer.add_scalar('Loss/vae/recon', float(recon_loss), step)
                         self.writer.add_scalar('Loss/vae/feature', float(feature_loss), step)
                         self.writer.add_scalar('Loss/dis/total', float(dis_loss), step)
@@ -452,46 +452,21 @@ class StyleGAN:
 
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
-                            latents = self.dis(images_ds, current_depth, alpha).detach()
-
-                            if len(list(latents.size())) ==2:
-                                b, l = latents.size()
-                                latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
-                                recon = self.gen(latents, current_depth, alpha, latent_are_in_extended_space=False).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha, latent_are_in_extended_space=False).detach()
-                                recon = torch.distributions.continuous_bernoulli.ContinuousBernoulli(recon).mean
-
-                            else:
-                                b, w, l = latents.size()
-                                latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:,:, l//2:] * 0.5).exp()
-                                recon = self.gen(latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
-                                recon = torch.distributions.continuous_bernoulli.ContinuousBernoulli(recon).mean
+                            
+                            latents, _ = self.dis(images_ds, current_depth, alpha).detach()
+                            recon = self.gen(latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
+                            recon = torch.distributions.continuous_bernoulli.ContinuousBernoulli(recon).mean
 
                             samples = self.gen(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach()
-                            samples_extended_ls = self.gen(torch.randn_like(latents), current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(torch.randn_like(latents), current_depth, alpha, latent_are_in_extended_space=True).detach()
-
                             samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples).mean
-                            samples_extended_ls = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples_extended_ls).mean
 
                             renconstruced_latents = self.dis(samples, current_depth, alpha).detach()
-                            renconstruced_latents_extended_ls = self.dis(samples_extended_ls, current_depth, alpha).detach()
-
-                            if len(list(renconstruced_latents.size())) ==2:
-                                renconstruced_latents = renconstruced_latents[:, :l//2] + Variable(torch.randn(b, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:, l//2:] * 0.5).exp()
-                                renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
-                                renconstruced_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(renconstruced_samples).mean
-
-                            else:
-                                renconstruced_latents = renconstruced_latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:,:, l//2:] * 0.5).exp()
-                                renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
-                                renconstruced_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(renconstruced_samples).mean
-
-                            b, w, l = renconstruced_latents_extended_ls.size()
-                            renconstruced_latents_extended_ls = renconstruced_latents_extended_ls[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(renconstruced_latents_extended_ls.device)) * (renconstruced_latents_extended_ls[:,:, l//2:] * 0.5).exp()
-                            renconstruced_samples_extended_ls = self.gen(renconstruced_latents_extended_ls, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents_extended_ls, current_depth, alpha, latent_are_in_extended_space=True).detach()
-                            renconstruced_samples_extended_ls = torch.distributions.continuous_bernoulli.ContinuousBernoulli(renconstruced_samples_extended_ls).mean
+                            renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
+                            renconstruced_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(renconstruced_samples).mean
+                            
 
                             self.create_grid(
-                                samples=torch.cat([images_ds, recon, samples, renconstruced_samples, samples_extended_ls, ]),
+                                samples=torch.cat([images_ds, recon, samples, renconstruced_samples]),
                                 scale_factor=int(np.power(2, self.depth - current_depth - 1)) if self.structure == 'linear' else 1,
                                 img_file=gen_img_file,
                             )

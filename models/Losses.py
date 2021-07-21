@@ -81,20 +81,12 @@ class LogisticGAN(GANLoss):
         with torch.no_grad():
             fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #sample((20,)).mean(dim=0)
 
-        r_preds = self.dis(real_samps.clamp(min=0.0627, max=0.9373), height, alpha)
-        f_preds = self.dis(fake_samps, height, alpha)
+        latent_recon_real, r_preds = self.dis(real_samps.clamp(min=0.0627, max=0.9373), height, alpha)
+        latent_recon_fake, f_preds = self.dis(fake_samps, height, alpha)
 
-        if len(list(r_preds.size())) == 2:
-            b, l = r_preds.size()
-            r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
-            f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
-        else:
-            b, w, l = r_preds.size()
-            r_mean, r_sig = r_preds[:,:, :l//2], r_preds[:,:, l//2:]
-            f_mean, f_sig = f_preds[:,:,:l//2], f_preds[:,:, l//2:]           
+        r_loss = F.binary_cross_entropy(r_preds, torch.ones_like(r_preds), reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
-        r_loss = 0.5 * torch.mean(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-        f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (extended_latent_input - f_mean).pow(2.0)
+        f_loss = F.binary_cross_entropy(f_preds, torch.zeros_like(f_preds), reduction='none').view(b, -1).mean(dim=1, keepdim=True) + self.simp * F.mse_loss(extended_latent_input, latent_recon_fake).view(b, -1).mean(dim=1, keepdim=True)
         f_loss = torch.mean(f_loss, dim=1)
 
 
@@ -117,17 +109,9 @@ class LogisticGAN(GANLoss):
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
         fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
-        f_preds = self.dis(fake_samps, height, alpha)
-        
-        if len(list(f_preds.size())) == 2:
-            b, l = f_preds.size()
-            f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+        latent_recon_fake, preds = self.dis(fake_samps, height, alpha)
 
-        else:
-            b,w,l = f_preds.size()
-            f_mean, f_sig = f_preds[:,:, :l//2], f_preds[:, :,l//2:]
-
-        loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+        loss = F.binary_cross_entropy(preds, torch.ones_like(preds), reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
         if print_:
             print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())
@@ -136,26 +120,12 @@ class LogisticGAN(GANLoss):
 
     def vae_loss(self, real_samps, height, alpha, print_=False):
         
-        latents = self.dis(real_samps, height, alpha)
-
-        if len(list(latents.size())) == 2:
-            b, l = latents.size()
-            kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
-            latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
-            reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=False)
-
-        else:
-            b, w, l = latents.size()
-            kl_loss = 0.5 * torch.mean(latents[:, :, l//2:].exp() - latents[:,:,l//2:] + latents[:,:,:l//2].pow(2) - 1, dim=1)
-            latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
-            reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
-
+        latents, _ = self.dis(real_samps, height, alpha)
+        reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
         reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
         recon_loss = -reconstrution_distribution.log_prob(real_samps).view(b, -1).mean(dim=1, keepdim=True)
         reconstrution = reconstrution_distribution.rsample()
-
-        # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
         if self.feature_beta > 0:
             if real_samps.shape[-1] < 32:
@@ -169,13 +139,13 @@ class LogisticGAN(GANLoss):
         else:
             feature_loss = torch.tensor([0.]).to(kl_loss.device)
 
-        loss = torch.mean(5*kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
+        loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
 
-        return loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item()
+        return loss, recon_loss.mean().item(), feature_loss.mean().item()
 
 
     def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
@@ -186,10 +156,7 @@ class LogisticGAN(GANLoss):
         reconstructed_latents = self.dis(fake_samples, height, alpha)
         b, w, l = reconstructed_latents.size()
 
-        zmean, zsig = reconstructed_latents[:, :, :l//2], reconstructed_latents[:, :, l//2:]
-        zvar = zsig.exp() # variance
-        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (extended_latent_input - zmean).pow(2.0)
-
+        loss = f.mse_loss(extended_latent_input, reconstructed_latents)
         # with torch.no_grad():
         #     distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
         #     d_loss = -distribution.log_prob(noise)
