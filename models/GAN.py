@@ -461,7 +461,8 @@ class StyleGAN:
                             samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples).mean
 
                             renconstruced_latents = self.dis(samples, current_depth, alpha)[0].detach()
-                            renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
+
+                            renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
                             renconstruced_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(renconstruced_samples).mean
                             
 
