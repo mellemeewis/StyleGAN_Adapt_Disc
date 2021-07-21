@@ -453,14 +453,14 @@ class StyleGAN:
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
                             
-                            latents, _ = self.dis(images_ds, current_depth, alpha).detach()
+                            latents = self.dis(images_ds, current_depth, alpha)[0].detach()
                             recon = self.gen(latents, current_depth, alpha, latent_are_in_extended_space=True).detach() if not self.use_ema else self.gen_shadow(latents, current_depth, alpha, latent_are_in_extended_space=True).detach()
                             recon = torch.distributions.continuous_bernoulli.ContinuousBernoulli(recon).mean
 
                             samples = self.gen(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach()
                             samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples).mean
 
-                            renconstruced_latents = self.dis(samples, current_depth, alpha).detach()
+                            renconstruced_latents = self.dis(samples, current_depth, alpha)[0].detach()
                             renconstruced_samples = self.gen(renconstruced_latents, current_depth, alpha).detach() if not self.use_ema else self.gen_shadow(renconstruced_latents, current_depth, alpha).detach()
                             renconstruced_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(renconstruced_samples).mean
                             
