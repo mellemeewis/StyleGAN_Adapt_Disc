@@ -286,7 +286,7 @@ class StyleGAN:
             self.ema_updater(self.gen_shadow, self.gen, self.ema_decay)
 
         # return the loss value
-        return loss.item(), kl_loss, recon_loss, feature_loss
+        return loss.item(), recon_loss, feature_loss
 
     def optimize_with_sleep_phase(self, batch_size, depth, alpha, print_=False):
         with torch.no_grad():
