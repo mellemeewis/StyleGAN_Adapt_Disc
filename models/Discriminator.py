@@ -126,7 +126,7 @@ class Discriminator(nn.Module):
             x = self.final_block(x)
             x,p = x[:, :-1], x[:,-1]
             b,_ = x.size()
-            x = .view(b,self.num_layers,-1)
+            x = x.view(b,self.num_layers,-1)
 
         else:
             raise KeyError("Unknown structure: ", self.structure)
