@@ -126,7 +126,7 @@ class LogisticGAN(GANLoss):
         latents, _ = self.dis(real_samps, height, alpha)
         reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
-        b, w, l = reconstrution.size()
+        b = reconstrution.size()[0]
 
 
         reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
