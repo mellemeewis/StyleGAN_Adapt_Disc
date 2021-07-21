@@ -267,7 +267,7 @@ class StyleGAN:
     def optimeze_as_vae(self, real_batch, depth, alpha, print_=False):
         real_samples = self.__progressive_down_sampling(real_batch, depth, alpha)
 
-        loss, kl_loss, recon_loss, feature_loss = self.loss.vae_loss(real_samples, depth, alpha, print_)
+        loss, recon_loss, feature_loss = self.loss.vae_loss(real_samples, depth, alpha, print_)
 
         # optimize model
         self.gen_optim.zero_grad()
