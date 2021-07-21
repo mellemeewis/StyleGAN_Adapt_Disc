@@ -412,15 +412,15 @@ class StyleGAN:
                     images = batch.to(self.device)
 
                     # optimize the discriminator:
-                    dis_loss, r_loss, f_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss, r_loss, f_loss
-                    dis_loss, r_loss, f_loss = dis_loss #FIX THIS LATER --> UGLY
+                    if random.random() < probabilities['dis']:
+                        dis_loss, r_loss, f_loss = self.optimize_discriminator(images, current_depth, alpha, print_)
                     
                     # optimize the generator:
                     gen_loss = self.optimize_generator(images, current_depth, alpha, print_) if random.random() < probabilities['gen'] else gen_loss
 
                     # optimze model as vae:
-                    vae_loss, kl_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_) if random.random() < probabilities['vae'] else vae_loss, kl_loss, recon_loss, feature_loss
-                    vae_loss, kl_loss, recon_loss, feature_loss = vae_loss #FIX THIS LATER --> UGLY
+                    if random.random() < probabilities['vae']:
+                        vae_loss, kl_loss, recon_loss, feature_loss = self.optimeze_as_vae(images, current_depth, alpha, print_)
 
                     # optimeze model with sleep phase
                     sleep_loss = self.optimize_with_sleep_phase(images.shape[0], current_depth, alpha, print_) if random.random() < probabilities['sleep'] else sleep_loss
