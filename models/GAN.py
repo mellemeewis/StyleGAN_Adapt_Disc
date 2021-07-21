@@ -413,7 +413,8 @@ class StyleGAN:
 
                     # optimize the discriminator:
                     dis_loss, r_loss, f_loss = self.optimize_discriminator(images, current_depth, alpha, print_) if random.random() < probabilities['dis'] else dis_loss, r_loss, f_loss
-
+                    dis_loss, r_loss, f_loss = dis_loss #FIX THIS LATER --> UGLY
+                    
                     # optimize the generator:
                     gen_loss = self.optimize_generator(images, current_depth, alpha, print_) if random.random() < probabilities['gen'] else gen_loss
 
