@@ -131,4 +131,4 @@ class Discriminator(nn.Module):
         else:
             raise KeyError("Unknown structure: ", self.structure)
 
-        return x, p
+        return x, torch.sigmoid(p)
