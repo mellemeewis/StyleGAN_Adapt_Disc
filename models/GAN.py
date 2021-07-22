@@ -441,7 +441,7 @@ class StyleGAN:
                             
                             renconstruced_latents = self.dis(samples, current_depth, alpha).detach()
 
-                            if self.encode_in == 'Z':
+                            if len(latents.size()) == 2:
                                 b, l = latents.size()
                                 latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
                                 renconstruced_latents = renconstruced_latents[:, :l//2] + Variable(torch.randn(b, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:, l//2:] * 0.5).exp()
