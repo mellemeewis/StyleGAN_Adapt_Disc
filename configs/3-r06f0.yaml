@@ -1,10 +1,10 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/3-r5f5'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/3-r06f0'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
 feedback_factor: 1
-recon_beta: 5
-feature_beta: 5
+recon_beta: 0.6
+feature_beta: 0
 dataset:
   img_dir: '/var/scratch/mms496/data/celeba'
   folder: False

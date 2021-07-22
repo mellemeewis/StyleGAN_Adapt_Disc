@@ -1,10 +1,10 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/4-r0f5'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/3-r2f0'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
 feedback_factor: 1
-recon_beta: 0
-feature_beta: 5
+recon_beta: 2
+feature_beta: 0
 dataset:
   img_dir: '/var/scratch/mms496/data/celeba'
   folder: False
@@ -19,6 +19,6 @@ sched:
   gen_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
 model:
   g_optim:
-    learning_rate: 0.0004
+    learning_rate: 0.0003
   d_optim:
-    learning_rate: 0.0004
+    learning_rate: 0.0003
