@@ -100,7 +100,8 @@ if __name__ == '__main__':
                          d_repeats=opt.d_repeats,
                          use_ema=opt.use_ema,
                          ema_decay=opt.ema_decay,
-                         device=device)
+                         device=device,
+                         use_CB=opt.use_CB)
 
     # Resume training from checkpoints
     if args.generator_file is not None:

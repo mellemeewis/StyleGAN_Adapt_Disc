@@ -31,7 +31,7 @@ class GANLoss:
              Note this must be a part of the GAN framework
     """
 
-    def __init__(self, dis, gen, recon_beta, feature_beta):
+    def __init__(self, dis, gen, recon_beta, feature_beta, use_CB):
         self.dis = dis
         self.gen = gen
         self.simp = 0
@@ -39,6 +39,7 @@ class GANLoss:
         self.feature_beta = feature_beta
         self.feature_network = vgg19_bn(pretrained=True).to('cuda')
         self.feature_layers = ['14', '24', '34', '43']
+        self.use_CB = use_CB
 
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
@@ -73,11 +74,12 @@ class GANLoss:
 
 
 class LogisticGAN(GANLoss):
-    def __init__(self, dis, gen, recon_beta, feature_beta):
-        super().__init__(dis, gen, recon_beta, feature_beta)
+    def __init__(self, dis, gen, recon_beta, feature_beta, use_CB):
+        super().__init__(dis, gen, recon_beta, feature_beta, use_CB)
 
     def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
+
         with torch.no_grad():
             fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #sample((20,)).mean(dim=0)
 
@@ -88,6 +90,7 @@ class LogisticGAN(GANLoss):
             b, l = r_preds.size()
             r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+
         else:
             b, w, l = r_preds.size()
             r_mean, r_sig = r_preds[:,:, :l//2], r_preds[:,:, l//2:]
@@ -145,43 +148,47 @@ class LogisticGAN(GANLoss):
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=False)
 
         else:
-            b, w, l = latents.size()
-            kl_loss = 0.5 * torch.mean(latents[:, :, l//2:].exp() - latents[:,:,l//2:] + latents[:,:,:l//2].pow(2) - 1, dim=1)
-            latents = latents[:, :, :l//2] + Variable(torch.randn(b, w, l//2).to(latents.device)) * (latents[:, :, l//2:] * 0.5).exp()
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
 
-        reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
-        recon_loss = -reconstrution_distribution.log_prob(real_samps).view(b, -1).mean(dim=1, keepdim=True)
-        reconstrution = reconstrution_distribution.rsample()
-
-        # recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
+        if self.use_CB == True:
+            reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
+            recon_loss = -reconstrution_distribution.log_prob(real_samps).view(b, -1).mean(dim=1, keepdim=True)
+            reconstrution = reconstrution_distribution.rsample()
+        else:
+            recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 
         if self.feature_beta > 0:
             if real_samps.shape[-1] < 32:
                 real_samps = interpolate(real_samps, scale_factor=32//real_samps.shape[-1])
                 reconstrution = interpolate(reconstrution, scale_factor=32//reconstrution.shape[-1])
+
             features_real, features_recon = self.extract_features(real_samps), self.extract_features(reconstrution)
             feature_loss = 0.0
             for (r, i) in zip(features_recon, features_real):
                 feature_loss += F.mse_loss(r, i)
 
         else:
-            feature_loss = torch.tensor([0.]).to(kl_loss.device)
+            feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
-        loss = torch.mean(5*kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
+        if use_CB == True:
+            loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
+            kl_loss = torch.tensor([0])
+        else:
+            loss = torch.mean(5*kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
 
-        return loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item()
+        return (loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item())
 
 
     def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
 
-        with torch.no_grad():
-            fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).mean
+        if self.use_CB:
+            with torch.no_grad():
+                fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).mean
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
         b, w, l = reconstructed_latents.size()

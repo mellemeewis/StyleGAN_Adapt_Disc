@@ -24,7 +24,7 @@ class Discriminator(nn.Module):
 
     def __init__(self, resolution, num_channels=3, fmap_base=8192, fmap_decay=1.0, fmap_max=512, unmapping=4,
                  nonlinearity='lrelu', use_wscale=True, mbstd_group_size=4, mbstd_num_features=1,
-                 output_features=1024, blur_filter=None, structure='linear', **kwargs):
+                 output_features=1024, blur_filter=None, structure='linear', encode_in='Z', **kwargs):
         """
         Discriminator used in the StyleGAN paper.
 
@@ -47,6 +47,7 @@ class Discriminator(nn.Module):
         def nf(stage):
             return min(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_max)
 
+        self.encode_in == encode_in
         self.mbstd_num_features = mbstd_num_features
         self.mbstd_group_size = mbstd_group_size
         self.structure = structure
@@ -75,8 +76,10 @@ class Discriminator(nn.Module):
         self.blocks = nn.ModuleList(blocks)
 
         # Building the final block.
+        output_features = output_features if self.encode_in == 'Z' else output_features = output_features self.num_layers
+
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
-                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features*self.num_layers,
+                                            in_channels=nf(2), intermediate_channels=4096, output_features=output_features,
                                             gain=gain, use_wscale=use_wscale, activation_layer=act)
         from_rgb.append(EqualizedConv2d(num_channels, nf(2), kernel_size=1,
                                         gain=gain, use_wscale=use_wscale))
@@ -125,7 +128,10 @@ class Discriminator(nn.Module):
 
             x = self.final_block(x)
             b,_ = x.size()
-            x = x.view(b,self.num_layers,-1)
+
+            if self.encode_in != 'Z':
+                x = x.view(b,self.num_layers,-1)
+            
         else:
             raise KeyError("Unknown structure: ", self.structure)
 

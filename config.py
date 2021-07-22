@@ -23,6 +23,7 @@ cfg.feature_beta = 5
 cfg.d_repeats = 1
 cfg.use_ema = True
 cfg.ema_decay = 0.999
+cfg.use_CB = False
 
 cfg.num_works = 4
 cfg.num_samples = 12
@@ -79,6 +80,7 @@ cfg.model.gen.const_input_layer = True
 cfg.model.dis = CN()
 cfg.model.dis.use_wscale = True
 cfg.model.dis.blur_filter = [1, 2, 1]
+cfg.model.dis.encode_in = 'Z'
 
 # ---------------------------------------------------------------------------- #
 # Options for Generator Optimizer
