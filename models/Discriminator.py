@@ -47,7 +47,7 @@ class Discriminator(nn.Module):
         def nf(stage):
             return min(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_max)
 
-        self.encode_in == encode_in
+        self.encode_in = encode_in
         self.mbstd_num_features = mbstd_num_features
         self.mbstd_group_size = mbstd_group_size
         self.structure = structure
