@@ -148,6 +148,8 @@ class LogisticGAN(GANLoss):
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=False)
 
         else:
+            b, w, l = latents.size()
+            kl_loss = torch.tensor([0.])
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
 
 
@@ -171,17 +173,15 @@ class LogisticGAN(GANLoss):
         else:
             feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
-        if self.use_CB == True:
-            loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
-            kl_loss = torch.tensor([0])
+        if len(list(latents.size())) == 2:
+            loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)            
         else:
-            loss = torch.mean(5*kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)
-
+            loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
         if print_:
             print('VAE LOSS: KL:', kl_loss.mean().item(), 'RECON: ', recon_loss.mean().item(), 'L: ', loss.mean().item())
 
-        return (loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item())
+        return loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item()
 
 
     def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
