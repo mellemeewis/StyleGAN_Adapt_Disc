@@ -171,7 +171,7 @@ class LogisticGAN(GANLoss):
         else:
             feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
-        if use_CB == True:
+        if self.use_CB == True:
             loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
             kl_loss = torch.tensor([0])
         else:
