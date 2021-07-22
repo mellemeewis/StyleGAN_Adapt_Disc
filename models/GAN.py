@@ -92,7 +92,6 @@ class StyleGAN:
                                  resolution=resolution,
                                  structure=self.structure,
                                  output_features=self.latent_size*2,
-                                 encode_in=encode_in,
                                  **d_args).to(self.device)
 
 
