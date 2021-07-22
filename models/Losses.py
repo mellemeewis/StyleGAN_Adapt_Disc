@@ -14,7 +14,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from torchvision.models import vgg19_bn
+from torchvision.models import vgg19
 from torch.nn.functional import interpolate
 
 
@@ -37,8 +37,8 @@ class GANLoss:
         self.simp = 0
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
-        self.feature_network = vgg19_bn(pretrained=True).to('cuda')
-        self.feature_layers = ['14', '24', '34', '43']
+        self.feature_network = vgg19(pretrained=True).to('cuda')
+        self.feature_layers = ['1', '6', '11', '20', '29']
 
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
@@ -143,7 +143,7 @@ class LogisticGAN(GANLoss):
                 feature_loss += F.mse_loss(r, i)
 
         else:
-            feature_loss = torch.tensor([0.]).to(kl_loss.device)
+            feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
         loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
 
