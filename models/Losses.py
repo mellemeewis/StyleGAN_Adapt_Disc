@@ -37,8 +37,8 @@ class GANLoss:
         self.simp = 0
         self.recon_beta =recon_beta
         self.feature_beta = feature_beta
-        self.feature_network = vgg19_bn(pretrained=True).to('cuda')
-        self.feature_layers = ['14', '24', '34', '43']
+        self.feature_network = vgg19(pretrained=True).to('cuda')
+        self.feature_layers = ['1', '6', '11', '20', '29']
         self.use_CB = use_CB
 
 
