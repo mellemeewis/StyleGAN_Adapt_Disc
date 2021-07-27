@@ -3,8 +3,8 @@ structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
 feedback_factor: 1
-recon_beta: 3
-feature_beta: 3
+recon_beta: 3.
+feature_beta: 3.
 dataset:
   img_dir: '/var/scratch/mms496/data/celeba'
   folder: False

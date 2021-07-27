@@ -3,8 +3,8 @@ structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
 feedback_factor: 1
-recon_beta: 8
-feature_beta: 0
+recon_beta: 8.
+feature_beta: 0.
 use_cb: True
 dataset:
   img_dir: '/var/scratch/mms496/data/mnist'
