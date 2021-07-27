@@ -6,6 +6,9 @@ device_id: ('0')
 use_ema: False
 checkpoint_factor: 0
 feedback_factor: 2
+recon_beta: 5
+feature_beta: 0
+use_cb: False
 dataset:
   img_dir: '/content/drive/MyDrive/datasets/mnist/training'
   folder: True
@@ -16,6 +19,12 @@ sched:
   batch_sizes: [128, 128, 128, 64, 32, 16, 8, 4, 2]
   simp_start_end: [0,1] 
   vae_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]'
-  dis_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]'
-  gen_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (0,0), (0,0), (0,1)]'
-  sleep_probs: '[(0,0), (0,0), (0,0.5), (0.5,1), (0,0), (0,0), (0,0), (0,0), (0,1)]'
+  dis_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
+  gen_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
+  sleep_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
+model:
+  g_optim:
+    learning_rate: 0.0004
+  d_optim:
+    learning_rate: 0.0004
+    encode_in: 'Z'

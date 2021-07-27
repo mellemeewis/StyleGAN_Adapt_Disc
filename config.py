@@ -18,8 +18,8 @@ cfg.device_id = '3'
 cfg.structure = 'fixed'
 cfg.loss = "logistic"
 cfg.drift = 0.001
-cfg.recon_beta = 1.
-cfg.feature_beta = 5.
+cfg.recon_beta = 1
+cfg.feature_beta = 5
 cfg.d_repeats = 1
 cfg.use_ema = True
 cfg.ema_decay = 0.999
@@ -88,7 +88,7 @@ cfg.model.dis.encode_in = 'Z'
 cfg.model.g_optim = CN()
 cfg.model.g_optim.learning_rate = 0.0003
 cfg.model.g_optim.beta_1 = 0.9
-cfg.model.g_optim.beta_2 = 0.99
+cfg.model.g_optim.beta_2 = 0.999
 cfg.model.g_optim.eps = 1e-8
 
 # ---------------------------------------------------------------------------- #
@@ -97,5 +97,5 @@ cfg.model.g_optim.eps = 1e-8
 cfg.model.d_optim = CN()
 cfg.model.d_optim.learning_rate = 0.0003
 cfg.model.d_optim.beta_1 = 0.9
-cfg.model.d_optim.beta_2 = 0.99
+cfg.model.d_optim.beta_2 = 0.999
 cfg.model.d_optim.eps = 1e-8
