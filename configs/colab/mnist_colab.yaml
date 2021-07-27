@@ -8,7 +8,7 @@ checkpoint_factor: 0
 feedback_factor: 2
 recon_beta: 5
 feature_beta: 0
-use_cb: False
+use_CB: False
 dataset:
   img_dir: '/content/drive/MyDrive/datasets/mnist/training'
   folder: True
@@ -27,4 +27,5 @@ model:
     learning_rate: 0.0004
   d_optim:
     learning_rate: 0.0004
+  dis:
     encode_in: 'Z'
