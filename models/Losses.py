@@ -187,22 +187,29 @@ class LogisticGAN(GANLoss):
         return loss, kl_loss.mean().item(), recon_loss.mean().item(), feature_loss.mean().item()
 
 
-    def sleep_loss(self, extended_latent_input, fake_samples, height, alpha, print_=False):
+    def sleep_loss(self, latent_input, extended_latent_input, fake_samples, height, alpha, print_=False):
 
         if self.use_CB:
             with torch.no_grad():
                 fake_samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samples).mean
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
-        b, w, l = reconstructed_latents.size()
 
-        zmean, zsig = reconstructed_latents[:, :, :l//2], reconstructed_latents[:, :, l//2:]
-        zvar = zsig.exp() # variance
-        loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (extended_latent_input - zmean).pow(2.0)
+        if len(list(reconstructed_latents.size())) == 2:
+            b, l = reconstructed_latents.size()
+            zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
+            # zvar = zsig.exp() # variance
+            # loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (latent_input - zmean).pow(2.0)
 
-        # with torch.no_grad():
-        #     distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
-        #     d_loss = -distribution.log_prob(noise)
+            distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zsig.exp()), validate_args=None)
+            loss = -distribution.log_prob(noise)
+        else:
+            print("NOT implemented")
+            # TO DO
+
+            # with torch.no_grad():
+            #     distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
+            #     d_loss = -distribution.log_prob(noise)
 
         if print_:
             print('SLEEP LOSS', loss.mean().item())
