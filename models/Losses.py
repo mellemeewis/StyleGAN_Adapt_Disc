@@ -40,7 +40,7 @@ class GANLoss:
         self.feature_network = vgg19(pretrained=True).to('cuda')
         self.feature_layers = ['1', '6', '11', '20', '29']
         self.use_CB = use_CB
-
+        self.feature_network.eval()
 
     def update_simp(self, simp_start_end, cur_epoch, total_epochs):
         start, end = simp_start_end
