@@ -202,7 +202,7 @@ class LogisticGAN(GANLoss):
             # loss = zsig + (1.0 / (2.0 * zvar.pow(2.0) + 1e-5)) * (latent_input - zmean).pow(2.0)
 
             distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zsig.exp()), validate_args=None)
-            loss = -distribution.log_prob(noise)
+            loss = -distribution.log_prob(latent_input)
         else:
             print("NOT implemented")
             # TO DO
