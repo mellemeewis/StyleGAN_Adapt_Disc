@@ -165,6 +165,10 @@ class LogisticGAN(GANLoss):
                 real_samps = interpolate(real_samps, scale_factor=32//real_samps.shape[-1])
                 reconstrution = interpolate(reconstrution, scale_factor=32//reconstrution.shape[-1])
 
+            if real_samps.shape[1] == 1:
+              real_samps = real_samps.expand(-1,3,-1,-1)
+              reconstrution = reconstrution.expand(-1,3,-1,-1)
+
             features_real, features_recon = self.extract_features(real_samps), self.extract_features(reconstrution)
             feature_loss = 0.0
             for (r, i) in zip(features_recon, features_real):

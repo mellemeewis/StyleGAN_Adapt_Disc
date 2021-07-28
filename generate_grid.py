@@ -93,7 +93,7 @@ def main(args):
         point = (point / point.norm()) * (latent_size ** 0.5)
         ss_image = gen(point, depth=out_depth, alpha=1)
         # color adjust the generated image:
-        ss_image = adjust_dynamic_range(ss_image)
+        # ss_image = adjust_dynamic_range(ss_image)
 
     # save the ss_image in the directory
     save_image(ss_image, os.path.join(save_path, "grid.png"), nrow=args.n_row,

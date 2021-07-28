@@ -5,7 +5,7 @@ checkpoint_factor: 2
 feedback_factor: 1
 recon_beta: 1.
 feature_beta: 0.
-use_cb: True
+use_CB: True
 dataset:
   img_dir: '/var/scratch/mms496/data/mnist'
   folder: True
