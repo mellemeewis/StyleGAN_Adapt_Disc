@@ -1,4 +1,4 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/cb-r10f0'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/celebA/cb-r10f0'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
