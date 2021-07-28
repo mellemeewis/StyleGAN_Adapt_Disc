@@ -77,37 +77,35 @@ class LogisticGAN(GANLoss):
     def __init__(self, dis, gen, recon_beta, feature_beta, use_CB):
         super().__init__(dis, gen, recon_beta, feature_beta, use_CB)
 
-    def dis_loss(self, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
+    def dis_loss(self, latent_input, extended_latent_input, real_samps, fake_samps, height, alpha, r1_gamma=10.0, eps=1e-5, print_=False):
         # Obtain predictions
 
-        with torch.no_grad():
-            fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #sample((20,)).mean(dim=0)
+        if self.use_CB:
+            with torch.no_grad():
+                fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #sample((20,)).mean(dim=0)
+            r_preds = self.dis(real_samps.clamp(min=0.0627, max=0.9373), height, alpha)
 
-        r_preds = self.dis(real_samps.clamp(min=0.0627, max=0.9373), height, alpha)
+        else:
+            r_preds = self.dis(real_samps, height, alpha)
+
         f_preds = self.dis(fake_samps, height, alpha)
 
         if len(list(r_preds.size())) == 2:
             b, l = r_preds.size()
             r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+            r_loss = 0.5 * torch.mean(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
+            f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (latent_input - f_mean).pow(2.0)
+            f_loss = torch.mean(f_loss, dim=1)
 
         else:
-            b, w, l = r_preds.size()
-            r_mean, r_sig = r_preds[:,:, :l//2], r_preds[:,:, l//2:]
-            f_mean, f_sig = f_preds[:,:,:l//2], f_preds[:,:, l//2:]           
+            print("Not implemented")
+            # TO DO  
 
-        r_loss = 0.5 * torch.mean(r_sig.exp() - r_sig + r_mean.pow(2) - 1, dim=1)
-        f_loss = f_sig + self.simp * (1.0 / (2.0 * f_sig.exp().pow(2.0) + eps)) * (extended_latent_input - f_mean).pow(2.0)
-        f_loss = torch.mean(f_loss, dim=1)
+        
 
 
         loss = torch.mean(r_loss + f_loss)
-
-        # if r1_gamma != 0.0:
-        #     r1_penalty = self.R1Penalty(real_samps.detach(), height, alpha) * (r1_gamma * 0.5)
-        #     print('HELLO r1', r1_penalty)
-        #     loss += r1_penalty
-
         if print_:
             print('DIS LOSS REAL: Sig:', r_sig.mean().item(), 'Mean: ', r_mean.mean().item(), 'L: ', r_loss.mean().item())
             if self.simp < 0:
@@ -119,18 +117,19 @@ class LogisticGAN(GANLoss):
         return loss, r_loss.mean().item(), f_loss.mean().item()
 
     def gen_loss(self, _, fake_samps, height, alpha, print_=False):
-        fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
+        if self.use_CB:
+            fake_samps = torch.distributions.continuous_bernoulli.ContinuousBernoulli(fake_samps).mean #rsample((1000,)).mean(dim=0)
+        
         f_preds = self.dis(fake_samps, height, alpha)
         
         if len(list(f_preds.size())) == 2:
             b, l = f_preds.size()
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
+            loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         else:
-            b,w,l = f_preds.size()
-            f_mean, f_sig = f_preds[:,:, :l//2], f_preds[:, :,l//2:]
-
-        loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
+            print("Not implemented")
+            # TO DO
 
         if print_:
             print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())

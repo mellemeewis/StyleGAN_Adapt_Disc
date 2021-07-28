@@ -197,8 +197,8 @@ class StyleGAN:
 
         # generate a batch of samples
         fake_samples, extended_latent_input = self.gen(latent_input, depth, alpha, return_extended_latent_input=True)
-        fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach()
-        loss, r_loss, f_loss = self.loss.dis_loss(extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
+        fake_samples = fake_samples.detach(); extended_latent_input = extended_latent_input.detach(); latent_input = latent_input.detach()
+        loss, r_loss, f_loss = self.loss.dis_loss(latent_input, extended_latent_input, real_samples, fake_samples, depth, alpha, print_=print_)
 
         # optimize discriminator
         self.dis_optim.zero_grad()
