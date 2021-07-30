@@ -1,18 +1,17 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/mnist/+GAN-bce-g3d4'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/celebA/CB-StyleGAN+^'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
 feedback_factor: 1
-use_CB: False
+use_CB: True
 dataset:
-  img_dir: '/var/scratch/mms496/data/mnist'
-  folder: True
-  resolution: 32
-  channels: 1
+  img_dir: '/var/scratch/mms496/data/celeba'
+  folder: False
+  resolution: 64
 sched:
-  epochs: [8,8,8,300,0,0]  ### 14 uur == 11 epochs
-  simp_start_end: [0.005,3.0]
-  fade_in_percentage: [50, 50, 50, 5, 50, 50, 50, 50, 50]
+  epochs: [8,8,8,8,300,100]  ### 14 uur == 11 epochs
+  simp_start_end: [0.05,5]
+  fade_in_percentage: [50, 50, 50, 50, 1, 50, 50, 50, 50]
   vae_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
   sleep_probs: '[(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]'
   dis_probs: '[(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]'

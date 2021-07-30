@@ -1,10 +1,10 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/mnist/-r0f1'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/mnist/-r0f01'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2
 feedback_factor: 1
 recon_beta: 0.
-feature_beta: 1.
+feature_beta: 0.1
 dataset:
   img_dir: '/var/scratch/mms496/data/mnist'
   folder: True

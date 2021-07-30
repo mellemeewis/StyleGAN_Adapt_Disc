@@ -1,4 +1,4 @@
-output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/mnist/GAN-bce-g3d4'
+output_dir: '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/mnist/+GANSL-bce-g3d4'
 structure: 'linear'
 device_id: ('0')
 checkpoint_factor: 2

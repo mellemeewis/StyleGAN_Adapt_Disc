@@ -6,8 +6,8 @@ device_id: ('0')
 use_ema: False
 checkpoint_factor: 0
 feedback_factor: 2
-recon_beta: 5
-feature_beta: 0
+recon_beta: 5.
+feature_beta: 0.
 use_CB: False
 dataset:
   img_dir: '/content/drive/MyDrive/datasets/mnist/training'
