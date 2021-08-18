@@ -148,7 +148,7 @@ class LogisticGAN(GANLoss):
     def vae_loss(self, real_samps, height, alpha, print_=False):
         
         latents = self.dis(real_samps, height, alpha)
-
+        encoding_in_W=False
         if type(latents) != tuple:
         # if len(list(latents.size())) == 2:
             b, l = latents.size()
@@ -157,10 +157,12 @@ class LogisticGAN(GANLoss):
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=False)
 
         else:
+            encoding_in_W=True
             latents = latents[0]
             b, w, l = latents.size()
             kl_loss = torch.tensor([0.])
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
+
             print("VAE check")
 
 
@@ -190,7 +192,7 @@ class LogisticGAN(GANLoss):
         else:
             feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
-        if type(r_preds) != tuple:
+        if encoding_in_W==True:
         # if len(list(latents.size())) == 2:
             loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)            
         else:
