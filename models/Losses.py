@@ -104,7 +104,6 @@ class LogisticGAN(GANLoss):
             f_latent_recon, f_preds = f_preds[0], f_preds[-1]
             r_loss = F.binary_cross_entropy(r_preds, torch.ones_like(r_preds))
             f_loss = F.binary_cross_entropy(f_preds, torch.zeros_like(f_preds)) + F.mse_loss(extended_latent_input, f_latent_recon)
-            print("DIS CHECK")
             # r_preds = r_preds[:,:,-1]
 
             # TO DO  
@@ -138,7 +137,6 @@ class LogisticGAN(GANLoss):
         else:
             f_preds = f_preds[-1]
             loss = F.binary_cross_entropy(f_preds, torch.ones_like(f_preds))
-            print("GEN check")
 
         if print_:
             print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())
@@ -149,7 +147,6 @@ class LogisticGAN(GANLoss):
         
         latents = self.dis(real_samps, height, alpha)
         encoding_in_W=False
-        print("HELLO", type(latents))
         if type(latents) != tuple:
         # if len(list(latents.size())) == 2:
             b, l = latents.size()
@@ -163,8 +160,6 @@ class LogisticGAN(GANLoss):
             b, w, l = latents.size()
             kl_loss = torch.tensor([0.])
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
-
-            print("VAE check")
 
 
         if self.use_CB == True:
@@ -225,12 +220,7 @@ class LogisticGAN(GANLoss):
         else:
             reconstructed_latents = reconstructed_latents[0]
             loss = F.mse_loss(extended_latent_input, reconstructed_latents)
-            print("Sleep check")
-            # TO DO
 
-            # with torch.no_grad():
-            #     distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zvar), validate_args=None)
-            #     d_loss = -distribution.log_prob(noise)
 
         if print_:
             print('SLEEP LOSS', loss.mean().item())
