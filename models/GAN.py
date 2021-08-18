@@ -433,15 +433,19 @@ class StyleGAN:
 
                         with torch.no_grad():
                             images_ds = self.__progressive_down_sampling(images[:num_samples], current_depth, alpha)
-                            latents = self.dis(images_ds, current_depth, alpha).detach()
+                            latents = self.dis(images_ds, current_depth, alpha)
+                            latents= latents.detach() if type(latents) != tuple else latents[0].detach()
+
                             samples = self.gen(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach() if not self.use_ema else self.gen_shadow(fixed_input, current_depth, alpha, latent_are_in_extended_space=False).detach()
                             
                             if self.use_CB:
                                 samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples).mean
                             
-                            renconstruced_latents = self.dis(samples, current_depth, alpha).detach()
+                            renconstruced_latents = self.dis(samples, current_depth, alpha)
+                            renconstruced_latents= renconstruced_latents.detach() if type(latents) != tuple else renconstruced_latents[0].detach()
 
-                            if len(latents.size()) == 2:
+
+                            if type(latents) != tuple:
                                 b, l = latents.size()
                                 latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
                                 renconstruced_latents = renconstruced_latents[:, :l//2] + Variable(torch.randn(b, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:, l//2:] * 0.5).exp()
