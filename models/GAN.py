@@ -445,7 +445,7 @@ class StyleGAN:
                             renconstruced_latents= renconstruced_latents.detach() if type(renconstruced_latents) != tuple else renconstruced_latents[0].detach()
 
 
-                            if type(latents) != tuple:
+                            if len(list(latents.size())) == 2:
                                 b, l = latents.size()
                                 latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
                                 renconstruced_latents = renconstruced_latents[:, :l//2] + Variable(torch.randn(b, l//2).to(renconstruced_latents.device)) * (renconstruced_latents[:, l//2:] * 0.5).exp()
