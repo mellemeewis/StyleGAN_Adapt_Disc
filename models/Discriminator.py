@@ -130,7 +130,9 @@ class Discriminator(nn.Module):
             b,_ = x.size()
 
             if self.encode_in != 'Z':
-                x = x.view(b,self.num_layers,-1,1)
+                x, p = x[:, :-1], x[:,-1]
+                x = x.view(b,self.num_layers,-1,)
+                return x, torch.sigmoid(p)
 
         else:
             raise KeyError("Unknown structure: ", self.structure)

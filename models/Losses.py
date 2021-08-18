@@ -90,7 +90,8 @@ class LogisticGAN(GANLoss):
 
         f_preds = self.dis(fake_samps, height, alpha)
 
-        if len(list(r_preds.size())) == 2:
+        if type(r_preds) != tuple:
+        # if len(list(r_preds.size())) == 2:
             b, l = r_preds.size()
             r_mean, r_sig = r_preds[:, :l//2], r_preds[:, l//2:]
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
@@ -99,8 +100,11 @@ class LogisticGAN(GANLoss):
             f_loss = torch.mean(f_loss, dim=1)
 
         else:
-            print(r_preds.size())
-            print(f_preds.size())
+            r_preds = r_preds[-1]
+            f_latent_recon, f_preds = f_preds[0], f_preds[-1]
+            r_loss = F.binary_cross_entropy(torch.ones(r_preds.size()), r_preds)
+            f_loss = F.binary_cross_entropy(torch.zeros(f_preds.size(), f_preds)) + F.mse_loss(extended_latent_input, f_latent_recon)
+            print("DIS CHECK")
             # r_preds = r_preds[:,:,-1]
 
             # TO DO  
@@ -125,14 +129,16 @@ class LogisticGAN(GANLoss):
         
         f_preds = self.dis(fake_samps, height, alpha)
         
-        if len(list(f_preds.size())) == 2:
+        if type(r_preds) != tuple:
+        # if len(list(f_preds.size())) == 2:
             b, l = f_preds.size()
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
             loss =  0.5 * torch.mean(f_sig.exp() - f_sig + f_mean.pow(2) - 1, dim=1)
 
         else:
-            print("Not implemented")
-            # TO DO
+            f_preds = f_preds[-1]
+            loss = F.binary_cross_entropy(torch.ones(f_preds.size()), f_preds)
+            print("GEN check")
 
         if print_:
             print('GENERATOR LOSS: Sig:', f_sig.mean().item(), 'Mean: ', f_mean.mean().item(), 'L: ', loss.mean().item())
@@ -143,16 +149,19 @@ class LogisticGAN(GANLoss):
         
         latents = self.dis(real_samps, height, alpha)
 
-        if len(list(latents.size())) == 2:
+        if type(r_preds) != tuple:
+        # if len(list(latents.size())) == 2:
             b, l = latents.size()
             kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
             latents = latents[:, :l//2] + Variable(torch.randn(b, l//2).to(latents.device)) * (latents[:, l//2:] * 0.5).exp()
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=False)
 
         else:
+            latents = latents[0]
             b, w, l = latents.size()
             kl_loss = torch.tensor([0.])
             reconstrution = self.gen(latents, height, alpha, latent_are_in_extended_space=True)
+            print("VAE check")
 
 
         if self.use_CB == True:
@@ -181,7 +190,8 @@ class LogisticGAN(GANLoss):
         else:
             feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
-        if len(list(latents.size())) == 2:
+        if type(r_preds) != tuple:
+        # if len(list(latents.size())) == 2:
             loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)            
         else:
             loss = torch.mean(self.recon_beta*recon_loss + self.feature_beta*feature_loss)
@@ -200,7 +210,8 @@ class LogisticGAN(GANLoss):
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
 
-        if len(list(reconstructed_latents.size())) == 2:
+        if type(r_preds) != tuple:
+        # if len(list(reconstructed_latents.size())) == 2:
             b, l = reconstructed_latents.size()
             zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
             # zvar = zsig.exp() # variance
@@ -209,7 +220,9 @@ class LogisticGAN(GANLoss):
             distribution = torch.distributions.normal.Normal(zmean, torch.sqrt(zsig.exp()), validate_args=None)
             loss = -distribution.log_prob(latent_input)
         else:
-            print("NOT implemented")
+            reconstructed_latents = reconstructed_latents[0]
+            loss = f.mse_loss(extended_latent_input, reconstructed_latents)
+            print("Sleep check")
             # TO DO
 
             # with torch.no_grad():
