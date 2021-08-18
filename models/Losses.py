@@ -102,8 +102,8 @@ class LogisticGAN(GANLoss):
         else:
             r_preds = r_preds[-1]
             f_latent_recon, f_preds = f_preds[0], f_preds[-1]
-            r_loss = F.binary_cross_entropy(torch.ones(r_preds.size()), r_preds)
-            f_loss = F.binary_cross_entropy(torch.zeros(f_preds.size(), f_preds)) + F.mse_loss(extended_latent_input, f_latent_recon)
+            r_loss = F.binary_cross_entropy(r_preds, torch.ones(r_preds.size()))
+            f_loss = F.binary_cross_entropy(f_preds, torch.zeros(f_preds.size())) + F.mse_loss(extended_latent_input, f_latent_recon)
             print("DIS CHECK")
             # r_preds = r_preds[:,:,-1]
 
@@ -137,7 +137,7 @@ class LogisticGAN(GANLoss):
 
         else:
             f_preds = f_preds[-1]
-            loss = F.binary_cross_entropy(torch.ones(f_preds.size()), f_preds)
+            loss = F.binary_cross_entropy(f_preds, torch.ones(f_preds.size()))
             print("GEN check")
 
         if print_:
