@@ -1,9 +1,8 @@
 #!/bin/bash
-#SBATCH --time=60:00:00
+#SBATCH --time=13:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
-#SBATCH -C RTX2080Ti
-#SBATCH -p proq
+#SBATCH -C TitanX
 #SBATCH --gres=gpu:1
 
 module load cuda10.0/toolkit
@@ -29,7 +28,7 @@ cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/celebA/cb-r005f005.yaml'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/mnist/cb-r01f01_SLEEP.yaml'
 wait          # wait until programs are finished
 
 # echo $$

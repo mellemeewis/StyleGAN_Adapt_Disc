@@ -99,7 +99,10 @@ class LogisticGAN(GANLoss):
             f_loss = torch.mean(f_loss, dim=1)
 
         else:
-            print("Not implemented")
+            print(r_preds.size())
+            print(f_preds.size())
+            # r_preds = r_preds[:,:,-1]
+
             # TO DO  
 
         
@@ -155,7 +158,9 @@ class LogisticGAN(GANLoss):
         if self.use_CB == True:
             reconstrution_distribution = torch.distributions.continuous_bernoulli.ContinuousBernoulli(reconstrution)
             recon_loss = -reconstrution_distribution.log_prob(real_samps).view(b, -1).mean(dim=1, keepdim=True)
-            reconstrution = reconstrution_distribution.rsample()
+            # reconstrution = reconstrution_distribution.rsample()
+            reconstrution = reconstrution_distribution.mean
+
         else:
             recon_loss = F.binary_cross_entropy(reconstrution, real_samps, reduction='none').view(b, -1).mean(dim=1, keepdim=True)
 

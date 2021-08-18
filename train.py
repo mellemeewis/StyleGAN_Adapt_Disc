@@ -12,7 +12,7 @@ import argparse
 import shutil
 
 import torch
-from torch.backends import cudnn
+# from torch.backends import cudnn
 
 from data import make_dataset
 from utils import make_logger, list_dir_recursively_with_ignore, copy_files_and_create_dirs
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         num_gpus = len(opt.device_id.split(','))
         logger.info("Using {} GPUs.".format(num_gpus))
         logger.info("Training on {}.\n".format(torch.cuda.get_device_name(0)))
-        cudnn.benchmark = True
+        # cudnn.benchmark = True
     device = torch.device(opt.device)
 
     # create the dataset for training

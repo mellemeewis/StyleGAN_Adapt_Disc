@@ -29,7 +29,7 @@ cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/celebA/cb-r005f005.yaml'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/train.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/celebA/CBf-r2f002-g4d4-AdvStyleAE+_SLEEP.yaml'
 wait          # wait until programs are finished
 
 # echo $$

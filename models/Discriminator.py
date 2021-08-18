@@ -76,7 +76,7 @@ class Discriminator(nn.Module):
         self.blocks = nn.ModuleList(blocks)
 
         # Building the final block.
-        output_features = output_features if self.encode_in == 'Z' else (output_features//2)* self.num_layers
+        output_features = output_features if self.encode_in == 'Z' else (output_features//2)* self.num_layers + 1
 
         self.final_block = DiscriminatorTop(self.mbstd_group_size, self.mbstd_num_features,
                                             in_channels=nf(2), intermediate_channels=4096, output_features=output_features,
@@ -130,7 +130,7 @@ class Discriminator(nn.Module):
             b,_ = x.size()
 
             if self.encode_in != 'Z':
-                x = x.view(b,self.num_layers,-1)
+                x = x.view(b,self.num_layers,-1,1)
 
         else:
             raise KeyError("Unknown structure: ", self.structure)

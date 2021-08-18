@@ -1,8 +1,9 @@
-#!/bin/bash
+w#!/bin/bash
 #SBATCH --time=60:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
-#SBATCH -C TitanX
+#SBATCH -C RTX2080Ti
+#SBATCH -p proq
 #SBATCH --gres=gpu:1
 
 module load cuda10.0/toolkit
