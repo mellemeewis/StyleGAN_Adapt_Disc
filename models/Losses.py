@@ -193,7 +193,7 @@ class LogisticGAN(GANLoss):
         else:
             feature_loss = torch.tensor([0.]).to(reconstrution.device)
 
-        if encoding_in_W==True:
+        if encoding_in_W==False:
         # if len(list(latents.size())) == 2:
             loss = torch.mean(kl_loss + self.recon_beta*recon_loss + self.feature_beta*feature_loss)            
         else:
