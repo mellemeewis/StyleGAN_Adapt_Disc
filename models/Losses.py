@@ -129,7 +129,7 @@ class LogisticGAN(GANLoss):
         
         f_preds = self.dis(fake_samps, height, alpha)
         
-        if type(r_preds) != tuple:
+        if type(f_preds) != tuple:
         # if len(list(f_preds.size())) == 2:
             b, l = f_preds.size()
             f_mean, f_sig = f_preds[:, :l//2], f_preds[:, l//2:]
@@ -149,7 +149,7 @@ class LogisticGAN(GANLoss):
         
         latents = self.dis(real_samps, height, alpha)
 
-        if type(r_preds) != tuple:
+        if type(latents) != tuple:
         # if len(list(latents.size())) == 2:
             b, l = latents.size()
             kl_loss = 0.5 * torch.mean(latents[:, l//2:].exp() - latents[:, l//2:] + latents[:, :l//2].pow(2) - 1, dim=1)
@@ -210,7 +210,7 @@ class LogisticGAN(GANLoss):
 
         reconstructed_latents = self.dis(fake_samples, height, alpha)
 
-        if type(r_preds) != tuple:
+        if type(reconstructed_latents) != tuple:
         # if len(list(reconstructed_latents.size())) == 2:
             b, l = reconstructed_latents.size()
             zmean, zsig = reconstructed_latents[:, :l//2], reconstructed_latents[:, l//2:]
