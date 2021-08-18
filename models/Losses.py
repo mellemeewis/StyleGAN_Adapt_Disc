@@ -149,6 +149,7 @@ class LogisticGAN(GANLoss):
         
         latents = self.dis(real_samps, height, alpha)
         encoding_in_W=False
+        print("HELLO", type(latents))
         if type(latents) != tuple:
         # if len(list(latents.size())) == 2:
             b, l = latents.size()
