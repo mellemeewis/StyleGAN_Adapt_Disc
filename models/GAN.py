@@ -442,7 +442,7 @@ class StyleGAN:
                                 samples = torch.distributions.continuous_bernoulli.ContinuousBernoulli(samples).mean
                             
                             renconstruced_latents = self.dis(samples, current_depth, alpha)
-                            renconstruced_latents= renconstruced_latents.detach() if type(latents) != tuple else renconstruced_latents[0].detach()
+                            renconstruced_latents= renconstruced_latents.detach() if type(renconstruced_latents) != tuple else renconstruced_latents[0].detach()
 
 
                             if type(latents) != tuple:
