@@ -224,7 +224,7 @@ class LogisticGAN(GANLoss):
             loss = -distribution.log_prob(latent_input)
         else:
             reconstructed_latents = reconstructed_latents[0]
-            loss = f.mse_loss(extended_latent_input, reconstructed_latents)
+            loss = F.mse_loss(extended_latent_input, reconstructed_latents)
             print("Sleep check")
             # TO DO
 
