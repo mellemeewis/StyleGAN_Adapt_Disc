@@ -88,17 +88,20 @@ def main(args):
 
     image1 = Image.open(args.image1_file).resize((64,64),Image.ANTIALIAS)
     image2 = Image.open(args.image1_file).resize((64,64),Image.ANTIALIAS)
-    image1.save(fp="jikkesmall.png")
+    image1.save(fp="/content/jikkesmall.png")
+    image2.save(fp="/content/tobiassmall.png")
 
     print(image1)
     print(image2)
 
+
+
     # path for saving the files:
     # generate the images:
     # src_seeds = [639, 701, 687, 615, 1999], dst_seeds = [888, 888, 888],
-    draw_style_mixing_figure(os.path.join('figure03-style-mixing.png'), gen,
-                             out_depth=6, src_seeds=[639, 1995, 687, 615, 1999], dst_seeds=[888, 888, 888],
-                             style_ranges=[range(0, 2)] * 1 + [range(2, 8)] * 1 + [range(8, 14)] * 1)
+    # draw_style_mixing_figure(os.path.join('figure03-style-mixing.png'), gen,
+    #                          out_depth=6, src_seeds=[639, 1995, 687, 615, 1999], dst_seeds=[888, 888, 888],
+    #                          style_ranges=[range(0, 2)] * 1 + [range(2, 8)] * 1 + [range(8, 14)] * 1)
     print('Done.')
 
 
