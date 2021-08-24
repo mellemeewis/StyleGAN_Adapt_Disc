@@ -86,10 +86,9 @@ def main(args):
 
     print('loaded')
 
-
-
-    image1 = imageio.imread(args.image1_file)
-    image2 = imageio.imread(args.image2_file)
+    image1 = Image.open(args.image1_file).resize((64,64),Image.ANTIALIAS)
+    image2 = Image.open(args.image1_file).resize((64,64),Image.ANTIALIAS)
+    image1.save(fp="jikkesmall.png")
 
     print(image1)
     print(image2)
