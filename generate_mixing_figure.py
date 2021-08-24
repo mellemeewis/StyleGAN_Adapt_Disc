@@ -79,14 +79,14 @@ def main(args):
     # load the weights into it
     gen.load_state_dict(torch.load(args.generator_file))
 
-    print("Loading the encoder weights from:", args.generator_file)
+    print("Loading the encoder weights from:", args.encoder_file)
     # load the weights into it
     enc.load_state_dict(torch.load(args.encoder_file))
 
     print('loaded')
 
-    image1 = np.load(args.image1_file)
-    image2 = np.load(args.image2_file)
+    image1 = np.load(args.image1_file, allow_pickle=True)
+    image2 = np.load(args.image2_file, allow_pickle=True)
 
     print(image1)
     print(image2)
