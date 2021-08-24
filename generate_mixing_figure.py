@@ -5,7 +5,8 @@ from PIL import Image
 
 import torch
 
-from models.GAN import Generator
+from models.Generator import Generator
+from models.Discriminator import Discriminator
 from generate_grid import adjust_dynamic_range
 
 
@@ -67,9 +68,28 @@ def main(args):
                     structure=opt.structure,
                     **opt.model.gen)
 
+    enc = Discriminator(num_channels=opt.dataset.channels,
+                                 resolution=opt.dataset.resolution,
+                                 structure=opt.structure,
+                                 output_features=opt.modl.gen.latent_size*2,
+                                 **opt.model.dis)
+
+
     print("Loading the generator weights from:", args.generator_file)
     # load the weights into it
     gen.load_state_dict(torch.load(args.generator_file))
+
+    print("Loading the encoder weights from:", args.generator_file)
+    # load the weights into it
+    enc.load_state_dict(torch.load(args.encoder_file))
+
+    print('loaded')
+
+    image1 = np.load(args.image1_file)
+    image2 = np.load(args.image2_file)
+
+    print(image1)
+    print(image2)
 
     # path for saving the files:
     # generate the images:
@@ -91,6 +111,12 @@ def parse_arguments():
     parser.add_argument('--config', default='./configs/sample_race_256.yaml')
     parser.add_argument("--generator_file", action="store", type=str,
                         help="pretrained weights file for generator", required=True)
+
+    parser.add_argument("--encoder_file", action="store", type=str,
+                        help="pretrained weights file for encoder", required=True)
+
+    parser.add_argument("--image1_file", action="store", type=str, required=True)
+    parser.add_argument("--image2_file", action="store", type=str, required=True)
 
     args = parser.parse_args()
 

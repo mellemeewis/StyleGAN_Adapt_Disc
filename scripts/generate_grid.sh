@@ -29,7 +29,7 @@ cd /home/mms496/StyleVAE_Experiments/stylegan_adapt_disc
 
 
 
-python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/generate_grid.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/mnist/cb-r01f01_SLEEP.yaml' --generator_file '/var/scratch/mms496/models/cb-r01f01_SLEEP/GAN_GEN_SHADOW_3.pth' --n_row 6 --n_col 8 --output_dir '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/grid'
+python -u /home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/generate_grid.py --config '/home/mms496/StyleVAE_Experiments/code/StyleGAN.pytorch-adapt_disc/configs/mnist/CBf-r01f01-g4d4-AdvStyleVAE_NS.yaml' --generator_file '/var/scratch/mms496/models/CBf-r01f01-g4d4-AdvStyleVAE_NS/GAN_GEN_SHADOW_3.pth' --n_row 6 --n_col 8 --output_dir '/home/mms496/StyleVAE_Experiments/stylegan_adapt_disc/grid'
 wait          # wait until programs are finished
 
 # echo $$
