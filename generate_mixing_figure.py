@@ -71,7 +71,7 @@ def main(args):
     enc = Discriminator(num_channels=opt.dataset.channels,
                                  resolution=opt.dataset.resolution,
                                  structure=opt.structure,
-                                 output_features=opt.modl.gen.latent_size*2,
+                                 output_features=opt.model.gen.latent_size*2,
                                  **opt.model.dis)
 
 
