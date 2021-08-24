@@ -2,6 +2,7 @@ import os
 import argparse
 import numpy as np
 from PIL import Image
+import imageio
 
 import torch
 
@@ -85,8 +86,10 @@ def main(args):
 
     print('loaded')
 
-    image1 = np.load(args.image1_file, allow_pickle=True)
-    image2 = np.load(args.image2_file, allow_pickle=True)
+
+
+    image1 = imageio.imread(args.image1_file)
+    image2 = imageio.imread(args.image2_file)
 
     print(image1)
     print(image2)
